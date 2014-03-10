@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html ng-app="sommarcampApp" lang="en">
+  <script id="tinyhippos-injected">if (window.top.ripple) { window.top.ripple("bootstrap").inject(window, document); }</script>
+  <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      <link rel="shortcut icon" href="http://getbootstrap.com/assets/ico/favicon.ico">
+
+      <title>Sommarcamp</title>
+
+      <!-- Bootstrap core CSS -->
+      <link rel="stylesheet" href="./bower_components/bootstrap/dist/css/bootstrap.min.css">
+
+      <!-- Custom styles for this template -->
+      <link href="./css/style.css" rel="stylesheet">
+      <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    </head>
+
+    <body style="">
+
+      <!-- Wrap all page content here -->
+      <div id="wrap">
+
+        <!-- Begin page content -->
+        <div class="container">
+          <div class="page-header">
+              <h1>Klenkarberget Sommarcamp 2014 <small>Påmeldingstjenste</small></h1>
+          </div>
+          <div class="row">
+              <div class="col-xs-6 col-md-8">
+                <div class="panel panel-default">
+                      <div class="panel-body">
+                        <div data-ng-view=""></div>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-xs-3 col-md-4">
+                  <div class="panel panel-default">
+                      <div class="panel-body">
+                        LIVE DATA VIEW
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          <div class="row">
+              <div class="col-xs-9 col-md-12">
+                  <div class="panel panel-default">
+                      <div class="panel-body">
+                        Message area
+                      </div>
+                  </div>
+                
+                  <span class="message-container" ng-controller="MessageController" ng-class="messageStyle" style="text-align: right;">
+                      {{ message }} 
+                      <div style="display: none;"><timer interval="1000" countdown="5"/></div> 
+                  </span> 
+              </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Third party script imports
+      ================================================== -->
+      <script src="./bower_components/jquery/dist/jquery.min.js"></script>
+      <script src="./bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+      <script src="./bower_components/bootbox/bootbox.js"></script>
+      <script src="./bower_components/angular/angular.js"></script>
+      <!--<script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.6.0.js"></script>-->
+      <!--<script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.10.0.js"></script>-->
+      <script src="./bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+      <script src="./bower_components/angular-route/angular-route.js"></script>
+      <script src="./bower_components/angular-timer/dist/angular-timer.js"></script>
+
+
+      
+      <!-- Application spesific factory script imports
+      ================================================== -->
+      <script src="factories/registrationFactory.js"></script>
+      <script src="factories/messageFactory.js"></script>
+      
+      <!-- Application spesific controller script imports
+      ================================================== -->
+      <script src="controllers/registrationController.js"></script>
+      <!--<script src="controllers/participantModalController.js"></script>-->
+    
+      <script src="controllers/messageController.js"></script>
+      <script src="controllers/headerController.js"></script>
+      
+      <!-- Application spesific core functionality script imports
+      ================================================== -->
+      <script src="core.js"></script>
+      <script src="router.js"></script>
+      
+      
+    
+
+    </body>
+</html>

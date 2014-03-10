@@ -1,0 +1,17 @@
+{
+  "name": 		"Sommarcamp",
+  "version": 	"0.0.1",
+  "main": [
+  ],
+  "ignore": [
+  ],
+  "dependencies": {
+    "bootstrap": 		"",
+    "bootstrap-modal":    "",
+    "angular": 			"",
+    "angular-route": 	"",
+    "angular-timer":	"",
+    "bootbox":        "4.1.0",
+    "angular-bootstrap": ""
+  }
+}
