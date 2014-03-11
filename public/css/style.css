@@ -77,3 +77,7 @@ a {
 .blue{color: #53abdf;}
 
 .black{color: black;}
+
+.row-fields{padding-bottom: 10px;}
+.row-buttons{padding-bottom: 10px; padding-top: 20px;}
+.col-one{padding-bottom: 2px;}

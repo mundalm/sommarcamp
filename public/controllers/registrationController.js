@@ -1,12 +1,15 @@
 function registrationController($scope, $location, registrationFactory, MessageFactory, $log, $rootScope, $modal) {
 	$scope.formData = {};
 	$scope.participants = [];
+	$scope.days = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31];
+	$scope.months = [0,1,2,3,4,5,6,7,8,9,10,11,12];
+	$scope.years = [2000,2001,2002,2003,2004,2005,2007];
 	
 	// when loading controller, initialize Participant list from ParticipantFactory
 	init();
 	
 	function init() {
-		$scope.participants.push({birthDay: 01, birthMonth: 01, birthYear: 2000});
+		$scope.participants.push({birthDay: null, birthMonth: null, birthYear: null});
 		/*ParticipantFactory.getParticipants().then(function(data) {
 			if(!$rootScope.RHE(data, true)) {
 				$scope.participants = data.data;
@@ -95,7 +98,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 	// Add participant
 	$scope.addParticipant = function() {
 		if( $scope.participants.length < 4 ) {
-			$scope.participants.push({birthDay: 01, birthMonth: 01, birthYear: 2000});
+			$scope.participants.push({birthDay: null, birthMonth: null, birthYear: null});
 		} 
 
 		checkAndToggleButtons();

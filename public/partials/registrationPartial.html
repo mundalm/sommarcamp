@@ -1,4 +1,44 @@
-<table class="table-condensed" >
+<!--<div class="container">-->
+	<!--<div class="row">
+		<div class="col-md-1">Barn nr.</div>
+  		<div class="col-md-3">Fornavn</div>
+  		<div class="col-md-3">Etternavn</div>
+  		<div class="col-md-3">Fødselsdato</div>
+	</div>-->
+	<div class="row row-fields">
+		<div class="col-md-12">
+			<h5>Fyll inn fornavn, etternavn og fødselsdato. Du kan legges til flere deltagere (maks 4).</h5>
+		</div>
+	</div>
+  	<div class="row row-fields" ng-repeat="participant in participants">
+  		<div class="col-md-1 col-one">{{$index+1}}</div>
+  		<div class="col-md-3 col-one"><span style="padding-right: 20px;"><input type="text" ng-model="participant.firstName" placeholder="Fornavn"/></span></div>
+  		<div class="col-md-3 col-one"><input type="text" ng-model="participant.lastName" placeholder="Etternavn"/></div>
+  		<div class="col-md-5 col-one">
+  			<select ng-model="participant.birthDay" ng-options="day for day in days">
+  				<option value="" selected="selected">Dag</option>
+			</select>
+			<select ng-model="participant.birthMonth" ng-options="month for month in months">
+				<option value="" selected>Måned</option>
+			</select>
+			<select ng-model="participant.birthYear" ng-options="year for year in years">
+				<option value="">År</option>
+			</select>
+  		</div>
+  	</div>
+  	<div class="row row-buttons">
+		<div class="col-md-12 col-one">
+			<button type="button" ng-disabled="disableAddParticipant" class="btn btn-primary" ng-click="addParticipant()">
+				Legg til barn
+			</button>
+			<button type="button" ng-disabled="disableRemoveParticipant" class="btn btn-primary" ng-click="removeLastParticipant()">
+				Fjern siste barn
+			</button>
+		</div>
+	</div>
+<!--</div>-->
+
+<!--<table class="table-condensed" >
 	<th>Barn nr.</th>
 	<th>Fornavn</th>
 	<th>Etternavn</th>
@@ -71,11 +111,5 @@
 			</select>
 		</td>
 	</tr>
-</table>
+</table>-->
 <br/>
-<button type="button" ng-disabled="disableAddParticipant" class="btn btn-primary btn-xs" ng-click="addParticipant()">
-	Legg til barn
-</button>
-<button type="button" ng-disabled="disableRemoveParticipant" class="btn btn-primary btn-xs" ng-click="removeLastParticipant()">
-	Fjern siste barn
-</button>
