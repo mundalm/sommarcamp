@@ -1,5 +1,6 @@
 // load up the participant model
 var Participant = require('../app/models/participant.js');
+var AvailableActivity = require('../app/models/availableActivity.js');
 
 module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, ReturnResults) {
 
@@ -69,6 +70,70 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 			if(!QueryHasErrors(err, res)) {
 				console.log('Updated Participant: ' + JSON.stringify(result));
 		  		ReturnResults(res, result, 201);
+		  	}
+		});
+	});
+
+	//============================================================ Get status for available activities
+	app.get('/api/availactstat', function (req, res){
+		var numRunningQueries = 2
+
+		/*AvailableActivity.find({}).exec(function(err, activities) {
+			if(!QueryHasErrors(err, res)) {
+				var numQueries = activities.length;
+				var actCountArray = [];
+				for(var i in activities) {
+					console.log("Remainging quieries: " + numQueries);
+					Participant.count({ "_activities.eventCode": activities[i].eventCode}, function (err, count) {
+						--numQueries;
+						Neeeeeed one query solution!!!!:....
+						if(numQueries === 0){
+							ReturnResults(res, count, 201);
+						}
+					});
+				}
+			}
+		});*/
+
+		Participant.aggregate([{$unwind: "$_activities"}, { $group: {_id: "$_activities", nbArticles: { $sum: 1 }
+  } }], function(err, activities) {
+			if(!QueryHasErrors(err, res)) {
+				console.log(activities);
+				ReturnResults(res, activities, 201);
+			}
+		});
+	});
+
+	app.get('/api/initact', function (req, res){
+		var newActivity = new AvailableActivity ({	eventCode       : "U27",
+											    title				: "Sommarcamp uke 27",
+											    shortTitle			: "Uke 27",
+											    maxAttending		: 5,
+											});
+
+		newActivity.save(function (err) {
+			if(!QueryHasErrors(err, res)) {
+		  		console.log('Inserted Activity: ' + JSON.stringify(newActivity));
+		  		ReturnResults(res, newActivity, 201);
+		  	}
+		});
+	});
+
+	app.get('/api/initpart', function (req, res){
+		var newParticipant = new Participant ({	firstName       	: "Test3",
+											    lastName			: "Test last",
+											    birthDay			: 10,
+											    birthMonth			: 11,
+											    birthYear			: 2003,
+											    //birthDate			: req.body.birthDay + '/' + req.body.birthMonth + '/' + req.body.birthYear,
+											    _activities 		: [{eventCode: "U27"}],
+											    _parents 			: null
+											});
+
+		newParticipant.save(function (err) {
+			if(!QueryHasErrors(err, res)) {
+		  		console.log('Inserted Participant: ' + JSON.stringify(newParticipant));
+		  		ReturnResults(res, newParticipant, 201);
 		  	}
 		});
 	});

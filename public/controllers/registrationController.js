@@ -1,8 +1,8 @@
 function registrationController($scope, $location, registrationFactory, MessageFactory, $log, $rootScope, $modal) {
 	$scope.formData = {};
 	$scope.participants = [];
-	$scope.days = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31];
-	$scope.months = [0,1,2,3,4,5,6,7,8,9,10,11,12];
+	$scope.days = [01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31];
+	$scope.months = [01,02,03,04,05,06,07,08,09,10,11,12];
 	$scope.years = [2000,2001,2002,2003,2004,2005,2007];
 	
 	// when loading controller, initialize Participant list from ParticipantFactory

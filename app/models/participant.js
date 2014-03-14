@@ -24,9 +24,9 @@ var parentSchema = mongoose.Schema({
 
 // define the schema for event
 var activitySchema = mongoose.Schema({
+    eventCode       : String, 
     title       	: String,
     shortTitle		: String,
-    maxAttending	: Number
 });
 
 // create the model for users and expose it to our app
