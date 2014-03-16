@@ -76,31 +76,20 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 
 	//============================================================ Get status for available activities
 	app.get('/api/availactstat', function (req, res){
-		var numRunningQueries = 2
-
-		/*AvailableActivity.find({}).exec(function(err, activities) {
-			if(!QueryHasErrors(err, res)) {
-				var numQueries = activities.length;
-				var actCountArray = [];
-				for(var i in activities) {
-					console.log("Remainging quieries: " + numQueries);
-					Participant.count({ "_activities.eventCode": activities[i].eventCode}, function (err, count) {
-						--numQueries;
-						Neeeeeed one query solution!!!!:....
-						if(numQueries === 0){
-							ReturnResults(res, count, 201);
-						}
-					});
-				}
-			}
-		});*/
-
-		Participant.aggregate([{$unwind: "$_activities"}, { $group: {_id: "$_activities", nbArticles: { $sum: 1 }
-  } }], function(err, activities) {
+		Participant.aggregate([{$unwind: "$_activities"}, { $group: {_id: "$_activities", nbParticipants: { $sum: 1 }}}], function(err, activities) {
 			if(!QueryHasErrors(err, res)) {
 				console.log(activities);
 				ReturnResults(res, activities, 201);
 			}
+		});
+	});
+
+	//============================================================ List all activities
+	app.get('/api/activities', function (req, res){
+		AvailableActivity.find({}).exec(function(err, result) {
+			if(!QueryHasErrors(err, res)) {
+		  		ReturnResults(res, result, 201);
+		  	}
 		});
 	});
 

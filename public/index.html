@@ -74,13 +74,14 @@
       </div>
 
       <!-- Begin page content -->
-      <div class="container">
+      <div data-ng-view=""></div>
+      <div>
           <!--<div class="page-header">-->
-            <table style="width: 100%;">
+            <!--<table style="width: 100%;">
               <tr>
-                <!--<td tyle="vertical-align: bottom;">
+                <<td tyle="vertical-align: bottom;">
                   <h1>{{pageHeader}}</h1>
-                </td>-->
+                </td>
                 <td class="messagearea">
                   <span class="message-container" ng-controller="MessageController" ng-class="messageStyle" style="text-align: right;">
                     {{ message }}
@@ -90,9 +91,9 @@
               </tr> 
             </table>    
           <!--</div>  -->
-          <p class="lead">
+          <!--<p class="lead">
         	   <div data-ng-view=""></div>
-          </p>
+          </p>-->
       </div>
     </div>
 

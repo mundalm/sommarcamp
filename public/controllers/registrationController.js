@@ -1,5 +1,6 @@
 function registrationController($scope, $location, registrationFactory, MessageFactory, $log, $rootScope, $modal) {
 	$scope.formData = {};
+	$scope.availableActivities = [];
 	$scope.participants = [];
 	$scope.days = [01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31];
 	$scope.months = [01,02,03,04,05,06,07,08,09,10,11,12];
@@ -10,36 +11,15 @@ function registrationController($scope, $location, registrationFactory, MessageF
 	
 	function init() {
 		$scope.participants.push({birthDay: null, birthMonth: null, birthYear: null});
-		/*ParticipantFactory.getParticipants().then(function(data) {
+		registrationFactory.getActivities().then(function(data) {
 			if(!$rootScope.RHE(data, true)) {
-				$scope.participants = data.data;
+				$scope.availableActivities = data.data;
 
 			} else {
-				MessageFactory.prepareForBroadcast('Det oppstod en feil ved lasting av deltagere', 'label label-danger');
-			}
-		});*/
-
-		/*customerFactory.getCustomers().then(function(data) {
-			if(!$rootScope.RHE(data, true)) {
-				$scope.customers = data.data;
-
-			} else {
-				MessageFactory.prepareForBroadcast('Det oppstod en feil ved lasting av kunder', 'label label-danger');
+				MessageFactory.prepareForBroadcast('Det oppstod en feil ved lasting av tilgjengelige aktiviteter', 'label label-danger');
 			}
 		});
 
-		leaderFactory.getLeaders().then(function(data) {
-			if(!$rootScope.RHE(data, true)) {
-				$scope.leaders = data.data;
-
-			} else {
-				MessageFactory.prepareForBroadcast('Det oppstod en feil ved lasting av prosjektledere', 'label label-danger');
-			}
-		});*/
-
-		/*$scope.showSaveButton = true;
-		$scope.showUpdateButton = false;	
-		$scope.showCancelButton = true;	*/
 		$scope.disableAddParticipant = false;
 		$scope.disableRemoveParticipant = true;
 

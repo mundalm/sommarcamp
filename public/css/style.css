@@ -82,3 +82,7 @@ a {
 .row-buttons{padding-bottom: 10px; padding-top: 20px;}
 .col-one{padding-bottom: 2px;}
 .indent-right{margin-left: 0px; margin-bottom: 10px;}
+
+/*.test{border: 1px solid black;}*/
+
+.selectField{width: 60px; margin-right: 2px; float: left;}
