@@ -39,7 +39,7 @@ function registrationFactory($http, $log) {
 	            url: '/api/availactstat',
 	            timeout: 10000
 	        }).then(function(response) {
-	        	$log.info('Retrieved data: ',response);
+	        	//$log.info('Retrieved data: ',response);
 	           	return response;  
 	        },  function(reason) {
 	        	$log.error("Request Failed: ", reason);

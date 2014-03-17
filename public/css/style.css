@@ -74,18 +74,31 @@ a {
   cursor: pointer;
 }
 
-.blue{color: #53abdf;}
+.blue {color: #53abdf;}
 
-.black{color: black;}
+.black {color: black;}
 
-.row-fields{padding-bottom: 10px;}
-.row-buttons{padding-bottom: 10px; padding-top: 20px;}
-.col-one{padding-bottom: 2px;}
-.indent-right{margin-left: 0px; margin-bottom: 10px;}
+.row-fields {padding-bottom: 10px;}
+
+.row-buttons {
+  padding-bottom: 10px; padding-top: 20px;
+}
+
+.col-one {
+  padding-bottom: 2px;
+}
+
+.indent-right {
+  margin-left: 0px; 
+  margin-bottom: 10px;
+}
+
 .help-block {
   padding-left: 15px;
   margin-bottom: 0px;
   padding-bottom: 0px;
+  margin-top: 0px; 
+  padding-top:  0px;
 }
 
 /*.test{border: 1px solid black;}*/

@@ -1,3 +1,4 @@
+<div><timer style="display: none;" interval="1000" countdown="5"/></div> 
 <div class="row row-fields">
 	<div class="col-sm-8">
 		Fyll inn fornavn, etternavn og fødselsdato. Du kan legges til fleire deltakarar (maks 4).
@@ -32,7 +33,7 @@
 		  			<div class="col-sm-2 " ng-repeat="activity in participant.activityList">
 		  				<div class="checkbox">
 							<label>
-							    <input type="checkbox" ng-model="activity.isAttending" ng-true-value="true" ng-false-value="false" ng-change="test()" />{{activity.shortTitle}}
+							    <input type="checkbox" ng-model="activity.isAttending" ng-true-value="true" ng-false-value="false" ng-disabled="activity.isFull"/>{{activity.shortTitle}}
 							</label>
 						</div>
 			  		</div>

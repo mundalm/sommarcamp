@@ -28,6 +28,81 @@ function registrationController($scope, $location, registrationFactory, MessageF
     	$scope.pageSize = 10;*/
 	}
 
+	$scope.cloneActivities = function() {
+		var newAct = [];
+		for( var i=0; i < $scope.availableActivities.length; i++) {
+			var act = $scope.availableActivities[i];
+			newAct.push({title: act.title, shortTitle: act.shortTitle, eventCode: act.eventCode});
+		}
+		return newAct;
+	}
+
+		// Add participant
+	$scope.addParticipant = function() {
+		if( $scope.participants.length < 4 ) {
+			$scope.participants.push({birthDay: null, birthMonth: null, birthYear: null, activityList: $scope.cloneActivities()});
+		} 
+
+		checkAndToggleButtons();
+	};
+
+	$scope.test = function() {
+		$log.info($scope.participants);
+	};
+
+	function checkAndToggleButtons() {
+		if($scope.participants.length >= 4) {
+			$scope.disableAddParticipant = true;
+		} else {
+			$scope.disableAddParticipant = false;
+		}
+
+		if($scope.participants.length <= 1) {
+			$scope.disableRemoveParticipant = true;
+		} else {
+			$scope.disableRemoveParticipant = false;
+		}
+	}
+
+		// Add participant
+	$scope.removeLastParticipant = function() {
+		if( $scope.participants.length > 0 ) {
+			$scope.participants.pop();
+		} 
+
+		checkAndToggleButtons();
+	};
+
+	// reset edit form
+	$scope.resetParticipantForm = function() {
+		$scope.formData = {};
+		$scope.showSaveButton = true;
+		$scope.showUpdateButton = false;	
+	};
+
+	//Fires whenever activity check timer has elapsed
+	$scope.$on('timer-stopped', function (event, data){
+		registrationFactory.getAvailableActivitesStatus().then(function(data) {
+			if(!$rootScope.RHE(data, true)) {
+				$scope.liveActStatus = data.data;
+				updateActivityAvailability();
+			} else {
+				MessageFactory.prepareForBroadcast('Det oppstod en feil ved lasting av aktivitetstatus', 'label label-danger');
+			}
+		});
+		$scope.startTimer();
+    });
+    
+    //Starts timer countdown from scratch
+    $scope.startTimer = function (){
+		$scope.$broadcast('timer-start');
+        $scope.timerRunning = true;
+    };
+
+    function updateActivityAvailability() {
+    	dsaasdiaojijdajjadjiajdoijoiajoidajoidasjoidajsoijoiasdjoiadsjoiasdjoidasjo
+    }
+
 	/*$scope.changePage=function(add){
         if(!add) {
         	if($scope.currentPage>0)
@@ -74,48 +149,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 	    });
   	};*/
 
-	// Add participant
-	$scope.addParticipant = function() {
-		if( $scope.participants.length < 4 ) {
-			$scope.participants.push({birthDay: null, birthMonth: null, birthYear: null, activityList: $scope.availableActivities});
-		} 
 
-		checkAndToggleButtons();
-	};
-
-	$scope.test = function() {
-		$log.info($scope.participants);
-	};
-
-	function checkAndToggleButtons() {
-		if($scope.participants.length >= 4) {
-			$scope.disableAddParticipant = true;
-		} else {
-			$scope.disableAddParticipant = false;
-		}
-
-		if($scope.participants.length <= 1) {
-			$scope.disableRemoveParticipant = true;
-		} else {
-			$scope.disableRemoveParticipant = false;
-		}
-	}
-
-		// Add participant
-	$scope.removeLastParticipant = function() {
-		if( $scope.participants.length > 0 ) {
-			$scope.participants.pop();
-		} 
-
-		checkAndToggleButtons();
-	};
-
-	// reset edit form
-	$scope.resetParticipantForm = function() {
-		$scope.formData = {};
-		$scope.showSaveButton = true;
-		$scope.showUpdateButton = false;	
-	};
 
 	// Reset search field
 	/*$scope.resetSearch = function() {

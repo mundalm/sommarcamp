@@ -76,9 +76,9 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 
 	//============================================================ Get status for available activities
 	app.get('/api/availactstat', function (req, res){
-		Participant.aggregate([{$unwind: "$_activities"}, { $group: {_id: "$_activities", nbParticipants: { $sum: 1 }}}], function(err, activities) {
+		Participant.aggregate([{$unwind: "$_activities"}, { $group: {_id: "$_activities",  nbParticipants: { $sum: 1 }}}], function(err, activities) {
 			if(!QueryHasErrors(err, res)) {
-				console.log(activities);
+				//console.log(activities);
 				ReturnResults(res, activities, 201);
 			}
 		});
