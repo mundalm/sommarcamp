@@ -1,18 +1,11 @@
-<!--<div class="container">-->
-	<!--<div class="row">
-		<div class="col-md-1">Barn nr.</div>
-  		<div class="col-md-3">Fornavn</div>
-  		<div class="col-md-3">Etternavn</div>
-  		<div class="col-md-3">Fødselsdato</div>
-	</div>-->
-	<div class="row row-fields">
-		<div class="col-sm-8">
-			Fyll inn fornavn, etternavn og fødselsdato. Du kan legges til fleire deltakarar (maks 4).
-		</div>
+<div class="row row-fields">
+	<div class="col-sm-8">
+		Fyll inn fornavn, etternavn og fødselsdato. Du kan legges til fleire deltakarar (maks 4).
 	</div>
-  	<div class="row panel panel-default indent-right" ng-repeat="participant in participants">
-  		<div class="panel-body">
-  			<form>
+</div>
+	<div class="row panel panel-default indent-right" ng-repeat="participant in participants">
+		<div class="panel-body">
+			<form>
 	  			<div class="row">
 			  		<!--<div class="col-sm-1 col-one test">{{$index+1}}</div>-->
 			  		<div class="col-sm-3 col-one">
@@ -22,109 +15,39 @@
 			  			<input type="text" class="form-control" ng-model="participant.lastName" placeholder="Etternavn"/>
 			  		</div>
 			  		<div class="col-sm-4 col-one">
-			  			<select class="form-control selectField" style="width: 60px;" ng-model="participant.birthDay" ng-options="day for day in days">
+			  			<select class="form-control selectField" ng-model="participant.birthDay" ng-options="day for day in days">
 			  				<option value="" selected="selected">Dag</option>
 						</select>
 						<select class="form-control selectField" ng-model="participant.birthMonth" ng-options="month for month in months">
-							<option value="" selected>Måned</option>
+							<option value="" selected>Mnd</option>
 						</select>
-						<select class="form-control selectField" style="width: 80px;" ng-model="participant.birthYear" ng-options="year for year in years">
+						<select class="form-control selectField" ng-model="participant.birthYear" ng-options="year for year in years">
 							<option value="">År</option>
 						</select>
 			  		</div>
 		  		</div>
+		  		<br/>
 		  		<div class="row">
-		  			<div class="col-sm-1 col-one" ng-repeat="activity in availableActivities">
-		  				<input type="checkbox" class="form-control" ng-model="activity.title">
+		  			<div class="help-block indent-right-pad">Velge hvilke aktiviteter barnet skal delta på</div>
+		  			<div class="col-sm-2 " ng-repeat="activity in participant.activityList">
+		  				<div class="checkbox">
+							<label>
+							    <input type="checkbox" ng-model="activity.isAttending" ng-true-value="true" ng-false-value="false" ng-change="test()" />{{activity.shortTitle}}
+							</label>
+						</div>
 			  		</div>
 		  		</div>
-		  	</form>
-  		</div>
-  	</div>
-  	<div class="row">
-		<div class="col-md-12 col-one">
-			<button type="button" ng-disabled="disableAddParticipant" class="btn btn-primary" ng-click="addParticipant()">
-				Legg til barn
-			</button>
-			<button type="button" ng-disabled="disableRemoveParticipant" class="btn btn-primary" ng-click="removeLastParticipant()">
-				Fjern siste barn
-			</button>
+	  		</form>
 		</div>
 	</div>
-<!--</div>-->
+	<div class="row">
+	<div class="col-xs-12 col-one">
+		<button type="button" ng-disabled="disableAddParticipant" class="btn btn-primary" ng-click="addParticipant()">
+			Legg til barn
+		</button>
+		<button type="button" ng-disabled="disableRemoveParticipant" class="btn btn-primary" ng-click="removeLastParticipant()">
+			Fjern siste barn
+		</button>
+	</div>
+</div>
 
-<!--<table class="table-condensed" >
-	<th>Barn nr.</th>
-	<th>Fornavn</th>
-	<th>Etternavn</th>
-	<th colspan="3">Fødselsdato</th>
-	<tr ng-repeat="participant in participants">
-		<td>{{$index+1}}</td>
-		<td><input type="text" ng-model="participant.firstName" /></td>
-		<td><input type="text" ng-model="participant.lastName" /></td>
-		<td>
-			<select ng-model="participant.birthDay">
-				<option>01</option>
-				<option>02</option>
-				<option>03</option>
-				<option>04</option>
-				<option>05</option>
-				<option>06</option>
-				<option>07</option>
-				<option>08</option>
-				<option>09</option>
-				<option>10</option>
-				<option>11</option>
-				<option>12</option>
-				<option>13</option>
-				<option>14</option>
-				<option>15</option>
-				<option>16</option>
-				<option>17</option>
-				<option>18</option>
-				<option>19</option>
-				<option>20</option>
-				<option>21</option>
-				<option>22</option>
-				<option>23</option>
-				<option>24</option>
-				<option>25</option>
-				<option>26</option>
-				<option>27</option>
-				<option>28</option>
-				<option>29</option>
-				<option>30</option>
-				<option>31</option>
-			</select>
-		</td>
-		<td>
-			<select ng-model="participant.birthMonth">
-				<option>01</option>
-				<option>02</option>
-				<option>03</option>
-				<option>04</option>
-				<option>05</option>
-				<option>06</option>
-				<option>07</option>
-				<option>08</option>
-				<option>09</option>
-				<option>10</option>
-				<option>11</option>
-				<option>12</option>
-			</select>
-		</td>
-		<td>
-			<select ng-model="participant.birthYear">
-				<option>2000</option>
-				<option>2001</option>
-				<option>2002</option>
-				<option>2003</option>
-				<option>2004</option>
-				<option>2005</option>
-				<option>2006</option>
-				<option>2007</option>
-			</select>
-		</td>
-	</tr>
-</table>-->
-<br/>

@@ -10,11 +10,10 @@ function registrationController($scope, $location, registrationFactory, MessageF
 	init();
 	
 	function init() {
-		$scope.participants.push({birthDay: null, birthMonth: null, birthYear: null});
 		registrationFactory.getActivities().then(function(data) {
 			if(!$rootScope.RHE(data, true)) {
 				$scope.availableActivities = data.data;
-
+				$scope.addParticipant();
 			} else {
 				MessageFactory.prepareForBroadcast('Det oppstod en feil ved lasting av tilgjengelige aktiviteter', 'label label-danger');
 			}
@@ -78,10 +77,14 @@ function registrationController($scope, $location, registrationFactory, MessageF
 	// Add participant
 	$scope.addParticipant = function() {
 		if( $scope.participants.length < 4 ) {
-			$scope.participants.push({birthDay: null, birthMonth: null, birthYear: null});
+			$scope.participants.push({birthDay: null, birthMonth: null, birthYear: null, activityList: $scope.availableActivities});
 		} 
 
 		checkAndToggleButtons();
+	};
+
+	$scope.test = function() {
+		$log.info($scope.participants);
 	};
 
 	function checkAndToggleButtons() {

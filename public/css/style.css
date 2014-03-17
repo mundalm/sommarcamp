@@ -82,7 +82,16 @@ a {
 .row-buttons{padding-bottom: 10px; padding-top: 20px;}
 .col-one{padding-bottom: 2px;}
 .indent-right{margin-left: 0px; margin-bottom: 10px;}
+.help-block {
+  padding-left: 15px;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+}
 
 /*.test{border: 1px solid black;}*/
 
-.selectField{width: 60px; margin-right: 4px; float: left;}
+.selectField {
+  width: 60px; 
+  margin-right: 5px; 
+  float: left;
+}
