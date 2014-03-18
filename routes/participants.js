@@ -94,9 +94,9 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 	});
 
 	app.get('/api/initact', function (req, res){
-		var newActivity = new AvailableActivity ({	eventCode       : "U27",
-											    title				: "Sommarcamp uke 27",
-											    shortTitle			: "Uke 27",
+		var newActivity = new AvailableActivity ({	eventCode       : "U28",
+											    title				: "Sommarcamp uke 28",
+											    shortTitle			: "Uke 28",
 											    maxAttending		: 5,
 											});
 
@@ -108,14 +108,22 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 		});
 	});
 
+	app.get('/api/killacts', function (req, res){
+		AvailableActivity.remove(function (err) {
+			if(!QueryHasErrors(err, res)) {
+		  		console.log('Deleted collection AvailableActivity');
+		  	}
+		});
+	});
+
 	app.get('/api/initpart', function (req, res){
-		var newParticipant = new Participant ({	firstName       	: "Test3",
-											    lastName			: "Test last",
+		var newParticipant = new Participant ({	firstName       	: "Loke 5",
+											    lastName			: "Test loke",
 											    birthDay			: 10,
 											    birthMonth			: 11,
 											    birthYear			: 2003,
 											    //birthDate			: req.body.birthDay + '/' + req.body.birthMonth + '/' + req.body.birthYear,
-											    _activities 		: [{eventCode: "U27"}],
+											    _activities 		: [{eventCode: "U26"}],
 											    _parents 			: null
 											});
 

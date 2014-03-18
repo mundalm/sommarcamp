@@ -32,7 +32,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 		var newAct = [];
 		for( var i=0; i < $scope.availableActivities.length; i++) {
 			var act = $scope.availableActivities[i];
-			newAct.push({title: act.title, shortTitle: act.shortTitle, eventCode: act.eventCode});
+			newAct.push({title: act.title, shortTitle: act.shortTitle, eventCode: act.eventCode, maxAttending: act.maxAttending});
 		}
 		return newAct;
 	}
@@ -84,8 +84,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 	$scope.$on('timer-stopped', function (event, data){
 		registrationFactory.getAvailableActivitesStatus().then(function(data) {
 			if(!$rootScope.RHE(data, true)) {
-				$scope.liveActStatus = data.data;
-				updateActivityAvailability();
+				updateLiveActivityParticipantCount(data.data);
 			} else {
 				MessageFactory.prepareForBroadcast('Det oppstod en feil ved lasting av aktivitetstatus', 'label label-danger');
 			}
@@ -99,8 +98,30 @@ function registrationController($scope, $location, registrationFactory, MessageF
         $scope.timerRunning = true;
     };
 
-    function updateActivityAvailability() {
-    	dsaasdiaojijdajjadjiajdoijoiajoidajoidasjoidajsoijoiasdjoiadsjoiasdjoidasjo
+    //Used to update LIVE map of particiapnt count for each activity
+    function updateLiveActivityParticipantCount(actStatFromServer) {
+    	$scope.liveActStatus = {};
+    	for(var i=0; i<actStatFromServer.length; i++) {
+    		$scope.liveActStatus[actStatFromServer[i]._id.eventCode] = actStatFromServer[i].nbParticipants;
+    	}
+    	$log.info($scope.liveActStatus);
+    	updateParticipanControls();
+    }
+
+    //This method is fired from updateLiveActivityParticipantCount() each time there is a successfull LIVE data update on activities
+    function updateParticipanControls() {
+    	for(var i=0; i<$scope.participants.length; i++) {
+    		var participantActivities = $scope.participants[i].activityList;
+
+    		for(var j=0; j<participantActivities.length; j++) {
+    			var currentPartAct = participantActivities[j];
+    			if($scope.liveActStatus[currentPartAct.eventCode] >= currentPartAct.maxAttending ) {
+    				currentPartAct.isFull = true;
+    			} else {
+    				currentPartAct.isFull = false;
+    			}
+    		}
+    	}
     }
 
 	/*$scope.changePage=function(add){
