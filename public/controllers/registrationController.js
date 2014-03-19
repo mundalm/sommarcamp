@@ -5,21 +5,23 @@ function registrationController($scope, $location, registrationFactory, MessageF
 	$scope.days = [01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31];
 	$scope.months = [01,02,03,04,05,06,07,08,09,10,11,12];
 	$scope.years = [1998,1999,2000,2001,2002,2003,2004,2005,2007];
+	$scope.addFirstParticipant = false;
 	
 	// when loading controller, initialize Participant list from ParticipantFactory
 	init();
 	
 	function init() {
+		$scope.addFirstParticipant = true;
 		registrationFactory.getActivities().then(function(data) {
 			if(!$rootScope.RHE(data, true)) {
 				$scope.availableActivities = data.data;
-				$scope.addParticipant();
+				getActivyParticipantCountFromServer();
 			} else {
-				MessageFactory.prepareForBroadcast('Det oppstod en feil ved lasting av tilgjengelige aktiviteter', 'label label-danger');
+				MessageFactory.prepareForBroadcast('Det oppstod en feil ved lasting av tilgjengelige aktiviteter', 'alert alert-danger');
 			}
 		});
 
-		$scope.disableAddParticipant = false;
+		$scope.disableAddParticipant = true;
 		$scope.disableRemoveParticipant = true;
 
 		$rootScope.pageHeader = 'Deltagerbehandling';
@@ -28,6 +30,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
     	$scope.pageSize = 10;*/
 	}
 
+	//Clones activity list from scope. Use when adding new participant
 	$scope.cloneActivities = function() {
 		var newAct = [];
 		for( var i=0; i < $scope.availableActivities.length; i++) {
@@ -37,10 +40,11 @@ function registrationController($scope, $location, registrationFactory, MessageF
 		return newAct;
 	}
 
-		// Add participant
+	// Add participant to participant collection (max 4)
 	$scope.addParticipant = function() {
 		if( $scope.participants.length < 4 ) {
 			$scope.participants.push({birthDay: null, birthMonth: null, birthYear: null, activityList: $scope.cloneActivities()});
+			updateParticipanControls();
 		} 
 
 		checkAndToggleButtons();
@@ -50,6 +54,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 		$log.info($scope.participants);
 	};
 
+	//Helper function for toggling participant buttons
 	function checkAndToggleButtons() {
 		if($scope.participants.length >= 4) {
 			$scope.disableAddParticipant = true;
@@ -64,7 +69,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 		}
 	}
 
-		// Add participant
+	// Remove (pop) laset participant from collection
 	$scope.removeLastParticipant = function() {
 		if( $scope.participants.length > 0 ) {
 			$scope.participants.pop();
@@ -82,15 +87,20 @@ function registrationController($scope, $location, registrationFactory, MessageF
 
 	//Fires whenever activity check timer has elapsed
 	$scope.$on('timer-stopped', function (event, data){
-		registrationFactory.getAvailableActivitesStatus().then(function(data) {
+		getActivyParticipantCountFromServer();
+		$scope.startTimer();
+    });
+
+	//Fetches participant count for all activities from server. 
+    function getActivyParticipantCountFromServer() {
+    	registrationFactory.getAvailableActivitesStatus().then(function(data) {
 			if(!$rootScope.RHE(data, true)) {
 				updateLiveActivityParticipantCount(data.data);
 			} else {
-				MessageFactory.prepareForBroadcast('Det oppstod en feil ved lasting av aktivitetstatus', 'label label-danger');
+				MessageFactory.prepareForBroadcast('Det oppstod en feil ved lasting av aktivitetstatus', 'alert alert-danger');
 			}
 		});
-		$scope.startTimer();
-    });
+    }
     
     //Starts timer countdown from scratch
     $scope.startTimer = function (){
@@ -104,12 +114,20 @@ function registrationController($scope, $location, registrationFactory, MessageF
     	for(var i=0; i<actStatFromServer.length; i++) {
     		$scope.liveActStatus[actStatFromServer[i]._id.eventCode] = actStatFromServer[i].nbParticipants;
     	}
-    	$log.info($scope.liveActStatus);
+
     	updateParticipanControls();
     }
 
     //This method is fired from updateLiveActivityParticipantCount() each time there is a successfull LIVE data update on activities
     function updateParticipanControls() {
+    	/*This is done here to ensure that activity count is returned before adding a participant to prevent false availability status on an event.
+    	This will only execute once during init() of page.*/
+    	if($scope.addFirstParticipant) {
+    		$scope.addFirstParticipant = false;
+    		$scope.disableAddParticipant = false;
+    		$scope.addParticipant();
+    	}
+
     	for(var i=0; i<$scope.participants.length; i++) {
     		var participantActivities = $scope.participants[i].activityList;
 
@@ -205,7 +223,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 
 								MessageFactory.prepareForBroadcast('Prosjekt slettet', 'label label-success');
 							} else {
-								MessageFactory.prepareForBroadcast('Det oppstod en feil ved sletting av prosjekt', 'label label-danger');
+								MessageFactory.prepareForBroadcast('Det oppstod en feil ved sletting av prosjekt', 'alert alert-danger');
 							}
 						});
 					}

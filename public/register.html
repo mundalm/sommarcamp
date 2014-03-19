@@ -25,6 +25,10 @@
           <div class="page-header">
               <h2>Klenkarberget Sommarcamp 2014 <small>Påmelding</small></h2>
           </div>
+          <div ng-controller="MessageController" ng-class="messageStyle">
+              {{ message }} 
+              <div style="display: none; visibility: none;"><timer interval="1000" countdown="5"/></div> 
+          </div>     
           <div class="row">
               <div class="col-sm-12 test">
                 <div data-ng-view=""></div>

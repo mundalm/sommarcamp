@@ -29,11 +29,16 @@
 		  		</div>
 		  		<br/>
 		  		<div class="row">
-		  			<div class="help-block indent-right-pad">Velge hvilke aktiviteter barnet skal delta på</div>
+		  			<div class="help-block indent-right-pad">Velg hvilke aktiviteter barnet skal delta på</div>
 		  			<div class="col-sm-2 " ng-repeat="activity in participant.activityList">
-		  				<div class="checkbox">
+		  				<div class="checkbox" ng-if="!activity.isFull"> <!-- Show event selector -->
 							<label>
-							    <input type="checkbox" ng-model="activity.isAttending" ng-true-value="true" ng-false-value="false" ng-disabled="activity.isFull"/>{{activity.shortTitle}}
+							    <input type="checkbox" ng-model="activity.isAttending" ng-true-value="true" ng-false-value="false"/>{{activity.shortTitle}}
+							</label>
+						</div>
+						<div class="checkbox" ng-if="activity.isFull"> <!-- Show waiting list selector -->
+							<label>
+							    <input type="checkbox" ng-model="activity.isWaiting" ng-true-value="true" ng-false-value="false"/>Venteliste {{activity.shortTitle}}
 							</label>
 						</div>
 			  		</div>
@@ -42,15 +47,13 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-xs-8 col-one">
+		<div class="col-xs-8">
 			<button type="button" ng-disabled="disableAddParticipant" class="btn btn-primary" ng-click="addParticipant()">
 				Legg til barn
 			</button>
 			<button type="button" ng-disabled="disableRemoveParticipant" class="btn btn-primary" ng-click="removeLastParticipant()">
 				Fjern siste barn
 			</button>
-		</div>
-		<div class="col-xs-4 col-one">
 			<button type="button" ng-disabled="" class="btn btn-success" ng-click="">
 				Reserver plass(er)
 			</button>

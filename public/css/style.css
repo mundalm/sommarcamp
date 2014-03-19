@@ -53,11 +53,7 @@ code {
 }
 
 .noDisplay {
-  height: 200px;
   visibility: hidden;
-  text-align: right; 
-  vertical-align: bottom;
-  padding-bottom: 10px;
 }
 
 .messagearea {
