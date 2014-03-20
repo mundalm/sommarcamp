@@ -26,7 +26,7 @@ sommarcampApp.controller('headerController', headerController);
 sommarcampApp.controller('MessageController', MessageController);
 
 //Inject needed "modules" to controllers
-MessageController.$inject = ['$scope', 'MessageFactory', '$log'];
+MessageController.$inject = ['$scope', 'MessageFactory', '$log', '$timeout'];
 headerController.$inject = ['$scope', '$location', '$modal', '$log', '$rootScope'];
 
 registrationController.$inject = ['$scope', '$location', 'registrationFactory', 'MessageFactory', '$log', '$rootScope', '$modal'];

@@ -1,9 +1,11 @@
 <div><timer style="display: none;" interval="1000" countdown="5"/></div> 
-<div class="row row-fields">
-	<div class="col-sm-8">
-		Fyll inn fornavn, etternavn og fødselsdato. Du kan legges til fleire deltakarar (maks 4).
+<img ng-if="!activitiesLoaded" src="images/ajax-loader.gif" />
+<div ng-if="showStepOne">
+	<div class="row row-fields" ng-if="activitiesLoaded">
+		<div class="col-sm-8">
+			Fyll inn fornavn, etternavn og fødselsdato. Du kan legges til fleire deltakarar (maks 4).
+		</div>
 	</div>
-</div>
 	<div class="row panel panel-default indent-right" ng-repeat="participant in participants">
 		<div class="panel-body">
 			<form name="participantForm{{$index}}" novalidate="">
@@ -46,7 +48,7 @@
 	  		</form>
 		</div>
 	</div>
-	<div class="row">
+	<div class="row" ng-if="activitiesLoaded">
 		<div class="col-xs-8">
 			<button type="button" ng-disabled="disableAddParticipant" class="btn btn-primary" ng-click="addParticipant()">
 				Legg til deltakar
@@ -55,9 +57,12 @@
 				Fjern siste deltakar
 			</button>
 			<button type="button" ng-disabled="" class="btn btn-success" ng-click="goToStep2()">
-				Gå videre
+				Gå vidare
 			</button>
 		</div>
 	</div>
+</div>
+<div ng-if="showStepTwo">
+StepTwo
 </div>
 

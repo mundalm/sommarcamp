@@ -6,6 +6,9 @@ function registrationController($scope, $location, registrationFactory, MessageF
 	$scope.months = [01,02,03,04,05,06,07,08,09,10,11,12];
 	$scope.years = [1998,1999,2000,2001,2002,2003,2004,2005,2007];
 	$scope.addFirstParticipant = false;
+	$scope.activitiesLoaded = false;
+	$scope.showStepOne = true;
+	$scope.showStepTwo = false;
 	
 	// when loading controller, initialize Participant list from ParticipantFactory
 	init();
@@ -15,6 +18,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 		registrationFactory.getActivities().then(function(data) {
 			if(!$rootScope.RHE(data, true)) {
 				$scope.availableActivities = data.data;
+				$scope.activitiesLoaded = true;
 				getActivyParticipantCountFromServer();
 			} else {
 				MessageFactory.prepareForBroadcast('Det oppstod en feil ved lasting av tilgjengelige aktiviteter. Prøv og oppdater siden for å gjøre et nytt forøk. Kontakt administrator på e-post marius@mundal.org dersom problemet vedvarer', 'alert alert-danger', 60);
@@ -146,34 +150,33 @@ function registrationController($scope, $location, registrationFactory, MessageF
     $scope.goToStep2 = function (){
     	if(validateParticipants()) {
 			$scope.addParticipantsToServer();
+			$scope.showStepOne = false;
+			$scope.showStepTwo = true;
 		} else {
 			MessageFactory.prepareForBroadcast('Alle deltagere må ha fornavn, etternavn og fødselsdato registrert', 'alert alert-warning', 15);
 		}
     };
 
     function validateParticipants() {
-    	return false;
+    	return true;
     	//Implement checks
     };
 
     // Create new participants on server using registrationFactory
 	$scope.addParticipantsToServer = function() {
-		if($scope.particpiantForm0) {
-			if( $scope.particpiantForm0.$valid) {
-				registrationFactory.addParticipant($scope.formData).then(function(data) {
-					if(!$rootScope.RHE(data, true)) {
-						$scope.projects.push(data. data);
-						$scope.formData = {};
+		$log.info($scope.participants);
 
-						$modalInstance.close('opprettet');
-					} else {
-						MessageFactory.prepareForBroadcast('Det oppstod en feil under oppretting av nytt prosjekt', 'label label-danger');
-					}
-				});	
+		/*registrationFactory.addParticipant($scope.formData).then(function(data) {
+			if(!$rootScope.RHE(data, true)) {
+				$scope.projects.push(data. data);
+				$scope.formData = {};
+
+				$modalInstance.close('opprettet');
 			} else {
-				MessageFactory.prepareForBroadcast('Kontroller felter med rød -', 'label label-warning');	
+				MessageFactory.prepareForBroadcast('Det oppstod en feil under oppretting av nytt prosjekt', 'label label-danger');
 			}
-		}
+		});*/	
+			
 	};
 
     /*$scope.go = function ( path ) {
