@@ -14,6 +14,9 @@ function registrationController($scope, $location, registrationFactory, MessageF
 	init();
 	
 	function init() {
+		$scope.$broadcast('timer-stopped');
+        $scope.timerRunning = false;
+
 		$scope.addFirstParticipant = true;
 		registrationFactory.getActivities().then(function(data) {
 			if(!$rootScope.RHE(data, true)) {
@@ -169,7 +172,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
     			$log.info(!isNullOrUndefined(act.isAttending) + " - " + act.isAttending + " - " + !isNullOrUndefined(act.isWaiting) + " - " + act.isWaiting);
     			var eval = (!isNullOrUndefined(act.isAttending) && act.isAttending) || (!isNullOrUndefined(act.isWaiting) && act.isWaiting);
     			$log.info(eval)
-    			if(eval) {
+    			if(eval === 'true') {
     				$log.info("adding");
     				numberAttendingEvents++;
     			} 
