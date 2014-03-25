@@ -10,6 +10,7 @@ var participantSchema = mongoose.Schema({
     birthMonth			: Number,
     birthYear			: Number,
     birthDate			: String,
+    partArrPos          : Number, 
     _activities 		: [activitySchema],
     _parents 			: [parentSchema]
 });

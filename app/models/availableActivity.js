@@ -8,7 +8,8 @@ var availableActivitySchema = mongoose.Schema({
     maxAttending	: Number,  
     attending       : Number,
     minBirthYear    : Number,
-    fewLeft         : { type: Boolean, default: false } 
+    fewLeft         : { type: Boolean, default: false },
+    blockEventCode  : String,  
 });
 
 // create the model for users and expose it to our app

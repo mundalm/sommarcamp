@@ -9,6 +9,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 	$scope.activitiesLoaded = false;
 	$scope.showStepOne = true;
 	$scope.showStepTwo = false;
+	var blckedEvents = [];
 	
 	// when loading controller, initialize Participant list from ParticipantFactory
 	init();
@@ -40,7 +41,12 @@ function registrationController($scope, $location, registrationFactory, MessageF
 		var newAct = [];
 		for( var i=0; i < $scope.availableActivities.length; i++) {
 			var act = $scope.availableActivities[i];
-			newAct.push({title: act.title, shortTitle: act.shortTitle, eventCode: act.eventCode, maxAttending: act.maxAttending, minBirthYear: act.minBirthYear});
+			newAct.push({title: act.title, 
+						 shortTitle: act.shortTitle, 
+						 eventCode: act.eventCode, 
+						 maxAttending: act.maxAttending, 
+						 minBirthYear: act.minBirthYear,
+						 blockEventCode: act.blockEventCode});
 		}
 		return newAct;
 	}
@@ -118,6 +124,16 @@ function registrationController($scope, $location, registrationFactory, MessageF
 		$scope.startActivityCheckTimer();
     });
 
+    $scope.isBlocked = function (eventCode) {
+    	if(blockedEvents[eventCode]) {
+    		CONTINIUE HERE!!!!
+    	}
+    }
+
+    $scope.evaluateEventBlock = function (actualState,eventToBlock) {
+    	$log.info(actualState + " - " + eventToBlock);
+    }
+
 	//Fetches participant count for all activities from server. 
     function getActivyParticipantCountFromServer() {
     	registrationFactory.getAvailableActivitesStatus().then(function(data) {
@@ -150,7 +166,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 			} else {
 				limitObject.obj.fewLeft = false;
 			}
-			$log.info(limitObject.obj.fewLeft + " - " + limitObject.limit);
+			//$log.info(limitObject.obj.fewLeft + " - " + limitObject.limit);
     	}
     	//$log.info($scope.liveActStatus);
     	updateParticipanControls();
@@ -279,6 +295,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 			    birthDay			: participant.birthDay,
 			    birthMonth			: participant.birthMonth,
 			    birthYear			: participant.birthYear,
+			    partArrPos			: i,
 			    _activities			: []
 			};
 			for(var j = 0; j < participant.activityList.length; j++) {
@@ -294,6 +311,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 
 			registrationFactory.addParticipant(newParticipantForServer).then(function(data) {
 				if(!$rootScope.RHE(data, true)) {
+					$scope.participants[data.data.partArrPos]._id = data.data._id;
 					MessageFactory.prepareForBroadcast('Steg 1 er utført uten feil. Du må fylle inn feltene under og bekrefte påmeldingen før plassen er endelig reservert!', 'alert alert-success');
 				} else {
 					MessageFactory.prepareForBroadcast('Det oppstod en feil ved lasting av tilgjengelige aktiviteter. Prøv og oppdater siden for å gjøre et nytt forøk. Kontakt administrator på e-post marius@mundal.org dersom problemet vedvarer', 'alert alert-danger', 60);

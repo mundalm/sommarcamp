@@ -36,7 +36,6 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 
 	//============================================================ Insert new participant
 	app.post('/api/participants', function (req, res){
-		console.log(req.body._activities);
 		var newParticipant = new Participant ({	firstName       	: req.body.firstName,
 											    lastName			: req.body.lastName,
 											    birthDay			: req.body.birthDay,
@@ -44,7 +43,8 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 											    birthYear			: req.body.birthYear,
 											    birthDate			: req.body.birthDay + '/' + req.body.birthMonth + '/' + req.body.birthYear,
 											   	_activities 		: req.body._activities,
-											    _parents 			: null
+											    _parents 			: null,
+											    partArrPos			: req.body.partArrPos, 
 											});
 
 		newParticipant.save(function (err) {
@@ -102,11 +102,12 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 	});
 
 	app.get('/api/initact', function (req, res){
-		var newActivity = new AvailableActivity ({	eventCode       : "U28",
-											    title				: "Sommarcamp veke 28",
-											    shortTitle			: "Veke 28",
+		var newActivity = new AvailableActivity ({	eventCode       : "U26CA",
+											    title				: "Camp Adventures veke 26",
+											    shortTitle			: "CA Veke 26",
 											    maxAttending		: 1,
 											    minBirthYear		: 2014,
+											    blockEventCode		: "U26"
 											});
 
 		newActivity.save(function (err) {
