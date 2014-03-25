@@ -48,6 +48,7 @@ require('./routes')(app, null /*pool*/);
 
 
 // Launch server ===============================================================
-httpServer.listen(4242);
+//httpServer.listen(process.env.PORT); //Prod
+httpServer.listen(4242); //Dev
 
 

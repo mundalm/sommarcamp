@@ -14,8 +14,9 @@ function registrationController($scope, $location, registrationFactory, MessageF
 	init();
 	
 	function init() {
+		//Prevent ActivityTimer From running before participants has been loaded
 		$scope.$broadcast('timer-stopped');
-        $scope.timerRunning = false;
+        $scope.activityTimerRunning = false;
 
 		$scope.addFirstParticipant = true;
 		registrationFactory.getActivities().then(function(data) {
@@ -39,7 +40,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 		var newAct = [];
 		for( var i=0; i < $scope.availableActivities.length; i++) {
 			var act = $scope.availableActivities[i];
-			newAct.push({title: act.title, shortTitle: act.shortTitle, eventCode: act.eventCode, maxAttending: act.maxAttending});
+			newAct.push({title: act.title, shortTitle: act.shortTitle, eventCode: act.eventCode, maxAttending: act.maxAttending, minBirthYear: act.minBirthYear});
 		}
 		return newAct;
 	}
@@ -49,6 +50,22 @@ function registrationController($scope, $location, registrationFactory, MessageF
 		if( $scope.participants.length < 4 ) {
 			$scope.participants.push({birthDay: null, birthMonth: null, birthYear: null, activityList: $scope.cloneActivities()});
 			updateParticipanControls();
+		} 
+
+		checkAndToggleButtons();
+	};
+
+	// reset participant form
+	$scope.resetParticipantForm = function() {
+		$scope.formData = {};
+		$scope.showSaveButton = true;
+		$scope.showUpdateButton = false;	
+	};
+
+	// Remove (pop) laset participant from collection
+	$scope.removeLastParticipant = function() {
+		if( $scope.participants.length > 0 ) {
+			$scope.participants.pop();
 		} 
 
 		checkAndToggleButtons();
@@ -73,26 +90,23 @@ function registrationController($scope, $location, registrationFactory, MessageF
 		}
 	}
 
-	// Remove (pop) laset participant from collection
-	$scope.removeLastParticipant = function() {
-		if( $scope.participants.length > 0 ) {
-			$scope.participants.pop();
-		} 
-
-		checkAndToggleButtons();
-	};
-
-	// reset edit form
-	$scope.resetParticipantForm = function() {
-		$scope.formData = {};
-		$scope.showSaveButton = true;
-		$scope.showUpdateButton = false;	
-	};
+	//Method used to deactivate events that has a required birthYear equal to or higher than the participant birth year
+	$scope.isParticipantOldEnough = function (partBirthYear, actMinYear) {
+		if(isNullOrUndefined(partBirthYear) || isNullOrUndefined(actMinYear) ) {
+			return true;
+		} else {
+			if(partBirthYear <= actMinYear) {
+				return true;	
+			} else {
+				return false;	
+			}
+		}		
+	}
 
 	//Starts activity check timer countdown from scratch
-    $scope.startTimer = function (){
+    $scope.startActivityCheckTimer = function (){
 		$scope.$broadcast('timer-start');
-        $scope.timerRunning = true;
+        $scope.activityTimerRunning = true;
     };
 
 	//Fires whenever activity check timer has elapsed
@@ -101,7 +115,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 			getActivyParticipantCountFromServer();
 		} 
 
-		$scope.startTimer();
+		$scope.startActivityCheckTimer();
     });
 
 	//Fetches participant count for all activities from server. 
@@ -109,20 +123,36 @@ function registrationController($scope, $location, registrationFactory, MessageF
     	registrationFactory.getAvailableActivitesStatus().then(function(data) {
 			if(!$rootScope.RHE(data, true)) {
 				updateLiveActivityParticipantCount(data.data);
+				//$log.info(data.data);
 			} else {
 				MessageFactory.prepareForBroadcast('Det oppstod en feil ved lasting av aktivitetstatus', 'alert alert-danger');
 			}
 		});
     }
     
+    function getFewLeftLimitForEvent(eventCode) {
+    	for(var i = 0; i < $scope.availableActivities.length; i++ ) {
+    		if($scope.availableActivities[i].eventCode === eventCode) {
+    			return {limit: ($scope.availableActivities[i].maxAttending-(($scope.availableActivities[i].maxAttending*30)/100)), obj: $scope.availableActivities[i]};
+    		}
+    	}
+    }
 
     //Used to update LIVE map of particiapnt count for each activity
     function updateLiveActivityParticipantCount(actStatFromServer) {
     	$scope.liveActStatus = {};
     	for(var i=0; i<actStatFromServer.length; i++) {
-    		$scope.liveActStatus[actStatFromServer[i]._id.eventCode] = actStatFromServer[i].nbParticipants;
-    	}
+    		$scope.liveActStatus[actStatFromServer[i]._id] = actStatFromServer[i].nbParticipants;
 
+    		var limitObject = getFewLeftLimitForEvent(actStatFromServer[i]._id);
+    		if(($scope.liveActStatus[actStatFromServer[i]._id] > limitObject.limit) && !($scope.liveActStatus[actStatFromServer[i]._id] >= limitObject.obj.maxAttending)) {
+				limitObject.obj.fewLeft = true;
+			} else {
+				limitObject.obj.fewLeft = false;
+			}
+			$log.info(limitObject.obj.fewLeft + " - " + limitObject.limit);
+    	}
+    	//$log.info($scope.liveActStatus);
     	updateParticipanControls();
     }
 
@@ -141,7 +171,13 @@ function registrationController($scope, $location, registrationFactory, MessageF
 
     		for(var j=0; j<participantActivities.length; j++) {
     			var currentPartAct = participantActivities[j];
+    			//$log.info($scope.liveActStatus[currentPartAct.eventCode] + " - " + currentPartAct.maxAttending);
     			if($scope.liveActStatus[currentPartAct.eventCode] >= currentPartAct.maxAttending ) {
+    				if(currentPartAct.isAttending && $scope.showStepOne) {
+    					currentPartAct.isWaiting = true;
+    					currentPartAct.isAttending = false;
+    					MessageFactory.prepareForBroadcast('Aktiviteten ' + currentPartAct.title + ' er no full! Venteliste er automatisk valgt for dei deltakarane som var valgt inn på aktiviteten.', 'alert alert-warning');
+    				}
     				currentPartAct.isFull = true;
     			} else {
     				currentPartAct.isFull = false;
@@ -159,58 +195,72 @@ function registrationController($scope, $location, registrationFactory, MessageF
 		}
     };
 
+    //Main participant validation method
     function validateParticipants() {
     	var returnResult = true;
 
     	for(var i = 0; i<$scope.participants.length; i++) {
     		var participant = $scope.participants[i];
-    		var numberAttendingEvents = 0;
+    		
 
-    		for(var j = 0; j < participant.activityList.length; j++) {
-    			var act = participant.activityList[j];
-    			$log.info(act);
-    			$log.info(!isNullOrUndefined(act.isAttending) + " - " + act.isAttending + " - " + !isNullOrUndefined(act.isWaiting) + " - " + act.isWaiting);
-    			var eval = (!isNullOrUndefined(act.isAttending) && act.isAttending) || (!isNullOrUndefined(act.isWaiting) && act.isWaiting);
-    			$log.info(eval)
-    			if(eval === 'true') {
-    				$log.info("adding");
-    				numberAttendingEvents++;
-    			} 
-    		}
-
-    		$log.info(numberAttendingEvents);
-
-    		if(numberAttendingEvents <= 0) {
+    		if(!validateMinimumOneEvent(participant)) {
     			MessageFactory.prepareForBroadcast('Alle deltagere må delta på minst 1 aktivitet', 'alert alert-warning', 15);
     			returnResult = false;
     			break;
     		}
 
-    		var participantProperties = {firstName: participant.firstName, 
+    		if(!validateParticipantFields(participant)) {
+    			MessageFactory.prepareForBroadcast('Alle deltagere må ha fornavn, etternavn og fødselsdato registrert', 'alert alert-warning', 'alert alert-warning', 15);
+    			returnResult = false;
+    			break;
+    		}
+    	}
+
+    	return returnResult;
+    };
+
+    //Method validates that a participant has at least one event selected
+    function validateMinimumOneEvent(participant) {
+    	var numberAttendingEvents = 0;
+
+		for(var j = 0; j < participant.activityList.length; j++) {
+			var act = participant.activityList[j];
+			var eval = (!isNullOrUndefined(act.isAttending) && act.isAttending) || (!isNullOrUndefined(act.isWaiting) && act.isWaiting);
+
+			if(eval) {
+				numberAttendingEvents++;
+			} 
+		}
+
+		if(numberAttendingEvents <= 0) {
+			return false;
+		} else {
+			return true;
+		}
+    }
+
+    //Method ensure that all relevant participant fields are filled
+    function validateParticipantFields(participant) {
+    	var returnResult = true;
+    	var participantProperties = {firstName: participant.firstName, 
     			lastName: participant.lastName, 
     			birthDay: participant.birthDay,
     			birthMonth: participant.birthMonth,
     			birthYear: participant.birthYear,
     		}
     		
-    		for(var key in participantProperties) {
-    			if(isNullOrUndefined(participantProperties[key])) {
-    				var returnResult = false;
-    				break;
-    			}
-    			$log.info(returnResult);
-    		}
+		for(var key in participantProperties) {
+			if(isNullOrUndefined(participantProperties[key])) {
+				var returnResult = false;
+				break;
+			}
+			$log.info(returnResult);
+		}
 
-    		if(!returnResult) {
-    			MessageFactory.prepareForBroadcast('Alle deltagere må ha fornavn, etternavn og fødselsdato registrert', 'alert alert-warning', 15);
-    			break;
-    		}
-    		$log.info(returnResult);
-    	}
+		return returnResult; 
+    }
 
-    	return returnResult;
-    };
-
+    //Helper to detect null or undefined properties
     function isNullOrUndefined(prop) {
     	if(prop == undefined || prop == null) {
     		return true;
@@ -221,7 +271,38 @@ function registrationController($scope, $location, registrationFactory, MessageF
 
     // Create new participants on server using registrationFactory
 	$scope.addParticipantsToServer = function() {
-		$log.info($scope.participants);
+		for(var i = 0; i<$scope.participants.length; i++) {
+			var participant = $scope.participants[i];
+			var newParticipantForServer = {
+				firstName       	: participant.firstName,
+			    lastName			: participant.lastName,
+			    birthDay			: participant.birthDay,
+			    birthMonth			: participant.birthMonth,
+			    birthYear			: participant.birthYear,
+			    _activities			: []
+			};
+			for(var j = 0; j < participant.activityList.length; j++) {
+				var partActivity = participant.activityList[j];
+				if(partActivity.isAttending || partActivity.isWaiting) {
+					newParticipantForServer._activities.push({
+						eventCode       : partActivity.eventCode, 
+					    attending 		: partActivity.isAttending,
+					    waiting 		: partActivity.isWaiting
+					});
+				}
+			}
+
+			registrationFactory.addParticipant(newParticipantForServer).then(function(data) {
+				if(!$rootScope.RHE(data, true)) {
+					MessageFactory.prepareForBroadcast('Steg 1 er utført uten feil. Du må fylle inn feltene under og bekrefte påmeldingen før plassen er endelig reservert!', 'alert alert-success');
+				} else {
+					MessageFactory.prepareForBroadcast('Det oppstod en feil ved lasting av tilgjengelige aktiviteter. Prøv og oppdater siden for å gjøre et nytt forøk. Kontakt administrator på e-post marius@mundal.org dersom problemet vedvarer', 'alert alert-danger', 60);
+				}
+			});	
+
+			$log.info(newParticipantForServer);
+		}
+
 
 		/*registrationFactory.addParticipant($scope.formData).then(function(data) {
 			if(!$rootScope.RHE(data, true)) {

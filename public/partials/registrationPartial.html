@@ -33,21 +33,30 @@
 		  		<div class="row">
 		  			<div class="help-block indent-right-pad">Velg aktivitetar for deltakar</div>
 		  			<div class="col-sm-2 " ng-repeat="activity in participant.activityList">
-		  				<div class="checkbox" ng-if="!activity.isFull"> <!-- Show event selector -->
-							<label>
-							    <input type="checkbox" ng-model="activity.isAttending" ng-true-value="true" ng-false-value="false"/>{{activity.shortTitle}}
-							</label>
-						</div>
-						<div class="checkbox" ng-if="activity.isFull"> <!-- Show waiting list selector -->
-							<label>
-							    <input type="checkbox" ng-model="activity.isWaiting" ng-true-value="true" ng-false-value="false"/>Venteliste {{activity.shortTitle}}
-							</label>
+		  				<div ng-if="isParticipantOldEnough(participant.birthYear, activity.minBirthYear)">
+			  				<div class="checkbox" ng-if="!activity.isFull"> <!-- Show event selector -->
+								<label>
+								    <input type="checkbox" ng-model="activity.isAttending"/>{{activity.shortTitle}}
+								</label>
+							</div>
+							<div class="checkbox" ng-if="activity.isFull"> <!-- Show waiting list selector -->
+								<label>
+								    <input type="checkbox" ng-model="activity.isWaiting"/>Venteliste {{activity.shortTitle}}
+								</label>
+							</div>
 						</div>
 			  		</div>
 		  		</div>
 	  		</form>
 		</div>
 	</div>
+	<div class="row" ng-if="activitiesLoaded">
+		<div ng-repeat="activityStat in availableActivities">
+			<div class="col-xs-2" ng-if="activityStat.fewLeft">
+				<span class="label label-warning">{{activityStat.shortTitle}} - få ledige</span>
+			</div>
+		</div>
+	</div><br/>
 	<div class="row" ng-if="activitiesLoaded">
 		<div class="col-xs-8">
 			<button type="button" ng-disabled="disableAddParticipant" class="btn btn-primary" ng-click="addParticipant()">

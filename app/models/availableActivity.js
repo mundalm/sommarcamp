@@ -6,7 +6,9 @@ var availableActivitySchema = mongoose.Schema({
     title       	: String,
     shortTitle		: String,
     maxAttending	: Number,  
-    attending       : Number 
+    attending       : Number,
+    minBirthYear    : Number,
+    fewLeft         : { type: Boolean, default: false } 
 });
 
 // create the model for users and expose it to our app

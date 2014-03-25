@@ -64,11 +64,11 @@ function registrationFactory($http, $log) {
 	     	return promise;
 	    },
 
-	    addParticipant:function(formData) {
+	    addParticipant:function(participant) {
 	    	var promise = $http({
 	        	method: 'POST',
 	            url: '/api/participants',
-	            data: formData,
+	            data: participant,
 	            timeout: 10000
 	        }).then(function(response) {
 	        	$log.info('Retrieved data after instert: ',response);

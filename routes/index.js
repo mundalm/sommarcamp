@@ -27,6 +27,6 @@ module.exports = function(app, pool) {
 	}
 
 	require('./main')(app, pool);
-	require('./participants')(app, pool, ConnectionErrorCheck, QueryHasErrors, ReturnResults);
+	require('./participantsRoute')(app, pool, ConnectionErrorCheck, QueryHasErrors, ReturnResults);
 
 };

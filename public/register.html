@@ -24,6 +24,8 @@
       <div class="container">
           <div class="page-header">
               <h2>Klenkarberget Sommarcamp 2014 <small>Påmelding</small></h2>
+              {{availtStatFew}}
+              <span ng-repeat="actStatFew in availtStatFew">test {{availtStatFew}}</span>
           </div>
           <div ng-controller="MessageController" ng-class="messageStyle">
               {{ message }} 

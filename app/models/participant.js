@@ -9,7 +9,7 @@ var participantSchema = mongoose.Schema({
     birthDay			: Number,
     birthMonth			: Number,
     birthYear			: Number,
-    birthDate			: Date,
+    birthDate			: String,
     _activities 		: [activitySchema],
     _parents 			: [parentSchema]
 });
@@ -25,8 +25,8 @@ var parentSchema = mongoose.Schema({
 // define the schema for event
 var activitySchema = mongoose.Schema({
     eventCode       : String, 
-    title       	: String,
-    shortTitle		: String,
+    attending       : Boolean, 
+    waiting         : Boolean,
 });
 
 // create the model for users and expose it to our app
