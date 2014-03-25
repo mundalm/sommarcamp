@@ -36,7 +36,7 @@
 		  				<div ng-if="isParticipantOldEnough(participant.birthYear, activity.minBirthYear)">
 			  				<div class="checkbox" ng-if="!activity.isFull"> <!-- Show event selector -->
 								<label>
-								    <input type="checkbox" ng-disabled="isBlocked()" ng-click="evaluateEventBlock(!activity.isAttending, activity.blockEventCode)" ng-model="activity.isAttending"/>{{activity.shortTitle}}
+								    <input type="checkbox" ng-disabled="isBlocked(activity.eventCode)" ng-click="evaluateEventBlock(!activity.isAttending, activity.blockEventCode)" ng-model="activity.isAttending"/>{{activity.shortTitle}}
 								</label>
 							</div>
 							<div class="checkbox" ng-if="activity.isFull"> <!-- Show waiting list selector -->

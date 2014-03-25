@@ -9,7 +9,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 	$scope.activitiesLoaded = false;
 	$scope.showStepOne = true;
 	$scope.showStepTwo = false;
-	var blckedEvents = [];
+	var blockedEvents = [];
 	
 	// when loading controller, initialize Participant list from ParticipantFactory
 	init();
@@ -126,12 +126,18 @@ function registrationController($scope, $location, registrationFactory, MessageF
 
     $scope.isBlocked = function (eventCode) {
     	if(blockedEvents[eventCode]) {
-    		CONTINIUE HERE!!!!
+    		return true;
+    	} else {
+    		return false;
     	}
     }
 
     $scope.evaluateEventBlock = function (actualState,eventToBlock) {
-    	$log.info(actualState + " - " + eventToBlock);
+    	if(actualState) {
+    		blockedEvents[eventToBlock] = true;
+    	} else {
+    		blockedEvents[eventToBlock] = false;
+    	}
     }
 
 	//Fetches participant count for all activities from server. 
@@ -192,7 +198,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
     				if(currentPartAct.isAttending && $scope.showStepOne) {
     					currentPartAct.isWaiting = true;
     					currentPartAct.isAttending = false;
-    					MessageFactory.prepareForBroadcast('Aktiviteten ' + currentPartAct.title + ' er no full! Venteliste er automatisk valgt for dei deltakarane som var valgt inn på aktiviteten.', 'alert alert-warning');
+    					MessageFactory.prepareForBroadcast('Aktiviteten ' + currentPartAct.title + ' er no full! Venteliste er automatisk valgt for dei deltakarane som var valgt inn på aktiviteten.', 'alert alert-warning', 20);
     				}
     				currentPartAct.isFull = true;
     			} else {

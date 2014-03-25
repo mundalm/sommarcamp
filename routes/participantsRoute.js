@@ -102,12 +102,12 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 	});
 
 	app.get('/api/initact', function (req, res){
-		var newActivity = new AvailableActivity ({	eventCode       : "U26CA",
-											    title				: "Camp Adventures veke 26",
-											    shortTitle			: "CA Veke 26",
-											    maxAttending		: 1,
+		var newActivity = new AvailableActivity ({	eventCode       : "U28",
+											    title				: "Sommarcamp veke 27",
+											    shortTitle			: "Veke 27",
+											    maxAttending		: 5,
 											    minBirthYear		: 2014,
-											    blockEventCode		: "U26"
+											    blockEventCode		: "U27CA"
 											});
 
 		newActivity.save(function (err) {
