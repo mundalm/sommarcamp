@@ -41,7 +41,7 @@
 							</div>
 							<div class="checkbox" ng-if="activity.isFull"> <!-- Show waiting list selector -->
 								<label>
-								    <input type="checkbox" ng-disabled="isBlocked(activity.eventCode)" ng-change="evaluateEventBlock(activity.blockEventCode)" ng-model="activity.isWaiting"/>Venteliste {{activity.shortTitle}}
+								    <input type="checkbox" ng-disabled="isBlocked(activity.eventCode)" ng-change="evaluateEventBlock(activity.isWaiting, activity.blockEventCode)" ng-model="activity.isWaiting"/>Venteliste {{activity.shortTitle}}
 								</label>
 							</div>
 						</div>
@@ -72,6 +72,78 @@
 	</div>
 </div>
 <div ng-if="showStepTwo">
-StepTwo
+	<!--<div class="row row-fields" ng-if="activitiesLoaded">
+		<div class="col-sm-8">
+			Fyll inn fornavn, etternavn og fødselsdato. Du kan legges til fleire deltakarar (maks 4).
+		</div>
+	</div>-->
+	<div class="row panel panel-default indent-right">
+		<div class="panel-heading">
+			<h6 class="panel-title">Spesielle omsyn vedrørande deltakarar</h6>
+		</div>
+		<div class="panel-body">
+			<form name="specialNeedsForm" novalidate="">
+	  			<div class="row" ng-repeat="participant in participants">
+			  		<!--<div class="col-sm-1 col-one test">{{$index+1}}</div>-->
+			  		<div class="col-sm-2 col-onev2">
+			  			{{participant.firstName}} {{participant.lastName}}
+			  		</div>
+			  		<div class="col-sm-6 col-onev2">
+			  			<textarea class="form-control" ng-model="participant.specialNeeds" placeholder="Spesielle omsyn for {{participant.firstName}} {{participant.lastName}}"/>
+			  		</div>
+			  	</div>
+	  		</form>
+		</div>
+	</div>
+	<div class="row panel panel-default indent-right">
+		<div class="panel-heading">
+			<h6 class="panel-title">Informasjon om føresette</h6>
+		</div>
+		<div class="panel-body">
+			<form name="parentsForm" novalidate="">
+				<div class="row row-fieldsv2">
+					<span class="col-sm-8 col-onev2">Fyll inn informasjon om primærkontakt</span>
+				</div>
+	  			<div class="row row-fieldsv2">
+			  		<div class="col-sm-2 col-onev2">
+			  			<input type="text" class="form-control" ng-model="participant.parentOneFirstName" placeholder="Fornavn"/>
+			  		</div>
+			  		<div class="col-sm-2 col-onev2">
+			  			<input type="text" class="form-control" ng-model="participant.parentOneFirstName" placeholder="Etternavn"/>
+			  		</div>
+			  		<div class="col-sm-2 col-onev2">
+			  			<input type="text" class="form-control" ng-model="participant.parentOnePhone" placeholder="Mobiltelefon"/>
+			  		</div>
+			  		<div class="col-sm-2 col-onev2">
+			  			<input type="text" class="form-control" ng-model="participant.parentOneEmail" placeholder="E-post"/>
+			  		</div>
+			  	</div>
+			  	<div class="row row-fieldsv2">
+					<span class="col-sm-8 col-onev2">Fyll inn informasjon om sekundærkontakt</span>
+				</div>
+			  	<div class="row row-fieldsv2">
+			  		<div class="col-sm-2 col-onev2">
+			  			<input type="text" class="form-control" ng-model="participant.parentTwoFirstName" placeholder="Fornavn"/>
+			  		</div>
+			  		<div class="col-sm-2 col-onev2">
+			  			<input type="text" class="form-control" ng-model="participant.parentTwoFirstName" placeholder="Etternavn"/>
+			  		</div>
+			  		<div class="col-sm-2 col-onev2">
+			  			<input type="text" class="form-control" ng-model="participant.parentTwoPhone" placeholder="Mobiltelefon"/>
+			  		</div>
+			  		<div class="col-sm-2 col-onev2">
+			  			<input type="text" class="form-control" ng-model="participant.parentTwoEmail" placeholder="E-post"/>
+			  		</div>
+			  	</div>
+	  		</form>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-8">
+			<button type="button" ng-disabled="" class="btn btn-success" ng-click="test()">
+				Bekreft påmelding
+			</button>
+		</div>
+	</div>
 </div>
 

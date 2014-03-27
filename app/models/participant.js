@@ -11,16 +11,16 @@ var participantSchema = mongoose.Schema({
     birthYear			: Number,
     birthDate			: String,
     partArrPos          : Number, 
-    _activities 		: [activitySchema],
-    _parents 			: [parentSchema]
-});
-
-// define the schema for parent
-var parentSchema = mongoose.Schema({
-    firstName       : String,
-    lastName		: String,
-    phone			: String,
-    email			: String
+    specialNeeds        : String,
+    parentOneFirstName  : String,
+    parentOneLastName   : String,
+    parentOnePhone      : String,
+    parentOneEmail      : String,
+    parentTwoFirstName  : String,
+    parentTwoLastName   : String,
+    parentTwoPhone      : String,
+    parentTwoEmail      : String,
+    _activities 		: [activitySchema]
 });
 
 // define the schema for event

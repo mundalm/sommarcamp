@@ -76,6 +76,8 @@ a {
 
 .row-fields {padding-bottom: 10px;}
 
+.row-fieldsv2 {padding-bottom: 15px;}
+
 .row-buttons {
   padding-bottom: 10px; padding-top: 20px;
 }
@@ -84,8 +86,13 @@ a {
   padding-bottom: 2px;
 }
 
+.col-onev2 {
+  padding-bottom: 4px;
+}
+
 .indent-right {
-  margin-left: 0px; 
+  margin-left: 0px;
+  margin-right: 0px;  
   margin-bottom: 10px;
 }
 

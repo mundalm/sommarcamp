@@ -142,6 +142,10 @@ function registrationController($scope, $location, registrationFactory, MessageF
 
 	//Fetches participant count for all activities from server. 
     function getActivyParticipantCountFromServer() {
+    	if(!$scope.showStepOne) {
+    		return;
+    		$log.info("Aborting activity update because user has reserved places!");
+    	}
     	registrationFactory.getAvailableActivitesStatus().then(function(data) {
 			if(!$rootScope.RHE(data, true)) {
 				updateLiveActivityParticipantCount(data.data);
@@ -318,7 +322,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 			registrationFactory.addParticipant(newParticipantForServer).then(function(data) {
 				if(!$rootScope.RHE(data, true)) {
 					$scope.participants[data.data.partArrPos]._id = data.data._id;
-					MessageFactory.prepareForBroadcast('Steg 1 er utført uten feil. Du må fylle inn feltene under og bekrefte påmeldingen før plassen er endelig reservert!', 'alert alert-success');
+					MessageFactory.prepareForBroadcast('Steg 1 er utført utan feil. Du må fylle inn felta nedanfor og bekrefte påmeldinga før plassen blir endeleg reservert!', 'alert alert-success', 20);
 				} else {
 					MessageFactory.prepareForBroadcast('Det oppstod en feil ved lasting av tilgjengelige aktiviteter. Prøv og oppdater siden for å gjøre et nytt forøk. Kontakt administrator på e-post marius@mundal.org dersom problemet vedvarer', 'alert alert-danger', 60);
 				}
