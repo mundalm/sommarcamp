@@ -67,7 +67,19 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 					    _events 			: req.body._events,
 					    _parents 			: req.body._parents 
 					};*/
-		var update = { 	specialNeeds       	: req.body.specialNeeds
+		var update = { 	specialNeeds       	: req.body.specialNeeds,
+						parentOneFirstName	: req.body.parentOneFirstName, 
+						parentOneLastName	: req.body.parentOneLastName, 
+						parentOnePhone		: req.body.parentOnePhone,
+						parentOneEmail		: req.body.parentOneEmail,
+						parentTwoFirstName	: req.body.parentTwoFirstName, 
+						parentTwoLastName	: req.body.parentTwoLastName, 
+						parentTwoPhone		: req.body.parentTwoPhone,
+						parentTwoEmail		: req.body.parentTwoEmail,
+						canTakePictures     : req.body.canTakePictures,
+					    canUseTransport     : req.body.canUseTransport,
+					    canDoSwimming       : req.body.canDoSwimming,
+					    comments			: req.body.comments
 					  }
 		Participant.findOneAndUpdate(query, update, null, function(err, result) {
 			if(!QueryHasErrors(err, res)) {

@@ -10,10 +10,10 @@
 	  			<div class="row">
 			  		<!--<div class="col-sm-1 col-one test">{{$index+1}}</div>-->
 			  		<div class="col-sm-3 col-one">
-			  			<input type="text" class="form-control" ng-model="participant.firstName" placeholder="Fornavn"/>
+			  			<input type="text" class="form-control" ng-model="participant.firstName" placeholder="Fornamn"/>
 			  		</div>
 			  		<div class="col-sm-3 col-one">
-			  			<input type="text" class="form-control" ng-model="participant.lastName" placeholder="Etternavn"/>
+			  			<input type="text" class="form-control" ng-model="participant.lastName" placeholder="Etternamn"/>
 			  		</div>
 			  		<div class="col-sm-4 col-one">
 			  			<select class="form-control selectField" ng-model="participant.birthDay" ng-options="day for day in days">
@@ -85,12 +85,8 @@
 		<div class="panel-body">
 			<form name="specialNeedsForm" novalidate="">
 	  			<div class="row" ng-repeat="participant in participants">
-			  		<!--<div class="col-sm-1 col-one test">{{$index+1}}</div>-->
-			  		<!--<div class="col-sm-2 col-onev2">
-			  			{{participant.firstName}} {{participant.lastName}}
-			  		</div>-->
 			  		<div class="col-sm-6 col-onev2">
-			  			<textarea class="form-control" ng-model="participant.specialNeeds" placeholder="Spesielle omsyn for {{participant.firstName}} {{participant.lastName}}"/>
+			  			<textarea class="form-control" ng-model="participant.specialNeeds" placeholder="Spesielle omsyn for {{participant.firstName}} {{participant.lastName}} (valfritt)"/>
 			  		</div>
 			  	</div>
 	  		</form>
@@ -107,10 +103,10 @@
 				</div>
 	  			<div class="row">
 			  		<div class="col-sm-3 col-onev2">
-			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentOneFirstName" placeholder="Fornavn"/>
+			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentOneFirstName" placeholder="Fornamn"/>
 			  		</div>
 			  		<div class="col-sm-3 col-onev2">
-			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentOneLastName" placeholder="Etternavn"/>
+			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentOneLastName" placeholder="Etternamn"/>
 			  		</div>
 			  		<div class="col-sm-3 col-onev2">
 			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentOnePhone" placeholder="Mobiltelefon"/>
@@ -118,44 +114,22 @@
 			  		<div class="col-sm-3 col-onev2">
 			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentOneEmail" placeholder="E-post"/>
 			  		</div>
-			  	</div>
-			  	<div class="row row-fieldsv2">
-			  		<div class="col-sm-3 col-onev2">
-			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentOneAdr" placeholder="Gateadresse"/>
-			  		</div>
-			  		<div class="col-sm-3 col-onev2">
-			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentOnePostalCode" placeholder="Postnr"/>
-			  		</div>
-			  		<div class="col-sm-3 col-onev2">
-			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentOneCity" placeholder="Sted"/>
-			  		</div>
-			  	</div>
+			  	</div><br/>
 			  	<div class="row row-fieldsv2">
 					<span class="col-sm-8 col-onev2">Fyll inn informasjon om sekundærkontakt</span>
 				</div>
 			  	<div class="row">
 			  		<div class="col-sm-3 col-onev2">
-			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentTwoFirstName" placeholder="Fornavn"/>
+			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentTwoFirstName" placeholder="Fornamn"/>
 			  		</div>
 			  		<div class="col-sm-3 col-onev2">
-			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentTwoLastName" placeholder="Etternavn"/>
+			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentTwoLastName" placeholder="Etternamn"/>
 			  		</div>
 			  		<div class="col-sm-3 col-onev2">
 			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentTwoPhone" placeholder="Mobiltelefon"/>
 			  		</div>
 			  		<div class="col-sm-3 col-onev2">
 			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentTwoEmail" placeholder="E-post"/>
-			  		</div>
-			  	</div>
-			  	<div class="row row-fieldsv2">
-			  		<div class="col-sm-3 col-onev2">
-			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentTwoAdr" placeholder="Gateadresse"/>
-			  		</div>
-			  		<div class="col-sm-3 col-onev2">
-			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentTwoPostalCode" placeholder="Postnr"/>
-			  		</div>
-			  		<div class="col-sm-3 col-onev2">
-			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentTwoCity" placeholder="Sted"/>
 			  		</div>
 			  	</div>
 			  	<div class="row row-fieldsv2">
@@ -169,12 +143,12 @@
 			<h6 class="panel-title">Særskilde løyve*</h6>
 		</div>
 		<div class="panel-body">
-			<form name="parentsForm" novalidate="">
+			<form name="rightsForm" novalidate="">
 	  			<div class="row">
 			  		<div class="col-sm-3 col-onev2">
 			  			<div class="checkbox">
 							<label>
-						    	<input type="checkbox" ng-model="participantCommonFields.canTakePictures"/><small>Kan takast bilete av. Kun til bruk i regi av Klenkarberget Sommarcamp.</small>
+						    	<input type="checkbox" ng-model="participantCommonFields.canTakePictures"/><small>Kan takast bilete/video av. Kun til bruk i regi av Klenkarberget Sommarcamp.</small>
 							</label>
 						</div>
 			  		</div>
@@ -196,6 +170,20 @@
 			  	<div class="row row-fieldsv2">
 					<span class="col-sm-8 col-onev2"><small>* Særskilde løyve gjeld for alle dine deltakarar</small></span>
 				</div>
+	  		</form>
+		</div>
+	</div>
+	<div class="row panel panel-default indent-right">
+		<div class="panel-heading">
+			<h6 class="panel-title">Øvrige opplysningar</h6>
+		</div>
+		<div class="panel-body">
+			<form name="otherForm" novalidate="">
+	  			<div class="row">
+			  		<div class="col-sm-6 col-onev2">
+			  			<textarea class="form-control" ng-model="participantCommonFields.comments" placeholder="Øvrige kommentarar, spørsmål eller opplysningar (valfritt)"/>
+			  		</div>
+			  	</div>
 	  		</form>
 		</div>
 	</div>

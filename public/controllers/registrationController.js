@@ -2,7 +2,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 	$scope.formData = {};
 	$scope.availableActivities = [];
 	$scope.participants = [];
-	$scope.participantCommonFields = {};
+	$scope.participantCommonFields = { canTakePictures: true, canUseTransport: true, canDoSwimming: true};
 	$scope.days = [01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31];
 	$scope.months = [01,02,03,04,05,06,07,08,09,10,11,12];
 	$scope.years = [1998,1999,2000,2001,2002,2003,2004,2005,2007];
@@ -233,16 +233,10 @@ function registrationController($scope, $location, registrationFactory, MessageF
 			parentOneLastName: $scope.participantCommonFields.parentOneLastName, 
 			parentOnePhone: $scope.participantCommonFields.parentOnePhone,
 			parentOneEmail: $scope.participantCommonFields.parentOneEmail,
-			parentOneAdr: $scope.participantCommonFields.parentOneAdr,
-			parentOnePostalCode: $scope.participantCommonFields.parentOnePostalCode,
-			parentOneCity: $scope.participantCommonFields.parentOneCity,
 			parentTwoFirstName: $scope.participantCommonFields.parentTwoFirstName, 
 			parentTwoLastName: $scope.participantCommonFields.parentTwoLastName, 
 			parentTwoPhone: $scope.participantCommonFields.parentTwoPhone,
 			parentTwoEmail: $scope.participantCommonFields.parentTwoEmail,
-			parentTwoAdr: $scope.participantCommonFields.parentTwoAdr,
-			parentTwoPostalCode: $scope.participantCommonFields.parentTwoPostalCode,
-			parentTwoCity: $scope.participantCommonFields.parentTwoCity,
 		}
 
 		if(!validateParticipantFields(participantProperties)) {
@@ -367,7 +361,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 					$scope.participants[data.data.partArrPos]._id = data.data._id;
 					MessageFactory.prepareForBroadcast('Steg 1 er utført utan feil. Du må fylle inn felta nedanfor og bekrefte påmeldinga før plassen blir endeleg reservert!', 'alert alert-success', 20);
 				} else {
-					MessageFactory.prepareForBroadcast('Det oppstod en feil ved lasting av tilgjengelige aktiviteter. Prøv og oppdater siden for å gjøre et nytt forøk. Kontakt administrator på e-post marius@mundal.org dersom problemet vedvarer', 'alert alert-danger', 60);
+					essageFactory.prepareForBroadcast('Det oppstod en feil lagring av deltakarar. Kontakt administrator på e-post marius@mundal.org.', 'alert alert-danger', 60);
 				}
 			});	
 
@@ -381,33 +375,26 @@ function registrationController($scope, $location, registrationFactory, MessageF
 			var participant = $scope.participants[i];
 			var participantDataToUpdate = {
 				specialNeeds       	: isNullOrUndefined(participant.specialNeeds) ? null : participant.specialNeeds,
+				parentOneFirstName	: $scope.participantCommonFields.parentOneFirstName, 
+				parentOneLastName	: $scope.participantCommonFields.parentOneLastName, 
+				parentOnePhone		: $scope.participantCommonFields.parentOnePhone,
+				parentOneEmail		: $scope.participantCommonFields.parentOneEmail,
+				parentTwoFirstName	: $scope.participantCommonFields.parentTwoFirstName, 
+				parentTwoLastName	: $scope.participantCommonFields.parentTwoLastName, 
+				parentTwoPhone		: $scope.participantCommonFields.parentTwoPhone,
+				parentTwoEmail		: $scope.participantCommonFields.parentTwoEmail,
+				canTakePictures     : $scope.participantCommonFields.canTakePictures,
+			    canUseTransport     : $scope.participantCommonFields.canUseTransport,
+			    canDoSwimming       : $scope.participantCommonFields.canDoSwimming,
+			    comments			: isNullOrUndefined($scope.participantCommonFields.comments) ? null : $scope.participantCommonFields.comments
 			};
-			/*var participantToUpdate = {
-				firstName       	: participant.firstName,
-			    lastName			: participant.lastName,
-			    birthDay			: participant.birthDay,
-			    birthMonth			: participant.birthMonth,
-			    birthYear			: participant.birthYear,
-			    partArrPos			: i,
-			    _activities			: []
-			};
-			for(var j = 0; j < participant.activityList.length; j++) {
-				var partActivity = participant.activityList[j];
-				if(partActivity.isAttending || partActivity.isWaiting) {
-					newParticipantForServer._activities.push({
-						eventCode       : partActivity.eventCode, 
-					    attending 		: partActivity.isAttending,
-					    waiting 		: partActivity.isWaiting
-					});
-				}
-			}*/
 
 			registrationFactory.updateParticipant(participantDataToUpdate, participant._id).then(function(data) {
 				if(!$rootScope.RHE(data, true)) {
-					MessageFactory.prepareForBroadcast('Steg 1 er utført utan feil. Du må fylle inn felta nedanfor og bekrefte påmeldinga før plassen blir endeleg reservert!', 'alert alert-success', 20);
+					MessageFactory.prepareForBroadcast('Påmelding fullført! Du vil snarlig få ein e-post med ei stadfesting. Vi ber om de sjekkar at registrerte opplysningar er korrekte. Ta kontakt med post@sommarcamp.no dersom det er noko som ikkje stemmer.', 'alert alert-success', 20);
 					$log.info(data.data);
 				} else {
-					MessageFactory.prepareForBroadcast('Det oppstod en feil ved lasting av tilgjengelige aktiviteter. Prøv og oppdater siden for å gjøre et nytt forøk. Kontakt administrator på e-post marius@mundal.org dersom problemet vedvarer', 'alert alert-danger', 60);
+					MessageFactory.prepareForBroadcast('Det oppstod en feil lagring av deltakarar. Kontakt administrator på e-post marius@mundal.org.', 'alert alert-danger', 60);
 				}
 			});	
 		}	
