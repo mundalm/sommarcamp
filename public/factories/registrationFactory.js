@@ -48,11 +48,11 @@ function registrationFactory($http, $log) {
 	     	return promise;
 	    }, 
 	    
-	    updateParticipant:function(formData, id) {
+	    updateParticipant:function(participant_data, id) {
 	    	var promise = $http({
 	        	method: 'PUT',
 	            url: '/api/participants/' + id,
-	            data: formData,
+	            data: participant_data,
 	            timeout: 10000
 	        }).then(function(response) {
 	        	$log.info('Retrieved data after update: ',response);

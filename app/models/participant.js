@@ -16,10 +16,19 @@ var participantSchema = mongoose.Schema({
     parentOneLastName   : String,
     parentOnePhone      : String,
     parentOneEmail      : String,
+    parentOneAdr        : String,
+    parentOnePostalCode : String,
+    parentOneCity       : String,
     parentTwoFirstName  : String,
     parentTwoLastName   : String,
     parentTwoPhone      : String,
     parentTwoEmail      : String,
+    parentTwoAdr        : String,
+    parentTwoPostalCode : String,
+    parentTwoCity       : String,
+    canTakePictures     : Boolean,
+    canUseTransport     : Boolean,
+    canDoSwimming       : Boolean,
     _activities 		: [activitySchema]
 });
 

@@ -58,7 +58,7 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 	//============================================================ Update participant
 	app.put('/api/participants/:id', function (req, res){
 		var query = { _id: req.params.id };
-		var update = { 	firstName       	: req.body.firstName,
+		/*var update = { 	firstName       	: req.body.firstName,
 					    lastName			: req.body.lastName,
 					    birthDay			: req.body.birthDay,
 					    birthMonth			: req.body.birthMonth,
@@ -66,7 +66,9 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 					    birthDate			: req.body.birthDay + '/' + req.body.birthMonth + '/' + req.body.birthYear,
 					    _events 			: req.body._events,
 					    _parents 			: req.body._parents 
-					};
+					};*/
+		var update = { 	specialNeeds       	: req.body.specialNeeds
+					  }
 		Participant.findOneAndUpdate(query, update, null, function(err, result) {
 			if(!QueryHasErrors(err, res)) {
 				console.log('Updated Participant: ' + JSON.stringify(result));

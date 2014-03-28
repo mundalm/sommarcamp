@@ -1,12 +1,10 @@
 <div><timer style="display: none;" interval="1000" countdown="5"/></div> 
 <img ng-if="!activitiesLoaded" src="images/ajax-loader.gif" />
 <div ng-if="showStepOne">
-	<div class="row row-fields" ng-if="activitiesLoaded">
-		<div class="col-sm-8">
-			Fyll inn fornavn, etternavn og fødselsdato. Du kan legges til fleire deltakarar (maks 4).
+	<div class="row panel panel-default indent-right" ng-repeat="participant in participants" ng-if="activitiesLoaded">
+		<div class="panel-heading" ng-if="activitiesLoaded">
+			<h6 class="panel-title">Påmelding deltakar {{$index+1}}</h6>
 		</div>
-	</div>
-	<div class="row panel panel-default indent-right" ng-repeat="participant in participants">
 		<div class="panel-body">
 			<form name="participantForm{{$index}}" novalidate="">
 	  			<div class="row">
@@ -29,20 +27,23 @@
 						</select>
 			  		</div>
 		  		</div>
-		  		<br/>
 		  		<div class="row">
-		  			<div class="help-block indent-right-pad">Velg aktivitetar for deltakar</div>
-		  			<div class="col-sm-2 " ng-repeat="activity in participant.activityList">
+		  			<!--<div class="help-block indent-right-pad">Velg aktivitetar for deltakar</div>-->
+		  			<div class="col-sm-2" ng-repeat="activity in participant.activityList">
 		  				<div ng-if="isParticipantOldEnough(participant.birthYear, activity.minBirthYear)">
 			  				<div class="checkbox" ng-if="!activity.isFull"> <!-- Show event selector -->
-								<label>
-								    <input type="checkbox" ng-disabled="isBlocked(activity.eventCode)" ng-click="evaluateEventBlock(!activity.isAttending, activity.blockEventCode)" ng-model="activity.isAttending"/>{{activity.shortTitle}}
-								</label>
+								<small>
+									<label>
+								    	<input type="checkbox" ng-disabled="isBlocked(activity.eventCode, $parent.$parent.$parent.$index)" ng-click="evaluateEventBlock(!activity.isAttending, activity.blockEventCode, $parent.$parent.$parent.$index)" ng-model="activity.isAttending"/>{{activity.title}}
+									</label>
+								</small>
 							</div>
 							<div class="checkbox" ng-if="activity.isFull"> <!-- Show waiting list selector -->
-								<label>
-								    <input type="checkbox" ng-disabled="isBlocked(activity.eventCode)" ng-change="evaluateEventBlock(activity.isWaiting, activity.blockEventCode)" ng-model="activity.isWaiting"/>Venteliste {{activity.shortTitle}}
-								</label>
+								<small>
+									<label>
+									    <input type="checkbox" ng-disabled="isBlocked(activity.eventCode, $parent.$parent.$parent.$index)" ng-change="evaluateEventBlock(activity.isWaiting, activity.blockEventCode, $parent.$parent.$parent.$index)" ng-model="activity.isWaiting"/>Venteliste {{activity.title}}
+									</label>
+								</small>
 							</div>
 						</div>
 			  		</div>
@@ -85,9 +86,9 @@
 			<form name="specialNeedsForm" novalidate="">
 	  			<div class="row" ng-repeat="participant in participants">
 			  		<!--<div class="col-sm-1 col-one test">{{$index+1}}</div>-->
-			  		<div class="col-sm-2 col-onev2">
+			  		<!--<div class="col-sm-2 col-onev2">
 			  			{{participant.firstName}} {{participant.lastName}}
-			  		</div>
+			  		</div>-->
 			  		<div class="col-sm-6 col-onev2">
 			  			<textarea class="form-control" ng-model="participant.specialNeeds" placeholder="Spesielle omsyn for {{participant.firstName}} {{participant.lastName}}"/>
 			  		</div>
@@ -97,53 +98,114 @@
 	</div>
 	<div class="row panel panel-default indent-right">
 		<div class="panel-heading">
-			<h6 class="panel-title">Informasjon om føresette</h6>
+			<h6 class="panel-title">Informasjon om føresette*</h6>
 		</div>
 		<div class="panel-body">
 			<form name="parentsForm" novalidate="">
 				<div class="row row-fieldsv2">
 					<span class="col-sm-8 col-onev2">Fyll inn informasjon om primærkontakt</span>
 				</div>
-	  			<div class="row row-fieldsv2">
-			  		<div class="col-sm-2 col-onev2">
-			  			<input type="text" class="form-control" ng-model="participant.parentOneFirstName" placeholder="Fornavn"/>
+	  			<div class="row">
+			  		<div class="col-sm-3 col-onev2">
+			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentOneFirstName" placeholder="Fornavn"/>
 			  		</div>
-			  		<div class="col-sm-2 col-onev2">
-			  			<input type="text" class="form-control" ng-model="participant.parentOneFirstName" placeholder="Etternavn"/>
+			  		<div class="col-sm-3 col-onev2">
+			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentOneLastName" placeholder="Etternavn"/>
 			  		</div>
-			  		<div class="col-sm-2 col-onev2">
-			  			<input type="text" class="form-control" ng-model="participant.parentOnePhone" placeholder="Mobiltelefon"/>
+			  		<div class="col-sm-3 col-onev2">
+			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentOnePhone" placeholder="Mobiltelefon"/>
 			  		</div>
-			  		<div class="col-sm-2 col-onev2">
-			  			<input type="text" class="form-control" ng-model="participant.parentOneEmail" placeholder="E-post"/>
+			  		<div class="col-sm-3 col-onev2">
+			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentOneEmail" placeholder="E-post"/>
+			  		</div>
+			  	</div>
+			  	<div class="row row-fieldsv2">
+			  		<div class="col-sm-3 col-onev2">
+			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentOneAdr" placeholder="Gateadresse"/>
+			  		</div>
+			  		<div class="col-sm-3 col-onev2">
+			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentOnePostalCode" placeholder="Postnr"/>
+			  		</div>
+			  		<div class="col-sm-3 col-onev2">
+			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentOneCity" placeholder="Sted"/>
 			  		</div>
 			  	</div>
 			  	<div class="row row-fieldsv2">
 					<span class="col-sm-8 col-onev2">Fyll inn informasjon om sekundærkontakt</span>
 				</div>
-			  	<div class="row row-fieldsv2">
-			  		<div class="col-sm-2 col-onev2">
-			  			<input type="text" class="form-control" ng-model="participant.parentTwoFirstName" placeholder="Fornavn"/>
+			  	<div class="row">
+			  		<div class="col-sm-3 col-onev2">
+			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentTwoFirstName" placeholder="Fornavn"/>
 			  		</div>
-			  		<div class="col-sm-2 col-onev2">
-			  			<input type="text" class="form-control" ng-model="participant.parentTwoFirstName" placeholder="Etternavn"/>
+			  		<div class="col-sm-3 col-onev2">
+			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentTwoLastName" placeholder="Etternavn"/>
 			  		</div>
-			  		<div class="col-sm-2 col-onev2">
-			  			<input type="text" class="form-control" ng-model="participant.parentTwoPhone" placeholder="Mobiltelefon"/>
+			  		<div class="col-sm-3 col-onev2">
+			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentTwoPhone" placeholder="Mobiltelefon"/>
 			  		</div>
-			  		<div class="col-sm-2 col-onev2">
-			  			<input type="text" class="form-control" ng-model="participant.parentTwoEmail" placeholder="E-post"/>
+			  		<div class="col-sm-3 col-onev2">
+			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentTwoEmail" placeholder="E-post"/>
 			  		</div>
 			  	</div>
+			  	<div class="row row-fieldsv2">
+			  		<div class="col-sm-3 col-onev2">
+			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentTwoAdr" placeholder="Gateadresse"/>
+			  		</div>
+			  		<div class="col-sm-3 col-onev2">
+			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentTwoPostalCode" placeholder="Postnr"/>
+			  		</div>
+			  		<div class="col-sm-3 col-onev2">
+			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentTwoCity" placeholder="Sted"/>
+			  		</div>
+			  	</div>
+			  	<div class="row row-fieldsv2">
+					<span class="col-sm-8 col-onev2"><small>* Informasjon om føresette er felles for alle dine deltakarar</small></span>
+				</div>
+	  		</form>
+		</div>
+	</div>
+	<div class="row panel panel-default indent-right">
+		<div class="panel-heading">
+			<h6 class="panel-title">Særskilde løyve*</h6>
+		</div>
+		<div class="panel-body">
+			<form name="parentsForm" novalidate="">
+	  			<div class="row">
+			  		<div class="col-sm-3 col-onev2">
+			  			<div class="checkbox">
+							<label>
+						    	<input type="checkbox" ng-model="participantCommonFields.canTakePictures"/><small>Kan takast bilete av. Kun til bruk i regi av Klenkarberget Sommarcamp.</small>
+							</label>
+						</div>
+			  		</div>
+			  		<div class="col-sm-3 col-onev2">
+			  			<div class="checkbox"> 
+							<label>
+						    	<input type="checkbox" ng-model="participantCommonFields.canUseTransport"/><small>Kan nytte transport (bil/buss) dersom godkjend sikring ivaretas.</small>
+							</label>
+						</div>
+			  		</div>
+			  		<div class="col-sm-3 col-onev2">
+			  			<div class="checkbox"> 
+							<label>
+						    	<input type="checkbox" ng-model="participantCommonFields.canDoSwimming"/><small>Kan delta på badeaktivitetar</small>
+							</label>
+						</div>
+			  		</div>
+			  	</div>
+			  	<div class="row row-fieldsv2">
+					<span class="col-sm-8 col-onev2"><small>* Særskilde løyve gjeld for alle dine deltakarar</small></span>
+				</div>
 	  		</form>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-xs-8">
-			<button type="button" ng-disabled="" class="btn btn-success" ng-click="test()">
+			<button type="button" ng-disabled="" class="btn btn-success" ng-click="confirmRegistration()">
 				Bekreft påmelding
 			</button>
 		</div>
 	</div>
+	<br/>
 </div>
 

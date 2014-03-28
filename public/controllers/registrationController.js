@@ -2,6 +2,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 	$scope.formData = {};
 	$scope.availableActivities = [];
 	$scope.participants = [];
+	$scope.participantCommonFields = {};
 	$scope.days = [01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31];
 	$scope.months = [01,02,03,04,05,06,07,08,09,10,11,12];
 	$scope.years = [1998,1999,2000,2001,2002,2003,2004,2005,2007];
@@ -9,6 +10,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 	$scope.activitiesLoaded = false;
 	$scope.showStepOne = true;
 	$scope.showStepTwo = false;
+	$scope.showStepThree = false
 	var blockedEvents = [];
 	
 	// when loading controller, initialize Participant list from ParticipantFactory
@@ -124,19 +126,19 @@ function registrationController($scope, $location, registrationFactory, MessageF
 		$scope.startActivityCheckTimer();
     });
 
-    $scope.isBlocked = function (eventCode) {
-    	if(blockedEvents[eventCode]) {
+    $scope.isBlocked = function (eventCode, index) {
+    	if(blockedEvents[eventCode+index]) {
     		return true;
     	} else {
     		return false;
     	}
     }
 
-    $scope.evaluateEventBlock = function (actualState,eventToBlock) {
+    $scope.evaluateEventBlock = function (actualState,eventToBlock, index) {
     	if(actualState) {
-    		blockedEvents[eventToBlock] = true;
+    		blockedEvents[eventToBlock+index] = true;
     	} else {
-    		blockedEvents[eventToBlock] = false;
+    		blockedEvents[eventToBlock+index] = false;
     	}
     }
 
@@ -212,12 +214,53 @@ function registrationController($scope, $location, registrationFactory, MessageF
     	}
     }
 
+    //Confirm registration. Update data on server if form is valid.
+    $scope.confirmRegistration = function () {
+    	if(validateParents()) {
+			$scope.updateParticipantsInfoOnServer();
+			$scope.showStepOne = false;
+			$scope.showStepTwo = false;
+			$scope.showStepThree = true;
+		}
+    }
+
+    //Main participant validation method
+    function validateParents() {
+    	var returnResult = true;
+    	$log.info($scope.participantCommonFields);
+    		
+		var participantProperties = {parentOneFirstName: $scope.participantCommonFields.parentOneFirstName, 
+			parentOneLastName: $scope.participantCommonFields.parentOneLastName, 
+			parentOnePhone: $scope.participantCommonFields.parentOnePhone,
+			parentOneEmail: $scope.participantCommonFields.parentOneEmail,
+			parentOneAdr: $scope.participantCommonFields.parentOneAdr,
+			parentOnePostalCode: $scope.participantCommonFields.parentOnePostalCode,
+			parentOneCity: $scope.participantCommonFields.parentOneCity,
+			parentTwoFirstName: $scope.participantCommonFields.parentTwoFirstName, 
+			parentTwoLastName: $scope.participantCommonFields.parentTwoLastName, 
+			parentTwoPhone: $scope.participantCommonFields.parentTwoPhone,
+			parentTwoEmail: $scope.participantCommonFields.parentTwoEmail,
+			parentTwoAdr: $scope.participantCommonFields.parentTwoAdr,
+			parentTwoPostalCode: $scope.participantCommonFields.parentTwoPostalCode,
+			parentTwoCity: $scope.participantCommonFields.parentTwoCity,
+		}
+
+		if(!validateParticipantFields(participantProperties)) {
+			MessageFactory.prepareForBroadcast('Informasjon om primærkontakt og sekundærkontak for føresette må fyllast ut komplett', 'alert alert-warning', 'alert alert-warning', 15);
+			returnResult = false;
+		}
+
+    	//return returnResult;
+    	return true; //Remove this when finished coding app
+    };
+
     //Navigates to registration step 2
     $scope.goToStep2 = function (){
     	if(validateParticipants()) {
 			$scope.addParticipantsToServer();
 			$scope.showStepOne = false;
 			$scope.showStepTwo = true;
+			$scope.showStepThree = false;
 		}
     };
 
@@ -230,13 +273,20 @@ function registrationController($scope, $location, registrationFactory, MessageF
     		
 
     		if(!validateMinimumOneEvent(participant)) {
-    			MessageFactory.prepareForBroadcast('Alle deltagere må delta på minst 1 aktivitet', 'alert alert-warning', 15);
+    			MessageFactory.prepareForBroadcast('Alle deltakarar må delta på minst 1 aktivitet', 'alert alert-warning', 15);
     			returnResult = false;
     			break;
     		}
 
-    		if(!validateParticipantFields(participant)) {
-    			MessageFactory.prepareForBroadcast('Alle deltagere må ha fornavn, etternavn og fødselsdato registrert', 'alert alert-warning', 'alert alert-warning', 15);
+    		var participantProperties = {firstName: participant.firstName, 
+    			lastName: participant.lastName, 
+    			birthDay: participant.birthDay,
+    			birthMonth: participant.birthMonth,
+    			birthYear: participant.birthYear,
+    		}
+
+    		if(!validateParticipantFields(participantProperties)) {
+    			MessageFactory.prepareForBroadcast('Alle deltakarar må ha fornavn, etternavn og fødselsdato registrert', 'alert alert-warning', 'alert alert-warning', 15);
     			returnResult = false;
     			break;
     		}
@@ -246,7 +296,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
     };
 
     //Method validates that a participant has at least one event selected
-    function validateMinimumOneEvent(participant) {
+    function validateMinimumOneEvent(participant, participantProperties) {
     	var numberAttendingEvents = 0;
 
 		for(var j = 0; j < participant.activityList.length; j++) {
@@ -266,21 +316,14 @@ function registrationController($scope, $location, registrationFactory, MessageF
     }
 
     //Method ensure that all relevant participant fields are filled
-    function validateParticipantFields(participant) {
+    function validateParticipantFields(participantProperties) {
     	var returnResult = true;
-    	var participantProperties = {firstName: participant.firstName, 
-    			lastName: participant.lastName, 
-    			birthDay: participant.birthDay,
-    			birthMonth: participant.birthMonth,
-    			birthYear: participant.birthYear,
-    		}
     		
 		for(var key in participantProperties) {
 			if(isNullOrUndefined(participantProperties[key])) {
 				var returnResult = false;
 				break;
 			}
-			$log.info(returnResult);
 		}
 
 		return returnResult; 
@@ -329,96 +372,45 @@ function registrationController($scope, $location, registrationFactory, MessageF
 			});	
 
 			$log.info(newParticipantForServer);
-		}
-
-
-		/*registrationFactory.addParticipant($scope.formData).then(function(data) {
-			if(!$rootScope.RHE(data, true)) {
-				$scope.projects.push(data. data);
-				$scope.formData = {};
-
-				$modalInstance.close('opprettet');
-			} else {
-				MessageFactory.prepareForBroadcast('Det oppstod en feil under oppretting av nytt prosjekt', 'label label-danger');
-			}
-		});*/	
-			
+		}	
 	};
 
-    /*$scope.go = function ( path ) {
-	  	$location.path( path );
-	};*/
-	
-	// Put project to edit in edit form
-	/*$scope.editProject = function(index) {
-		$scope.showSaveButton = false;
-		$scope.showUpdateButton = true;
-		$scope.projectEditedID = $scope.filteredProjects[index]._id;
-		
-		$scope.formData = {__v: $scope.filteredProjects[index].__v,
-						   _id: $scope.filteredProjects[index]._id, 
-						   title: $scope.filteredProjects[index].title,
-						   idproject: $scope.filteredProjects[index].idproject,
-						   _customer: $scope.filteredProjects[index]._customer,
-						   _leader: $scope.filteredProjects[index]._leader }; 
-		$scope.openProjectModal(); 
-	};*/
-
-	/*$scope.openProjectModal = function () {
-	    var modalInstance = $modal.open({
-	      	templateUrl: 'partials/projectModalPartial.html',
-	      	controller: 'projectModalController',
-	      	scope: $scope
-	    });	
-
-	    modalInstance.result.then(function (result) {
-	    	MessageFactory.prepareForBroadcast('Prosjekt ' + result, 'label label-success');
-	    });
-  	};*/
-
-
-
-	// Reset search field
-	/*$scope.resetSearch = function() {
-		$scope.searchParticipant = '';
-	};*/
-
-	// delete project using projectFactory
-	/*$scope.deleteProject = function(id) {
-		var promptOptions = {
-			title: "Slett prosjekt",
-			message: "Er du sikker på at du vil slette?",
-			buttons: {
-				confirm: {
-					label: "Ja",
-					className: "btn-danger",
-				},
-				cancel: {
-			    	label: "Nei",
-			    	className: "btn-primary",
-			    }
-			  },
-			  callback: function(result) {                
-			      	if(result) {
-						projectFactory.deleteProject(id).then(function(data) {
-							if(!$rootScope.RHE(data, false)) {
-								for (var i = 0; i < $scope.projects.length; i++) {
-									if ($scope.projects[i]._id === id) {
-										$scope.projects.splice(i, 1);
-										break;
-									}
-								}
-
-								MessageFactory.prepareForBroadcast('Prosjekt slettet', 'label label-success');
-							} else {
-								MessageFactory.prepareForBroadcast('Det oppstod en feil ved sletting av prosjekt', 'alert alert-danger');
-							}
-						});
-					}
-			    }
+	// Create new participants on server using registrationFactory
+	$scope.updateParticipantsInfoOnServer = function() {
+		for(var i = 0; i<$scope.participants.length; i++) {
+			var participant = $scope.participants[i];
+			var participantDataToUpdate = {
+				specialNeeds       	: isNullOrUndefined(participant.specialNeeds) ? null : participant.specialNeeds,
 			};
+			/*var participantToUpdate = {
+				firstName       	: participant.firstName,
+			    lastName			: participant.lastName,
+			    birthDay			: participant.birthDay,
+			    birthMonth			: participant.birthMonth,
+			    birthYear			: participant.birthYear,
+			    partArrPos			: i,
+			    _activities			: []
+			};
+			for(var j = 0; j < participant.activityList.length; j++) {
+				var partActivity = participant.activityList[j];
+				if(partActivity.isAttending || partActivity.isWaiting) {
+					newParticipantForServer._activities.push({
+						eventCode       : partActivity.eventCode, 
+					    attending 		: partActivity.isAttending,
+					    waiting 		: partActivity.isWaiting
+					});
+				}
+			}*/
 
-		bootbox.confirm(promptOptions);	
-	};*/	
+			registrationFactory.updateParticipant(participantDataToUpdate, participant._id).then(function(data) {
+				if(!$rootScope.RHE(data, true)) {
+					MessageFactory.prepareForBroadcast('Steg 1 er utført utan feil. Du må fylle inn felta nedanfor og bekrefte påmeldinga før plassen blir endeleg reservert!', 'alert alert-success', 20);
+					$log.info(data.data);
+				} else {
+					MessageFactory.prepareForBroadcast('Det oppstod en feil ved lasting av tilgjengelige aktiviteter. Prøv og oppdater siden for å gjøre et nytt forøk. Kontakt administrator på e-post marius@mundal.org dersom problemet vedvarer', 'alert alert-danger', 60);
+				}
+			});	
+		}	
+	};
 }
 
