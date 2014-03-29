@@ -217,7 +217,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
     //Confirm registration. Update data on server if form is valid.
     $scope.confirmRegistration = function () {
     	if(validateParents()) {
-			$scope.updateParticipantsInfoOnServer();
+			$scope.updateParticipantsInfoOnServer(true);
 			$scope.showStepOne = false;
 			$scope.showStepTwo = false;
 			$scope.showStepThree = true;
@@ -370,7 +370,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 	};
 
 	// Create new participants on server using registrationFactory
-	$scope.updateParticipantsInfoOnServer = function() {
+	$scope.updateParticipantsInfoOnServer = function(finalRegStep) {
 		for(var i = 0; i<$scope.participants.length; i++) {
 			var participant = $scope.participants[i];
 			var participantDataToUpdate = {
@@ -386,7 +386,8 @@ function registrationController($scope, $location, registrationFactory, MessageF
 				canTakePictures     : $scope.participantCommonFields.canTakePictures,
 			    canUseTransport     : $scope.participantCommonFields.canUseTransport,
 			    canDoSwimming       : $scope.participantCommonFields.canDoSwimming,
-			    comments			: isNullOrUndefined($scope.participantCommonFields.comments) ? null : $scope.participantCommonFields.comments
+			    comments			: isNullOrUndefined($scope.participantCommonFields.comments) ? null : $scope.participantCommonFields.comments,
+			    isFinalRegStep		: isNullOrUndefined(finalRegStep) ? false : finalRegStep
 			};
 
 			registrationFactory.updateParticipant(participantDataToUpdate, participant._id).then(function(data) {

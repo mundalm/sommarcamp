@@ -1,6 +1,7 @@
 // load up the participant model
 var Participant = require('../app/models/participant.js');
 var AvailableActivity = require('../app/models/availableActivity.js');
+var mandrill = require('node-mandrill')('9fpTjC4TRNvpxej2vOEv1g');
 
 module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, ReturnResults) {
 
@@ -58,15 +59,7 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 	//============================================================ Update participant
 	app.put('/api/participants/:id', function (req, res){
 		var query = { _id: req.params.id };
-		/*var update = { 	firstName       	: req.body.firstName,
-					    lastName			: req.body.lastName,
-					    birthDay			: req.body.birthDay,
-					    birthMonth			: req.body.birthMonth,
-					    birthYear			: req.body.birthYear,
-					    birthDate			: req.body.birthDay + '/' + req.body.birthMonth + '/' + req.body.birthYear,
-					    _events 			: req.body._events,
-					    _parents 			: req.body._parents 
-					};*/
+
 		var update = { 	specialNeeds       	: req.body.specialNeeds,
 						parentOneFirstName	: req.body.parentOneFirstName, 
 						parentOneLastName	: req.body.parentOneLastName, 
@@ -84,10 +77,77 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 		Participant.findOneAndUpdate(query, update, null, function(err, result) {
 			if(!QueryHasErrors(err, res)) {
 				console.log('Updated Participant: ' + JSON.stringify(result));
-		  		ReturnResults(res, result, 201);
+
+				if(req.body.isFinalRegStep) {
+					sendConfirmationEmail(req.body.parentOneEmail, req.body.parentOneFirstName + " " + req.body.parentOneLastName, result);	
+				}
+				
+		  		ReturnResults(res, result, 201);	
 		  	}
 		});
 	});
+
+	function sendConfirmationEmail(toEmail, toName, resultFromDB) {
+		var mainText = "Hei.\n\nVi har registrert påmeldinga di.\n\nBetalingsinformasjon:\nTotalpris: kr 0,-";
+		mainText += "\n\nVennlegst innbetal deltakaravgifta til konto 3705.19.76429 tilhøyrande Klenkarberget Sommarcamp v/Haugen Idrettslag innan 10. mai 2013. Vi ber om at innbetalinga vert merka med namn på deltakar(ar).";
+		mainText += "\n\nEndeleg reservert plass blir stadfesta pr e-post når betaling er motteken. Dersom innbetaling ikkje er motteken innan betalingsfristen, vil plassen kunne gå til ein annan.";
+		mainText += "\n\nFølgjande informasjon er registrert:";
+		mainText += "\n\nNavn på deltakar: " + resultFromDB.firstName + " " + resultFromDB.lastName;
+		mainText += "\nFødselsdato: " + resultFromDB.birthDate;
+		mainText += "\nSpesielle omsyn: " + isNullOrUndefined(resultFromDB.specialNeeds) ? "Ingen" : resultFromDB.specialNeeds;
+		mainText += "\nKan delta på badeaktivitetar: " + convertYesNo(resultFromDB.canDoSwimming);
+		mainText += "\nKan takast bilde/video av: " + convertYesNo(resultFromDB.canTakePictures);
+		mainText += "\nKan nytte transport (buss/bil): " + convertYesNo(resultFromDB.canUseTransport);
+		mainText += "\nPrimærkontakt: " + resultFromDB.parentOneFirstName + " " + resultFromDB.parentOneLastName;
+		mainText += "\nMobilnr primærkontakt: " + resultFromDB.parentOnePhone;
+		mainText += "\nE-post primærkontakt: " + resultFromDB.parentOneEmail;
+		mainText += "\nSekundærkontakt: " + resultFromDB.parentTwoFirstName + " " + resultFromDB.parentTwoLastName;
+		mainText += "\nMobilnr sekundærkontakt: " + resultFromDB.parentTwoPhone;
+		mainText += "\nE-post sekundærkontakt: " + resultFromDB.parentTwoEmail;
+		mainText += "\nØvrige opplysningar: " + isNullOrUndefined(resultFromDB.comments) ? "Ingen" : resultFromDB.comments;
+		mainText += "\n\nDeltek på følgande aktivitetar:\n\n";
+
+		for(var j = 0; j < resultFromDB._activities.length; j++) {
+			mainText += " - " + resultFromDB._activities[j].eventCode + "\n";
+		}	
+		mainText += "\nVi ser fram til minnerike dagar på Klenkarberget Sommarcamp 2013!";
+		mainText += "\n\nMed vennleg helsing";
+		mainText += "\n\nKlenkarberget Sommarcamp";
+
+		mandrill('/messages/send', {
+		    message: {
+		        to: [{email: toEmail, name: toName}],
+		        from_email	: 'post@sommarcamp.no',
+		        from_name	: "Klenkarberget Sommarcamp",
+		        subject		: "Registrering Sommarcamp 2014 - " + resultFromDB.firstName + " " + resultFromDB.lastName,
+		        text		: mainText
+		    }
+		}, function(error, response) {
+		    if (error) {
+		    	console.log( JSON.stringify(error) );
+		    } else {
+		    	console.log(response);
+		    }
+		});
+	}
+
+	//Helper to detect null or undefined properties
+    function convertYesNo(prop) {
+    	if(prop) {
+    		return "Ja";
+    	} else {
+    		return "Nei";
+    	}
+    }
+
+    //Helper to detect null or undefined properties
+    function isNullOrUndefined(prop) {
+    	if(prop == undefined || prop == null) {
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
 
 	//============================================================ Get status for available activities
 	app.get('/api/availactstat', function (req, res){
@@ -137,6 +197,23 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 			if(!QueryHasErrors(err, res)) {
 		  		console.log('Deleted collection AvailableActivity');
 		  	}
+		});
+	});
+
+	app.get('/api/testmail', function (req, res){
+		mandrill('/messages/send', {
+		    message: {
+		        to: [{email: 'marius@mundal.org', name: 'Marius Mundal'}],
+		        from_email: 'post@sommarcamp.no',
+		        subject: "Hey, what's up?",
+		        text: "Hello, I sent this message using mandrill."
+		    }
+		}, function(error, response) {
+		    if (error) {
+		    	console.log( JSON.stringify(error) );
+		    } else {
+		    	console.log(response);
+		    }
 		});
 	});
 
