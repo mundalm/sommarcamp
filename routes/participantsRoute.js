@@ -94,7 +94,7 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 		mainText += "\n\nFølgjande informasjon er registrert:";
 		mainText += "\n\nNavn på deltakar: " + resultFromDB.firstName + " " + resultFromDB.lastName;
 		mainText += "\nFødselsdato: " + resultFromDB.birthDate;
-		mainText += "\nSpesielle omsyn: " + isNullOrUndefined(resultFromDB.specialNeeds) ? "Ingen" : resultFromDB.specialNeeds;
+		mainText += "\nSpesielle omsyn: " + (isNullOrUndefined(resultFromDB.specialNeeds) ? "Ingen" : resultFromDB.specialNeeds);
 		mainText += "\nKan delta på badeaktivitetar: " + convertYesNo(resultFromDB.canDoSwimming);
 		mainText += "\nKan takast bilde/video av: " + convertYesNo(resultFromDB.canTakePictures);
 		mainText += "\nKan nytte transport (buss/bil): " + convertYesNo(resultFromDB.canUseTransport);
@@ -104,7 +104,7 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 		mainText += "\nSekundærkontakt: " + resultFromDB.parentTwoFirstName + " " + resultFromDB.parentTwoLastName;
 		mainText += "\nMobilnr sekundærkontakt: " + resultFromDB.parentTwoPhone;
 		mainText += "\nE-post sekundærkontakt: " + resultFromDB.parentTwoEmail;
-		mainText += "\nØvrige opplysningar: " + isNullOrUndefined(resultFromDB.comments) ? "Ingen" : resultFromDB.comments;
+		mainText += "\nØvrige opplysningar: " + (isNullOrUndefined(resultFromDB.comments) ? "Ingen" : resultFromDB.comments);
 		mainText += "\n\nDeltek på følgande aktivitetar:\n\n";
 
 		for(var j = 0; j < resultFromDB._activities.length; j++) {
