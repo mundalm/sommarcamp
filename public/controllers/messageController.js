@@ -14,11 +14,16 @@ function MessageController($scope, MessageFactory, $log, $timeout) {
 
 		$scope.startTimer();
 	});
+
+	$scope.$on('clearAndHide', function() {
+		$scope.message = "";
+		$scope.messageStyle = "noDisplay"	
+	});
 	
 	$scope.$on('timer-stopped', function (event, data){
 		$scope.$apply(function() {
-			$scope.message = "No message available";
 			$scope.messageStyle = "noDisplay";	
+			$scope.message = "No message available";
 		});
     });
     

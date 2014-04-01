@@ -18,6 +18,10 @@ function MessageFactory($rootScope) {
 		messageFactory.broadCastMessage();
 	};
 	
+	messageFactory.clearAndHide = function() {
+		$rootScope.$broadcast('clearAndHide');
+	};
+
 	messageFactory.broadCastMessage = function() {
 		$rootScope.$broadcast('handleMessage');
 	};

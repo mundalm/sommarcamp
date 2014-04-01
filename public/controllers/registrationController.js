@@ -43,12 +43,14 @@ function registrationController($scope, $location, registrationFactory, MessageF
 		var newAct = [];
 		for( var i=0; i < $scope.availableActivities.length; i++) {
 			var act = $scope.availableActivities[i];
-			newAct.push({title: act.title, 
-						 shortTitle: act.shortTitle, 
-						 eventCode: act.eventCode, 
-						 maxAttending: act.maxAttending, 
-						 minBirthYear: act.minBirthYear,
-						 blockEventCode: act.blockEventCode});
+			newAct.push({title 			: act.title, 
+						 shortTitle		: act.shortTitle, 
+						 eventCode 		: act.eventCode, 
+						 maxAttending 	: act.maxAttending, 
+						 minBirthYear	: act.minBirthYear,
+						 blockEventCode	: act.blockEventCode,
+						 eventPrice		: act.eventPrice,
+						 allowDiscount	: act.allowDiscount});
 		}
 		return newAct;
 	}
@@ -217,7 +219,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
     //Confirm registration. Update data on server if form is valid.
     $scope.confirmRegistration = function () {
     	if(validateParents()) {
-			$scope.updateParticipantsInfoOnServer(true);
+    		MessageFactory.clearAndHide();
 			$scope.showStepOne = false;
 			$scope.showStepTwo = false;
 			$scope.showStepThree = true;
@@ -345,15 +347,37 @@ function registrationController($scope, $location, registrationFactory, MessageF
 			    partArrPos			: i,
 			    _activities			: []
 			};
+
+			var totalAmount = 0;
+			var numberOfDiscountActivities = 0;
+
 			for(var j = 0; j < participant.activityList.length; j++) {
 				var partActivity = participant.activityList[j];
 				if(partActivity.isAttending || partActivity.isWaiting) {
 					newParticipantForServer._activities.push({
+						title			: partActivity.title,
 						eventCode       : partActivity.eventCode, 
 					    attending 		: partActivity.isAttending,
 					    waiting 		: partActivity.isWaiting
 					});
 				}
+
+				if(partActivity.isAttending) {
+					if(partActivity.allowDiscount) { //Event egligable for discount provided other criterias ar met.
+						if(numberOfDiscountActivities > 3) {
+							totalAmount = totalAmount + (partActivity.eventPrice*20%);
+						} else if(numberOfDiscountActivities > 2) {
+							totalAmount = totalAmount + (partActivity.eventPrice*40%);
+						} else {
+							totalAmount = totalAmount + partActivity.eventPrice;
+						}
+						numberOfDiscountActivities++;
+					} else { //Event not included i discount program.
+						totalAmount = totalAmount + partActivity.eventPrice;
+					}
+				}
+
+				newParticipantForServer.totalAmount = totalAmount;
 			}
 
 			registrationFactory.addParticipant(newParticipantForServer).then(function(data) {
@@ -361,7 +385,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 					$scope.participants[data.data.partArrPos]._id = data.data._id;
 					MessageFactory.prepareForBroadcast('Steg 1 er utført utan feil. Du må fylle inn felta nedanfor og bekrefte påmeldinga før plassen blir endeleg reservert!', 'alert alert-success', 20);
 				} else {
-					essageFactory.prepareForBroadcast('Det oppstod en feil lagring av deltakarar. Kontakt administrator på e-post marius@mundal.org.', 'alert alert-danger', 60);
+					essageFactory.prepareForBroadcast('Det oppstod en feil ved lagring av deltakarar. Kontakt administrator på e-post marius@mundal.org.', 'alert alert-danger', 60);
 				}
 			});	
 
@@ -392,7 +416,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 
 			registrationFactory.updateParticipant(participantDataToUpdate, participant._id).then(function(data) {
 				if(!$rootScope.RHE(data, true)) {
-					MessageFactory.prepareForBroadcast('Påmelding fullført! Du vil snarlig få ein e-post med ei stadfesting. Vi ber om de sjekkar at registrerte opplysningar er korrekte. Ta kontakt med post@sommarcamp.no dersom det er noko som ikkje stemmer.', 'alert alert-success', 20);
+					//MessageFactory.prepareForBroadcast('Påmelding fullført! Du vil snarlig få ein e-post med ei stadfesting. Vi ber om de sjekkar at registrerte opplysningar er korrekte. Ta kontakt med post@sommarcamp.no dersom det er noko som ikkje stemmer.', 'alert alert-success', 20);
 					$log.info(data.data);
 				} else {
 					MessageFactory.prepareForBroadcast('Det oppstod en feil lagring av deltakarar. Kontakt administrator på e-post marius@mundal.org.', 'alert alert-danger', 60);

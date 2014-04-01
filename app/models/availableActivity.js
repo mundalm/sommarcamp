@@ -9,7 +9,9 @@ var availableActivitySchema = mongoose.Schema({
     attending       : Number,
     minBirthYear    : Number,
     fewLeft         : { type: Boolean, default: false },
-    blockEventCode  : String,  
+    blockEventCode  : String,
+    activityPrice	: { type: Number, default: 1000 },
+    allowDiscount	: { type: Boolean, default: true },
 });
 
 // create the model for users and expose it to our app

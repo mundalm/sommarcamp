@@ -88,8 +88,8 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 	});
 
 	function sendConfirmationEmail(toEmail, toName, resultFromDB) {
-		var mainText = "Hei.\n\nVi har registrert påmeldinga di.\n\nBetalingsinformasjon:\nTotalpris: kr 0,-";
-		mainText += "\n\nVennlegst innbetal deltakaravgifta til konto 3705.19.76429 tilhøyrande Klenkarberget Sommarcamp v/Haugen Idrettslag innan 10. mai 2013. Vi ber om at innbetalinga vert merka med namn på deltakar(ar).";
+		var mainText = "Hei\n\nVi har registrert påmeldinga di.\n\nBetalingsinformasjon:\nTotalpris: kr 0,-";
+		mainText += "\n\nVennlegst innbetal deltakaravgifta til konto 3705.19.76429 tilhøyrande Klenkarberget Sommarcamp v/Haugen Idrettslag innan 15. mai 2013. Vi ber om at innbetalinga vert merka med namn på deltakar(ar).";
 		mainText += "\n\nEndeleg reservert plass blir stadfesta pr e-post når betaling er motteken. Dersom innbetaling ikkje er motteken innan betalingsfristen, vil plassen kunne gå til ein annan.";
 		mainText += "\n\nFølgjande informasjon er registrert:";
 		mainText += "\n\nNavn på deltakar: " + resultFromDB.firstName + " " + resultFromDB.lastName;
@@ -105,12 +105,17 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 		mainText += "\nMobilnr sekundærkontakt: " + resultFromDB.parentTwoPhone;
 		mainText += "\nE-post sekundærkontakt: " + resultFromDB.parentTwoEmail;
 		mainText += "\nØvrige opplysningar: " + (isNullOrUndefined(resultFromDB.comments) ? "Ingen" : resultFromDB.comments);
-		mainText += "\n\nDeltek på følgande aktivitetar:\n\n";
+		mainText += "\n\nDeltek på følgjande aktivitetar:\n\n";
 
 		for(var j = 0; j < resultFromDB._activities.length; j++) {
-			mainText += " - " + resultFromDB._activities[j].eventCode + "\n";
+			if(resultFromDB._activities[j].attending) {
+				mainText += " - " + resultFromDB._activities[j].title + "\n";
+			} else {
+				mainText += " - Venteliste " + resultFromDB._activities[j].title + "\n";
+			}
+			
 		}	
-		mainText += "\nVi ser fram til minnerike dagar på Klenkarberget Sommarcamp 2013!";
+		mainText += "\nVi ser fram til kjekke og minnerike dagar på Klenkarberget Sommarcamp 2014!";
 		mainText += "\n\nMed vennleg helsing";
 		mainText += "\n\nKlenkarberget Sommarcamp";
 
@@ -176,12 +181,14 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 	});
 
 	app.get('/api/initact', function (req, res){
-		var newActivity = new AvailableActivity ({	eventCode       : "U28",
-											    title				: "Sommarcamp veke 27",
-											    shortTitle			: "Veke 27",
+		var newActivity = new AvailableActivity ({	eventCode       : "U27CA",
+											    title				: "Camp Adventures veke 27",
+											    shortTitle			: "CA Veke 27",
 											    maxAttending		: 5,
-											    minBirthYear		: 2014,
-											    blockEventCode		: "U27CA"
+											    minBirthYear		: 2003,
+											    blockEventCode		: "U27",
+											    eventPrice			: 1500,
+											    allowDiscount		: false, 
 											});
 
 		newActivity.save(function (err) {
