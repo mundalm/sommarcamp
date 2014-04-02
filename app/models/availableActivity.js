@@ -10,7 +10,7 @@ var availableActivitySchema = mongoose.Schema({
     minBirthYear    : Number,
     fewLeft         : { type: Boolean, default: false },
     blockEventCode  : String,
-    activityPrice	: { type: Number, default: 1000 },
+    eventPrice      : { type: Number, default: 1000 },
     allowDiscount	: { type: Boolean, default: true },
 });
 

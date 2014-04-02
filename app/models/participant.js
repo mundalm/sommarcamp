@@ -24,6 +24,7 @@ var participantSchema = mongoose.Schema({
     canUseTransport     : Boolean,
     canDoSwimming       : Boolean,
     comments            : String,
+    totalAmount         : Number,
     _activities 		: [activitySchema]
 });
 

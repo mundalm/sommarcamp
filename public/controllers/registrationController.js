@@ -219,6 +219,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
     //Confirm registration. Update data on server if form is valid.
     $scope.confirmRegistration = function () {
     	if(validateParents()) {
+    		$scope.updateParticipantsInfoOnServer(true);
     		MessageFactory.clearAndHide();
 			$scope.showStepOne = false;
 			$scope.showStepTwo = false;
@@ -349,7 +350,23 @@ function registrationController($scope, $location, registrationFactory, MessageF
 			};
 
 			var totalAmount = 0;
-			var numberOfDiscountActivities = 0;
+			var numberOfDiscountActivities = 0; //A count of the numer of earned discount weeks for the participant.
+			var totalDiscountAllowAttending = 0; //A count of the number of discountAllowed activities the participant is attending
+			var minAttendingDiscountLimit = 2; //Must attend mor discountAllowed activities than this limit
+
+			//This loop calculates the number of earned discount weeks for the participant.
+			for(var j = 0; j < participant.activityList.length; j++) {
+				var partActivity = participant.activityList[j];
+				if( partActivity.isAttending && partActivity.allowDiscount) {
+					totalDiscountAllowAttending++;
+					if(totalDiscountAllowAttending > minAttendingDiscountLimit) {
+						numberOfDiscountActivities++;	
+					}
+				} 
+			}
+			
+
+			$log.info("Number of discount acts = " + numberOfDiscountActivities)
 
 			for(var j = 0; j < participant.activityList.length; j++) {
 				var partActivity = participant.activityList[j];
@@ -363,20 +380,19 @@ function registrationController($scope, $location, registrationFactory, MessageF
 				}
 
 				if(partActivity.isAttending) {
-					if(partActivity.allowDiscount) { //Event egligable for discount provided other criterias ar met.
-						if(numberOfDiscountActivities > 3) {
-							totalAmount = totalAmount + (partActivity.eventPrice*20%);
-						} else if(numberOfDiscountActivities > 2) {
-							totalAmount = totalAmount + (partActivity.eventPrice*40%);
+					if( (numberOfDiscountActivities > 0) && partActivity.allowDiscount) { //Event egligable for discount and doiscounted activities available
+						$log.info("Discount given on " + partActivity.eventCode);
+						if(numberOfDiscountActivities > 1 ) {
+							totalAmount = totalAmount + ((partActivity.eventPrice*60)/100); // 40% discount if second discount activity
 						} else {
-							totalAmount = totalAmount + partActivity.eventPrice;
+							totalAmount = totalAmount + ((partActivity.eventPrice*80)/100); // 20% discount if first discount activity
 						}
-						numberOfDiscountActivities++;
-					} else { //Event not included i discount program.
-						totalAmount = totalAmount + partActivity.eventPrice;
-					}
+						numberOfDiscountActivities--;
+					} else {
+						totalAmount = totalAmount + partActivity.eventPrice; // No discount for current activity
+					} 
 				}
-
+				$log.info("Totalamount after calcpart " + totalAmount);
 				newParticipantForServer.totalAmount = totalAmount;
 			}
 

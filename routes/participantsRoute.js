@@ -45,7 +45,8 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 											    birthDate			: req.body.birthDay + '/' + req.body.birthMonth + '/' + req.body.birthYear,
 											   	_activities 		: req.body._activities,
 											    _parents 			: null,
-											    partArrPos			: req.body.partArrPos, 
+											    partArrPos			: req.body.partArrPos,
+											    totalAmount			: req.body.totalAmount 
 											});
 
 		newParticipant.save(function (err) {
@@ -59,6 +60,7 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 	//============================================================ Update participant
 	app.put('/api/participants/:id', function (req, res){
 		var query = { _id: req.params.id };
+		console.log(query);
 
 		var update = { 	specialNeeds       	: req.body.specialNeeds,
 						parentOneFirstName	: req.body.parentOneFirstName, 
@@ -88,7 +90,7 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 	});
 
 	function sendConfirmationEmail(toEmail, toName, resultFromDB) {
-		var mainText = "Hei\n\nVi har registrert påmeldinga di.\n\nBetalingsinformasjon:\nTotalpris: kr 0,-";
+		var mainText = "Hei\n\nVi har registrert påmeldinga di.\n\nBetalingsinformasjon:\nTotalpris for " + resultFromDB.firstName + " " + resultFromDB.lastName + ": kr " + resultFromDB.totalAmount + ",-";
 		mainText += "\n\nVennlegst innbetal deltakaravgifta til konto 3705.19.76429 tilhøyrande Klenkarberget Sommarcamp v/Haugen Idrettslag innan 15. mai 2013. Vi ber om at innbetalinga vert merka med namn på deltakar(ar).";
 		mainText += "\n\nEndeleg reservert plass blir stadfesta pr e-post når betaling er motteken. Dersom innbetaling ikkje er motteken innan betalingsfristen, vil plassen kunne gå til ein annan.";
 		mainText += "\n\nFølgjande informasjon er registrert:";
