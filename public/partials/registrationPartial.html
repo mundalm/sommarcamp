@@ -22,7 +22,7 @@
 						<select class="form-control selectField" ng-model="participant.birthMonth" ng-options="month for month in months">
 							<option value="" selected>Mnd</option>
 						</select>
-						<select class="form-control selectField" ng-model="participant.birthYear" ng-options="year for year in years">
+						<select class="form-control selectField" ng-model="participant.birthYear" ng-options="year for year in years" ng-change="validateYear($index)">
 							<option value="">År</option>
 						</select>
 			  		</div>
@@ -54,7 +54,7 @@
 	<div class="row" ng-if="activitiesLoaded">
 		<div ng-repeat="activityStat in availableActivities">
 			<div class="col-xs-2" ng-if="activityStat.fewLeft">
-				<span class="label label-warning">{{activityStat.shortTitle}} - få ledige</span>
+				<span class="label label-warning">{{activityStat.Title}} - få ledige</span>
 			</div>
 		</div>
 	</div><br/>

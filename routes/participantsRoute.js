@@ -91,7 +91,7 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 
 	function sendConfirmationEmail(toEmail, toName, resultFromDB) {
 		var mainText = "Hei\n\nVi har registrert påmeldinga di.\n\nBetalingsinformasjon:\nTotalpris for " + resultFromDB.firstName + " " + resultFromDB.lastName + ": kr " + resultFromDB.totalAmount + ",-";
-		mainText += "\n\nVennlegst innbetal deltakaravgifta til konto 3705.19.76429 tilhøyrande Klenkarberget Sommarcamp v/Haugen Idrettslag innan 15. mai 2013. Vi ber om at innbetalinga vert merka med namn på deltakar(ar).";
+		mainText += "\n\nVennlegst innbetal deltakaravgifta til konto 3705.19.76429 tilhøyrande Klenkarberget Sommarcamp v/Haugen Idrettslag innan 15. mai 2014. Vi ber om at innbetalinga vert merka med namn på deltakar(ar).";
 		mainText += "\n\nEndeleg reservert plass blir stadfesta pr e-post når betaling er motteken. Dersom innbetaling ikkje er motteken innan betalingsfristen, vil plassen kunne gå til ein annan.";
 		mainText += "\n\nFølgjande informasjon er registrert:";
 		mainText += "\n\nNavn på deltakar: " + resultFromDB.firstName + " " + resultFromDB.lastName;

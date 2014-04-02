@@ -5,7 +5,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 	$scope.participantCommonFields = { canTakePictures: true, canUseTransport: true, canDoSwimming: true};
 	$scope.days = [01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31];
 	$scope.months = [01,02,03,04,05,06,07,08,09,10,11,12];
-	$scope.years = [1998,1999,2000,2001,2002,2003,2004,2005,2007];
+	$scope.years = [1998,1999,2000,2001,2002,2003,2004,2005,2006,2007];
 	$scope.addFirstParticipant = false;
 	$scope.activitiesLoaded = false;
 	$scope.showStepOne = true;
@@ -108,9 +108,11 @@ function registrationController($scope, $location, registrationFactory, MessageF
 			if(partBirthYear <= actMinYear) {
 				return true;	
 			} else {
-				return false;	
+				return false;
 			}
-		}		
+		}
+
+		$log.info(index);			
 	}
 
 	//Starts activity check timer countdown from scratch
@@ -143,6 +145,18 @@ function registrationController($scope, $location, registrationFactory, MessageF
     		blockedEvents[eventToBlock+index] = false;
     	}
     }
+
+    $scope.validateYear = function (index) {
+    	for(var i = 0; i < $scope.participants[index].activityList.length; i++) {
+    		$log.info($scope.isParticipantOldEnough($scope.participants[index].birthYear, $scope.participants[index].activityList[i].minBirthYear));
+    		if(!$scope.isParticipantOldEnough($scope.participants[index].birthYear, $scope.participants[index].activityList[i].minBirthYear)) {
+    			$scope.participants[index].activityList[i].isAttending = false;
+    			$scope.participants[index].activityList[i].isWaiting = false;
+    			$scope.evaluateEventBlock(false, $scope.participants[index].activityList[i].blockEventCode, index);
+    		}
+    	}	
+    }
+
 
 	//Fetches participant count for all activities from server. 
     function getActivyParticipantCountFromServer() {
@@ -357,7 +371,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 			//This loop calculates the number of earned discount weeks for the participant.
 			for(var j = 0; j < participant.activityList.length; j++) {
 				var partActivity = participant.activityList[j];
-				if( partActivity.isAttending && partActivity.allowDiscount) {
+				if( partActivity.isAttending /*&& partActivity.allowDiscount*/) {
 					totalDiscountAllowAttending++;
 					if(totalDiscountAllowAttending > minAttendingDiscountLimit) {
 						numberOfDiscountActivities++;	
