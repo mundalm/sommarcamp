@@ -1,4 +1,4 @@
-function registrationController($scope, $location, registrationFactory, MessageFactory, $log, $rootScope, $modal) {
+function registrationController($scope, $location, registrationFactory, MessageFactory, $log, $rootScope, $modal, $route) {
 	$scope.formData = {};
 	$scope.availableActivities = [];
 	$scope.participants = [];
@@ -35,7 +35,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 		$scope.disableAddParticipant = true;
 		$scope.disableRemoveParticipant = true;
 
-		$rootScope.pageHeader = 'Deltakarrbehandling';
+		$rootScope.pageHeader = 'Påmelding';
 	}
 
 	//Clones activity list from scope. Use when adding new participant
@@ -177,7 +177,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
     function getFewLeftLimitForEvent(eventCode) {
     	for(var i = 0; i < $scope.availableActivities.length; i++ ) {
     		if($scope.availableActivities[i].eventCode === eventCode) {
-    			return {limit: ($scope.availableActivities[i].maxAttending-(($scope.availableActivities[i].maxAttending*30)/100)), obj: $scope.availableActivities[i]};
+    			return {limit: ($scope.availableActivities[i].maxAttending-(($scope.availableActivities[i].maxAttending*20)/100)), obj: $scope.availableActivities[i]};
     		}
     	}
     }
@@ -265,7 +265,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
     	//return true; //Remove this when finished coding app
     };
 
-    //Navigates to registration step 2
+    //Navigates to registration step 2 (Details registration)
     $scope.goToStep2 = function (){
     	if(validateParticipants()) {
 
@@ -295,6 +295,32 @@ function registrationController($scope, $location, registrationFactory, MessageF
 			bootbox.confirm(promptOptions);	
 		}
     };
+
+    //Redirects page to "/" so that the registration process i canceled.
+    $scope.restartReg = function () {
+    	var promptOptions = {
+				title: "Vil du verkeleg avbryte?",
+				message: "Om du avbryt påmeldinga mistar du plassane du har tinga.",
+				buttons: {
+					confirm: {
+						label: "Ja",
+						className: "btn-success",
+					},
+					cancel: {
+				    	label: "Nei",
+				    	className: "btn-standard",
+				    }
+			  },
+			  callback: function(result) {                
+			      	if(result) {
+						MessageFactory.prepareForBroadcast('Påmelding er avbrutt! Ingen deltakarar er påmeldt.', 'alert alert-warning', 15);
+	  					$route.reload();
+					}
+			    }
+			};
+
+			bootbox.confirm(promptOptions);	
+	};
 
     //Main participant validation method
     function validateParticipants() {
@@ -361,14 +387,6 @@ function registrationController($scope, $location, registrationFactory, MessageF
 
 		return returnResult; 
     }
-
-    /*$scope.scrollToMessage = function () {
-    	var old = $location.hash();
-		$location.hash('msgScrollTag');
-		$anchorScroll();
-		//reset to old to keep any additional routing logic from kicking in
-		$location.hash(old);
-    }*/
 
     //Helper to detect null or undefined properties
     function isNullOrUndefined(prop) {

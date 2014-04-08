@@ -29,8 +29,9 @@ sommarcampApp.controller('MessageController', MessageController);
 MessageController.$inject = ['$scope', 'MessageFactory', '$log', '$timeout', '$location', '$anchorScroll'];
 headerController.$inject = ['$scope', '$location', '$modal', '$log', '$rootScope'];
 
-registrationController.$inject = ['$scope', '$location', 'registrationFactory', 'MessageFactory', '$log', '$rootScope', '$modal'];
-//registrationModalController.$inject = ['$scope', '$modalInstance','registrationFactory', 'MessageFactory', '$log', '$rootScope'];
+registrationController.$inject = ['$scope', '$location', 'registrationFactory', 'MessageFactory', '$log', '$rootScope', '$modal', '$route'];
+adminController.$inject = ['$scope', '$location', 'registrationFactory', 'MessageFactory', '$log', '$rootScope', '$modal', '$route'];
+
 
 
 

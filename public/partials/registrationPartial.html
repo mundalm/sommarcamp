@@ -36,7 +36,7 @@
 									<label ng-if="!isBlocked(activity.eventCode, $parent.$parent.$parent.$index)">
 								    	<input type="checkbox" ng-disabled="false" ng-click="evaluateEventBlock(!activity.isAttending, activity.blockEventCode, $parent.$parent.$parent.$parent.$index)" ng-model="activity.isAttending"/><span style="color: #000000;">{{activity.title}}</span>
 									</label>
-									<label ng-if="isBlocked(activity.eventCode, $parent.$parent.$parent.$index)" popover="Aktivitet kan ikkje velgjast fordi annen aktivitet er valgt på same veke" 
+									<label ng-if="isBlocked(activity.eventCode, $parent.$parent.$parent.$index)" popover="Aktivitet kan ikkje veljast fordi annan aktivitet er valgt for same veke" 
 																												 popover-trigger="mouseenter" 
 																												 popover-placement="top">
 								    	<input type="checkbox" ng-disabled="true" ng-click="evaluateEventBlock(!activity.isAttending, activity.blockEventCode, $parent.$parent.$parent.$parent.$index)" ng-model="activity.isAttending"/><span style="color: #dddddd;">{{activity.title}}</span>
@@ -77,13 +77,13 @@
 	</div><br/>
 	<div class="row" ng-if="activitiesLoaded">
 		<div class="col-xs-8">
-			<button type="button" ng-disabled="disableAddParticipant" class="btn btn-primary" ng-click="addParticipant()">
+			<button type="button" ng-disabled="disableAddParticipant" class="btn btn-primary btn-space" ng-click="addParticipant()">
 				Legg til deltakar
 			</button>
-			<button type="button" ng-disabled="disableRemoveParticipant" class="btn btn-primary" ng-click="removeLastParticipant()">
+			<button type="button" ng-disabled="disableRemoveParticipant" class="btn btn-primary btn-space" ng-click="removeLastParticipant()">
 				Fjern siste deltakar
 			</button>
-			<button type="button" ng-disabled="" class="btn btn-success" ng-click="goToStep2()">
+			<button type="button" ng-disabled="" class="btn btn-success btn-space" ng-click="goToStep2()">
 				Gå vidare
 			</button>
 		</div>
@@ -150,7 +150,7 @@
 			  		</div>-->
 			  	</div>
 			  	<div class="row row-fieldsv2">
-					<span class="col-sm-8 col-onev2"><small>* Informasjon om føresette er felles for alle dine deltakarar. Alle må fylle inn 2 kontaktpersonar. Sekundærkontakt kan være besteforeldre, vennar, etc.</small></span>
+					<span class="col-sm-8 col-onev2"><small>* Informasjon om føresette er felles for alle dine deltakarar. Alle må fylle inn 2 kontaktpersonar. Sekundærkontakt kan vere besteforeldre, vener, etc.</small></span>
 				</div>
 	  		</form>
 		</div>
@@ -213,7 +213,10 @@
 	</div>
 	<div class="row">
 		<div class="col-xs-8">
-			<button type="button" ng-disabled="" class="btn btn-success" ng-click="confirmRegistration()">
+			<button type="button" class="btn btn-danger btn-space" ng-click="restartReg()">
+				Avbryt påmelding
+			</button>
+			<button type="button" class="btn btn-success btn-space" ng-click="confirmRegistration()">
 				Bekreft påmelding
 			</button>
 		</div>

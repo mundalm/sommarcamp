@@ -51,7 +51,7 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 
 		newParticipant.save(function (err) {
 			if(!QueryHasErrors(err, res)) {
-		  		console.log('Inserted Participant: ' + JSON.stringify(newParticipant));
+		  		//console.log('Inserted Participant: ' + JSON.stringify(newParticipant));
 		  		ReturnResults(res, newParticipant, 201);
 		  	}
 		});
@@ -80,7 +80,7 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 					  }
 		Participant.findOneAndUpdate(query, update, null, function(err, result) {
 			if(!QueryHasErrors(err, res)) {
-				console.log('Updated Participant: ' + JSON.stringify(result));
+				//console.log('Updated Participant: ' + JSON.stringify(result));
 
 				if(req.body.isFinalRegStep) {
 					sendConfirmationEmail(req.body.parentOneEmail, req.body.parentOneFirstName + " " + req.body.parentOneLastName, result);	
@@ -119,25 +119,15 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 		mainText += "\nE-post primærkontakt: " + resultFromDB.parentOneEmail;
 		mainText += "\nSekundærkontakt: " + resultFromDB.parentTwoFirstName + " " + resultFromDB.parentTwoLastName;
 		mainText += "\nMobilnr sekundærkontakt: " + resultFromDB.parentTwoPhone;
-		//mainText += "\nE-post sekundærkontakt: " + resultFromDB.parentTwoEmail;
 		mainText += "\nØvrige opplysningar: " + (isNullOrUndefined(resultFromDB.comments) ? "Ingen" : resultFromDB.comments);
-		//mainText += "\n\nDeltek på følgjande aktivitetar:\n\n";
 
-		/*for(var j = 0; j < resultFromDB._activities.length; j++) {
-			if(resultFromDB._activities[j].attending) {
-				mainText += " - " + resultFromDB._activities[j].title + "\n";
-			} else {
-				mainText += " - Venteliste " + resultFromDB._activities[j].title + "\n";
-			}
-			
-		}*/	
-		mainText += "\nVi ser fram til kjekke og minnerike dagar på Klenkarberget Sommarcamp 2014!";
+		mainText += "\n\nVi ser fram til kjekke og minnerike dagar på Klenkarberget Sommarcamp 2014!";
 		mainText += "\n\nMed vennleg helsing";
 		mainText += "\n\nKlenkarberget Sommarcamp";
 
 		mandrill('/messages/send', {
 		    message: {
-		        to: [{email: toEmail, name: toName}, {email: 'net-register@mundal.org', name: 'net-register'}],
+		        to: [{email: toEmail, name: toName}, {email: 'registrering@sommarcamp.no', name: 'registrering'}],
 		        from_email	: 'post@sommarcamp.no',
 		        from_name	: "Klenkarberget Sommarcamp",
 		        subject		: "Registrering Sommarcamp 2014 - " + resultFromDB.firstName + " " + resultFromDB.lastName,
@@ -147,12 +137,12 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 		    if (error) {
 		    	console.log( JSON.stringify(error) );
 		    } else {
-		    	console.log(response);
+		    	//console.log(response);
 		    }
 		});
 	}
 
-	//Helper to detect null or undefined properties
+	//Helper to convert til "ja"/"nei" based on property
     function convertYesNo(prop) {
     	if(prop) {
     		return "Ja";
@@ -200,7 +190,7 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 		var newActivity = new AvailableActivity ({	eventCode       : "U27CA",
 											    title				: "Camp Adventures veke 27",
 											    shortTitle			: "Camp Adv. veke 27",
-											    maxAttending		: 20,
+											    maxAttending		: 40,
 											    minBirthYear		: 2004,
 											    blockEventCode		: "U27",
 											    eventPrice			: 1500,
@@ -209,7 +199,7 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 
 		newActivity.save(function (err) {
 			if(!QueryHasErrors(err, res)) {
-		  		console.log('Inserted Activity: ' + JSON.stringify(newActivity));
+		  		//console.log('Inserted Activity: ' + JSON.stringify(newActivity));
 		  		ReturnResults(res, newActivity, 201);
 		  	}
 		});
@@ -223,13 +213,21 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 		});
 	});
 
+	app.get('/api/killparts', function (req, res){
+		Participant.remove(function (err) {
+			if(!QueryHasErrors(err, res)) {
+		  		console.log('Deleted collection Participant');
+		  	}
+		});
+	});
+
 	app.get('/api/testmail', function (req, res){
 		mandrill('/messages/send', {
 		    message: {
 		        to: [{email: 'marius@mundal.org', name: 'Marius Mundal'}],
 		        from_email: 'post@sommarcamp.no',
-		        subject: "Hey, what's up?",
-		        text: "Hello, I sent this message using mandrill."
+		        subject: "Mandrill test mail",
+		        text: "Mail fra sommarcamp API"
 		    }
 		}, function(error, response) {
 		    if (error) {
@@ -240,15 +238,7 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 		});
 	});
 
-	app.get('/api/killparts', function (req, res){
-		Participant.remove(function (err) {
-			if(!QueryHasErrors(err, res)) {
-		  		console.log('Deleted collection Participant');
-		  	}
-		});
-	});
-
-	app.get('/api/initpart', function (req, res){
+	/*app.get('/api/initpart', function (req, res){
 		var newParticipant = new Participant ({	firstName       	: "Loke 5",
 											    lastName			: "Test loke",
 											    birthDay			: 10,
@@ -265,5 +255,5 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 		  		ReturnResults(res, newParticipant, 201);
 		  	}
 		});
-	});
+	});*/
 };

@@ -5,10 +5,15 @@ sommarcampApp.config(function($routeProvider) {
 				controller: 'registrationController',
 				templateUrl: 'partials/registrationPartial.html'
 			})
-		.when('/raller',
+		.when('/admOverview',
 			{
-				controller: '',
-				templateUrl: 'partials/lol.html'
+				controller: 'adminController',
+				templateUrl: 'partials/adminOverviewPartial.html'
+			})
+		.when('/admPartList',
+			{
+				controller: 'adminController',
+				templateUrl: 'partials/adminPartListPartial.html'
 			})
 		.otherwise({redirectTo: '/'});
 });

@@ -9,7 +9,7 @@ function registrationFactory($http, $log) {
 	            url: '/api/participants',
 	            timeout: 10000
 	        }).then(function(response) {
-	        	$log.info('Retrieved data: ',response);
+	        	//$log.info('Retrieved data: ',response);
 	           	return response;  
 	        },  function(reason) {
 	        	$log.error("Request Failed: ", reason);
@@ -24,7 +24,7 @@ function registrationFactory($http, $log) {
 	            url: '/api/activities',
 	            timeout: 10000
 	        }).then(function(response) {
-	        	$log.info('Retrieved data: ',response);
+	        	//$log.info('Retrieved data: ',response);
 	           	return response;  
 	        },  function(reason) {
 	        	$log.error("Request Failed: ", reason);
@@ -55,7 +55,7 @@ function registrationFactory($http, $log) {
 	            data: participant_data,
 	            timeout: 10000
 	        }).then(function(response) {
-	        	$log.info('Retrieved data after update: ',response);
+	        	//$log.info('Retrieved data after update: ',response);
 	           	return response;  
 	        },  function(reason) {
 	        	$log.error("PUT request Failed: ", reason);
@@ -71,7 +71,7 @@ function registrationFactory($http, $log) {
 	            data: participant,
 	            timeout: 10000
 	        }).then(function(response) {
-	        	$log.info('Retrieved data after instert: ',response);
+	        	//$log.info('Retrieved data after instert: ',response);
 	           	return response;  
 	        },  function(reason) {
 	        	$log.error("POST request Failed: ", reason);
@@ -86,7 +86,7 @@ function registrationFactory($http, $log) {
 	            url: '/api/participants/'+ id,
 	            timeout: 10000
 	        }).then(function(response) {
-	        	$log.info('Retrieved data after delete: ',response);
+	        	//$log.info('Retrieved data after delete: ',response);
 	           	return response;  
 	        },  function(reason) {
 	        	$log.error("DELETE request Failed: ", reason);

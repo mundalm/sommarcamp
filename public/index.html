@@ -23,7 +23,7 @@
     <body ng-cloak>
       <div class="container">
           <div class="page-header" id="msgScrollTag">
-              <h2>Klenkarberget Sommarcamp 2014 <small>Påmelding</small></h2>
+              <h2>Klenkarberget Sommarcamp 2014 <small>{{pageHeader}}</small></h2>
               {{availtStatFew}}
               <span ng-repeat="actStatFew in availtStatFew">test {{availtStatFew}}</span>
           </div>
@@ -81,6 +81,7 @@
       <!-- Application spesific controller script imports
       ================================================== -->
       <script src="controllers/registrationController.js"></script>
+      <script src="controllers/adminController.js"></script>
       <!--<script src="controllers/participantModalController.js"></script>-->
     
       <script src="controllers/messageController.js"></script>
