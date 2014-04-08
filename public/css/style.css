@@ -124,3 +124,15 @@ a {
         }
     }
 }
+
+[ng\:cloak], [ng-cloak], .ng-cloak {
+  display: none !important;
+}
+
+.false {
+  color: #000000;
+}
+
+.true {
+  color: #dddddd;
+}

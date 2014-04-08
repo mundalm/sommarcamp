@@ -2,7 +2,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 	$scope.formData = {};
 	$scope.availableActivities = [];
 	$scope.participants = [];
-	$scope.participantCommonFields = { canTakePictures: true, canUseTransport: true, canDoSwimming: true};
+	$scope.participantCommonFields = { canTakePictures: true, canUseTransport: true, canDoSwimming: true, canTakeVideo: true};
 	$scope.days = [01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31];
 	$scope.months = [01,02,03,04,05,06,07,08,09,10,11,12];
 	$scope.years = [1998,1999,2000,2001,2002,2003,2004,2005,2006,2007];
@@ -35,7 +35,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 		$scope.disableAddParticipant = true;
 		$scope.disableRemoveParticipant = true;
 
-		$rootScope.pageHeader = 'Deltagerbehandling';
+		$rootScope.pageHeader = 'Deltakarrbehandling';
 	}
 
 	//Clones activity list from scope. Use when adding new participant
@@ -235,9 +235,9 @@ function registrationController($scope, $location, registrationFactory, MessageF
     	if(validateParents()) {
     		$scope.updateParticipantsInfoOnServer(true);
     		MessageFactory.clearAndHide();
-			$scope.showStepOne = false;
+			/*$scope.showStepOne = false;
 			$scope.showStepTwo = false;
-			$scope.showStepThree = true;
+			$scope.showStepThree = true;*/
 		}
     }
 
@@ -253,7 +253,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 			parentTwoFirstName: $scope.participantCommonFields.parentTwoFirstName, 
 			parentTwoLastName: $scope.participantCommonFields.parentTwoLastName, 
 			parentTwoPhone: $scope.participantCommonFields.parentTwoPhone,
-			parentTwoEmail: $scope.participantCommonFields.parentTwoEmail,
+			//parentTwoEmail: $scope.participantCommonFields.parentTwoEmail,
 		}
 
 		if(!validateParticipantFields(participantProperties)) {
@@ -261,17 +261,38 @@ function registrationController($scope, $location, registrationFactory, MessageF
 			returnResult = false;
 		}
 
-    	//return returnResult;
-    	return true; //Remove this when finished coding app
+    	return returnResult;
+    	//return true; //Remove this when finished coding app
     };
 
     //Navigates to registration step 2
     $scope.goToStep2 = function (){
     	if(validateParticipants()) {
-			$scope.addParticipantsToServer();
-			$scope.showStepOne = false;
-			$scope.showStepTwo = true;
-			$scope.showStepThree = false;
+
+    		var promptOptions = {
+				title: "Er registrerte opplysningar korrekte?",
+				message: "Du kan ikkje gå tilbake og endre opplysningar i dette biletet seinare dersom du samtykker. Skulle du ha ynskje om endringar på opplysningar om deltakarane dine etter å ha samtykka må du fullføre registreringa og ta kontakt med oss på post@sommarcamp.no. Hugs at du kan melde på inntil 4 deltakarar på ein gong!",
+				buttons: {
+					confirm: {
+						label: "Ja",
+						className: "btn-success",
+					},
+					cancel: {
+				    	label: "Nei",
+				    	className: "btn-standard",
+				    }
+			  },
+			  callback: function(result) {                
+			      	if(result) {
+						$scope.addParticipantsToServer();
+						$scope.showStepOne = false;
+						$scope.showStepTwo = true;
+						$scope.showStepThree = false;
+					}
+			    }
+			};
+
+			bootbox.confirm(promptOptions);	
 		}
     };
 
@@ -285,6 +306,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 
     		if(!validateMinimumOneEvent(participant)) {
     			MessageFactory.prepareForBroadcast('Alle deltakarar må delta på minst 1 aktivitet', 'alert alert-warning', 15);
+    			//$scope.scrollToMessage();
     			returnResult = false;
     			break;
     		}
@@ -297,7 +319,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
     		}
 
     		if(!validateParticipantFields(participantProperties)) {
-    			MessageFactory.prepareForBroadcast('Alle deltakarar må ha fornavn, etternavn og fødselsdato registrert', 'alert alert-warning', 'alert alert-warning', 15);
+    			MessageFactory.prepareForBroadcast('Alle deltakarar må ha fornavn, etternavn og fødselsdato registrert', 'alert alert-warning', 15);
     			returnResult = false;
     			break;
     		}
@@ -339,6 +361,14 @@ function registrationController($scope, $location, registrationFactory, MessageF
 
 		return returnResult; 
     }
+
+    /*$scope.scrollToMessage = function () {
+    	var old = $location.hash();
+		$location.hash('msgScrollTag');
+		$anchorScroll();
+		//reset to old to keep any additional routing logic from kicking in
+		$location.hash(old);
+    }*/
 
     //Helper to detect null or undefined properties
     function isNullOrUndefined(prop) {
@@ -438,6 +468,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 				parentTwoPhone		: $scope.participantCommonFields.parentTwoPhone,
 				parentTwoEmail		: $scope.participantCommonFields.parentTwoEmail,
 				canTakePictures     : $scope.participantCommonFields.canTakePictures,
+				canTakeVideo     	: $scope.participantCommonFields.canTakeVideo,
 			    canUseTransport     : $scope.participantCommonFields.canUseTransport,
 			    canDoSwimming       : $scope.participantCommonFields.canDoSwimming,
 			    comments			: isNullOrUndefined($scope.participantCommonFields.comments) ? null : $scope.participantCommonFields.comments,
@@ -446,7 +477,9 @@ function registrationController($scope, $location, registrationFactory, MessageF
 
 			registrationFactory.updateParticipant(participantDataToUpdate, participant._id).then(function(data) {
 				if(!$rootScope.RHE(data, true)) {
-					//MessageFactory.prepareForBroadcast('Påmelding fullført! Du vil snarlig få ein e-post med ei stadfesting. Vi ber om de sjekkar at registrerte opplysningar er korrekte. Ta kontakt med post@sommarcamp.no dersom det er noko som ikkje stemmer.', 'alert alert-success', 20);
+					$scope.showStepOne = false;
+					$scope.showStepTwo = false;
+					$scope.showStepThree = true;
 					$log.info(data.data);
 				} else {
 					MessageFactory.prepareForBroadcast('Det oppstod en feil lagring av deltakarar. Kontakt administrator på e-post marius@mundal.org.', 'alert alert-danger', 60);

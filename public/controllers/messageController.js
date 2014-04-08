@@ -1,4 +1,4 @@
-function MessageController($scope, MessageFactory, $log, $timeout) {
+function MessageController($scope, MessageFactory, $log, $timeout, $location, $anchorScroll) {
 	// when loading controller, initialize customer list from customerFactory
 	init();
 	
@@ -13,6 +13,7 @@ function MessageController($scope, MessageFactory, $log, $timeout) {
 		$scope.messageStyle = MessageFactory.messageStyle;	
 
 		$scope.startTimer();
+		$scope.scrollToMessage();
 	});
 
 	$scope.$on('clearAndHide', function() {
@@ -39,5 +40,13 @@ function MessageController($scope, MessageFactory, $log, $timeout) {
 	    	$scope.timerRunning = true;
      	}, 1000);       
 	} 
+
+	$scope.scrollToMessage = function () {
+    	var old = $location.hash();
+		$location.hash('msgScrollTag');
+		$anchorScroll();
+		//reset to old to keep any additional routing logic from kicking in
+		$location.hash(old);
+    }
 }
 

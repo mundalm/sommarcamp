@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html ng-app="sommarcampApp" lang="en"><script id="tinyhippos-injected">if (window.top.ripple) { window.top.ripple("bootstrap").inject(window, document); }</script><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="http://getbootstrap.com/assets/ico/favicon.ico">
+
+    <title>Sommarcamp</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="./bower_components/bootstrap/dist/css/bootstrap.min.css">
+
+    <!-- Custom styles for this template -->
+    <link href="./css/style.css" rel="stylesheet">
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  </head>
+
+  <body style="">
+
+    <!-- Wrap all page content here -->
+    <div id="wrap">
+
+      <!-- Fixed navbar -->
+      <div class="navbar navbar-default navbar-fixed-top" role="navigation" ng-controller="headerController">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="./"><span class="glyphicon glyphicon-tasks"></span> PROSJEKTSTYRING</a>
+          </div>
+          <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+              <li class="dropdown">
+                <a href="" class="dropdown-toggle" data-toggle="dropdown">Vis <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li class="active" ng-class="{ active: isActive('/')}"><a href="./">Kunder</a></li>
+                  <li ng-class="{ active: isActive('/projects')}"><a href="./#projects">Prosjekt</a></li>
+                  <li ng-class="{ active: isActive('/leaders')}"><a href="./#leaders">Prosjektledere</a></li>
+                </ul>
+              </li>
+              <li class="dropdown" ng-show="projectSelected">
+                <a href="" class="dropdown-toggle" data-toggle="dropdown">Prosjekthåndtering <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li class="active" ng-class="{ active: isActive('/')}"><a href="./#projectCalculations">Kalkyler</a></li>
+                  <li class="divider"></li>
+                  <li class="active" ng-class="{ active: isActive('/')}">
+                    <!--<a href="./#selectProject">Velg aktivt prosjekt</a>-->
+                    <button type="button" title="Velg annet prosjekt for redigering" style="border: 1px; background-color: transparent" ng-click="openProjectSelectModal()">
+                      <span class="glyphicon glyphicon-new-window"></span> Velg annet prosjekt
+                    </button>
+                  </li>
+                </ul>
+              </li>
+              <li class="dropdown" ng-hide="projectSelected">
+                <a href="" class="dropdown-toggle" data-toggle="dropdown">Prosjekthåndtering <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li class="active" ng-class="{ active: isActive('/')}">
+                    <!--<a href="./#selectProject">Velg aktivt prosjekt</a>-->
+                    <button type="button" title="Velg aktivt prosjekt" style="border: 1px; background-color: transparent" ng-click="openProjectSelectModal()">
+                      <span class="glyphicon glyphicon-new-window"></span> Velg aktivt prosjekt
+                    </button>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Begin page content -->
+      <div data-ng-view=""></div>
+      <div>
+          <!--<div class="page-header">-->
+            <!--<table style="width: 100%;">
+              <tr>
+                <<td tyle="vertical-align: bottom;">
+                  <h1>{{pageHeader}}</h1>
+                </td>
+                <td class="messagearea">
+                  <span class="message-container" ng-controller="MessageController" ng-class="messageStyle" style="text-align: right;">
+                    {{ message }}
+                    <div style="display: none;"><timer interval="1000" countdown="5"/></div> 
+                  </span> 
+                </td>
+              </tr> 
+            </table>    
+          <!--</div>  -->
+          <!--<p class="lead">
+        	   <div data-ng-view=""></div>
+          </p>-->
+      </div>
+    </div>
+
+    <!--<div id="footer">-->
+      <!--<div class="container" ng-controller="MessageController" ng-class="messageStyle">
+        {{ message }}
+        <!--<p class="text-muted" ng-class="messageStyle">{{ message }}</p>-->
+        <!--<div style="display: none;"><timer interval="1000" countdown="5"/></div> 
+      </div>-->      
+    <!--</div>-->
+
+
+    <!-- Third party script imports
+    ================================================== -->
+    <script src="./bower_components/jquery/jquery.min.js"></script>
+    <script src="./bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="./bower_components/bootbox/bootbox.js"></script>
+    <script src="./bower_components/angular/angular.js"></script>
+    <!--<script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.6.0.js"></script>-->
+    <!--<script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.10.0.js"></script>-->
+    <script src="./bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="./bower_components/angular-route/angular-route.js"></script>
+    <script src="./bower_components/angular-timer/dist/angular-timer.js"></script>
+
+
+    
+    <!-- Application spesific factory script imports
+    ================================================== -->
+    <script src="factories/participantFactory.js"></script>
+    <script src="factories/messageFactory.js"></script>
+    
+    <!-- Application spesific controller script imports
+    ================================================== -->
+    <script src="controllers/participantController.js"></script>
+    <script src="controllers/participantModalController.js"></script>
+  
+    <script src="controllers/messageController.js"></script>
+    <script src="controllers/headerController.js"></script>
+    
+    <!-- Application spesific core functionality script imports
+    ================================================== -->
+    <script src="core.js"></script>
+    <script src="router.js"></script>
+    
+    
+  
+
+</body></html>

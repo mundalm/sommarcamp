@@ -70,11 +70,13 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 						parentTwoFirstName	: req.body.parentTwoFirstName, 
 						parentTwoLastName	: req.body.parentTwoLastName, 
 						parentTwoPhone		: req.body.parentTwoPhone,
-						parentTwoEmail		: req.body.parentTwoEmail,
+						//parentTwoEmail		: req.body.parentTwoEmail,
 						canTakePictures     : req.body.canTakePictures,
+						canTakeVideo     	: req.body.canTakeVideo,
 					    canUseTransport     : req.body.canUseTransport,
 					    canDoSwimming       : req.body.canDoSwimming,
-					    comments			: req.body.comments
+					    comments			: req.body.comments,
+					    regCompletedTime	: new Date()
 					  }
 		Participant.findOneAndUpdate(query, update, null, function(err, result) {
 			if(!QueryHasErrors(err, res)) {
@@ -90,25 +92,8 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 	});
 
 	function sendConfirmationEmail(toEmail, toName, resultFromDB) {
-		var mainText = "Hei\n\nVi har registrert påmeldinga di.\n\nBetalingsinformasjon:\nTotalpris for " + resultFromDB.firstName + " " + resultFromDB.lastName + ": kr " + resultFromDB.totalAmount + ",-";
-		mainText += "\n\nVennlegst innbetal deltakaravgifta til konto 3705.19.76429 tilhøyrande Klenkarberget Sommarcamp v/Haugen Idrettslag innan 15. mai 2014. Vi ber om at innbetalinga vert merka med namn på deltakar(ar).";
-		mainText += "\n\nEndeleg reservert plass blir stadfesta pr e-post når betaling er motteken. Dersom innbetaling ikkje er motteken innan betalingsfristen, vil plassen kunne gå til ein annan.";
-		mainText += "\n\nFølgjande informasjon er registrert:";
-		mainText += "\n\nNavn på deltakar: " + resultFromDB.firstName + " " + resultFromDB.lastName;
-		mainText += "\nFødselsdato: " + resultFromDB.birthDate;
-		mainText += "\nSpesielle omsyn: " + (isNullOrUndefined(resultFromDB.specialNeeds) ? "Ingen" : resultFromDB.specialNeeds);
-		mainText += "\nKan delta på badeaktivitetar: " + convertYesNo(resultFromDB.canDoSwimming);
-		mainText += "\nKan takast bilde/video av: " + convertYesNo(resultFromDB.canTakePictures);
-		mainText += "\nKan nytte transport (buss/bil): " + convertYesNo(resultFromDB.canUseTransport);
-		mainText += "\nPrimærkontakt: " + resultFromDB.parentOneFirstName + " " + resultFromDB.parentOneLastName;
-		mainText += "\nMobilnr primærkontakt: " + resultFromDB.parentOnePhone;
-		mainText += "\nE-post primærkontakt: " + resultFromDB.parentOneEmail;
-		mainText += "\nSekundærkontakt: " + resultFromDB.parentTwoFirstName + " " + resultFromDB.parentTwoLastName;
-		mainText += "\nMobilnr sekundærkontakt: " + resultFromDB.parentTwoPhone;
-		mainText += "\nE-post sekundærkontakt: " + resultFromDB.parentTwoEmail;
-		mainText += "\nØvrige opplysningar: " + (isNullOrUndefined(resultFromDB.comments) ? "Ingen" : resultFromDB.comments);
-		mainText += "\n\nDeltek på følgjande aktivitetar:\n\n";
-
+		var mainText = "Hei\n\nVi har registrert påmeldinga di.";
+		mainText += "\n\n" + resultFromDB.firstName + " " + resultFromDB.lastName + " deltek på følgjande aktivitetar:\n\n";
 		for(var j = 0; j < resultFromDB._activities.length; j++) {
 			if(resultFromDB._activities[j].attending) {
 				mainText += " - " + resultFromDB._activities[j].title + "\n";
@@ -117,13 +102,42 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 			}
 			
 		}	
+
+		mainText += "\n\nBetalingsinformasjon:\nTotalpris for " + resultFromDB.firstName + " " + resultFromDB.lastName + ": kr " + resultFromDB.totalAmount + ",-";
+		mainText += "\n\nVennlegst innbetal deltakaravgifta til konto 3705.19.76429 tilhøyrande Klenkarberget Sommarcamp v/Haugen Idrettslag innan 15. mai 2014. Vi ber om at innbetalinga vert merka med namn på deltakar(ar).";
+		mainText += "\n\nEndeleg reservert plass blir stadfesta pr e-post når betaling er motteken. Dersom innbetaling ikkje er motteken innan betalingsfristen, vil plassen kunne gå til ein annan.";
+		mainText += "\n\nFølgjande informasjon er registrert:";
+		mainText += "\n\nNavn på deltakar: " + resultFromDB.firstName + " " + resultFromDB.lastName;
+		mainText += "\nFødselsdato: " + resultFromDB.birthDate;
+		mainText += "\nSpesielle omsyn: " + (isNullOrUndefined(resultFromDB.specialNeeds) ? "Ingen" : resultFromDB.specialNeeds);
+		mainText += "\nKan delta på badeaktivitetar: " + convertYesNo(resultFromDB.canDoSwimming);
+		mainText += "\nKan takast bilete av: " + convertYesNo(resultFromDB.canTakePictures);
+		mainText += "\nKan takast video av: " + convertYesNo(resultFromDB.canTakeVideo);
+		mainText += "\nKan nytte transport (buss/bil): " + convertYesNo(resultFromDB.canUseTransport);
+		mainText += "\nPrimærkontakt: " + resultFromDB.parentOneFirstName + " " + resultFromDB.parentOneLastName;
+		mainText += "\nMobilnr primærkontakt: " + resultFromDB.parentOnePhone;
+		mainText += "\nE-post primærkontakt: " + resultFromDB.parentOneEmail;
+		mainText += "\nSekundærkontakt: " + resultFromDB.parentTwoFirstName + " " + resultFromDB.parentTwoLastName;
+		mainText += "\nMobilnr sekundærkontakt: " + resultFromDB.parentTwoPhone;
+		//mainText += "\nE-post sekundærkontakt: " + resultFromDB.parentTwoEmail;
+		mainText += "\nØvrige opplysningar: " + (isNullOrUndefined(resultFromDB.comments) ? "Ingen" : resultFromDB.comments);
+		//mainText += "\n\nDeltek på følgjande aktivitetar:\n\n";
+
+		/*for(var j = 0; j < resultFromDB._activities.length; j++) {
+			if(resultFromDB._activities[j].attending) {
+				mainText += " - " + resultFromDB._activities[j].title + "\n";
+			} else {
+				mainText += " - Venteliste " + resultFromDB._activities[j].title + "\n";
+			}
+			
+		}*/	
 		mainText += "\nVi ser fram til kjekke og minnerike dagar på Klenkarberget Sommarcamp 2014!";
 		mainText += "\n\nMed vennleg helsing";
 		mainText += "\n\nKlenkarberget Sommarcamp";
 
 		mandrill('/messages/send', {
 		    message: {
-		        to: [{email: toEmail, name: toName}],
+		        to: [{email: toEmail, name: toName}, {email: 'net-register@mundal.org', name: 'net-register'}],
 		        from_email	: 'post@sommarcamp.no',
 		        from_name	: "Klenkarberget Sommarcamp",
 		        subject		: "Registrering Sommarcamp 2014 - " + resultFromDB.firstName + " " + resultFromDB.lastName,
@@ -185,9 +199,9 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 	app.get('/api/initact', function (req, res){
 		var newActivity = new AvailableActivity ({	eventCode       : "U27CA",
 											    title				: "Camp Adventures veke 27",
-											    shortTitle			: "CA Veke 27",
-											    maxAttending		: 5,
-											    minBirthYear		: 2003,
+											    shortTitle			: "Camp Adv. veke 27",
+											    maxAttending		: 20,
+											    minBirthYear		: 2004,
 											    blockEventCode		: "U27",
 											    eventPrice			: 1500,
 											    allowDiscount		: false, 

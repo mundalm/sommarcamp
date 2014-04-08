@@ -33,15 +33,29 @@
 		  				<div ng-if="isParticipantOldEnough(participant.birthYear, activity.minBirthYear)">
 			  				<div class="checkbox" ng-if="!activity.isFull"> <!-- Show event selector -->
 								<small>
-									<label>
-								    	<input type="checkbox" ng-disabled="isBlocked(activity.eventCode, $parent.$parent.$parent.$index)" ng-click="evaluateEventBlock(!activity.isAttending, activity.blockEventCode, $parent.$parent.$parent.$index)" ng-model="activity.isAttending"/>{{activity.title}}
+									<label ng-if="!isBlocked(activity.eventCode, $parent.$parent.$parent.$index)">
+								    	<input type="checkbox" ng-disabled="false" ng-click="evaluateEventBlock(!activity.isAttending, activity.blockEventCode, $parent.$parent.$parent.$parent.$index)" ng-model="activity.isAttending"/><span style="color: #000000;">{{activity.title}}</span>
 									</label>
+									<label ng-if="isBlocked(activity.eventCode, $parent.$parent.$parent.$index)" popover="Aktivitet kan ikkje velgjast fordi annen aktivitet er valgt på same veke" 
+																												 popover-trigger="mouseenter" 
+																												 popover-placement="top">
+								    	<input type="checkbox" ng-disabled="true" ng-click="evaluateEventBlock(!activity.isAttending, activity.blockEventCode, $parent.$parent.$parent.$parent.$index)" ng-model="activity.isAttending"/><span style="color: #dddddd;">{{activity.title}}</span>
+									</label>
+									<!--<label ng-if="!isBlocked(activity.eventCode, $parent.$parent.$parent.$index)">
+								    	<input type="checkbox" ng-disabled="isBlocked(activity.eventCode, $parent.$parent.$parent.$index)" ng-click="evaluateEventBlock(!activity.isAttending, activity.blockEventCode, $parent.$parent.$parent.$index)" ng-model="activity.isAttending"/><span style="color: #000000;">{{activity.title}}</span>
+									</label>-->
 								</small>
 							</div>
 							<div class="checkbox" ng-if="activity.isFull"> <!-- Show waiting list selector -->
 								<small>
+									<!--<label ng-if="!isBlocked(activity.eventCode, $parent.$parent.$parent.$index)">
+									    <input type="checkbox" ng-disabled="false" ng-model="activity.isWaiting"/><span style="color: #000000;">Venteliste {{activity.title}}</span>
+									</label>-->
+									<!--<label ng-if="isBlocked(activity.eventCode, $parent.$parent.$parent.$index)" popover="Aktivitet kan ikkje velgjast fordi annen aktivitet er valgt på same veke" 
+																												 popover-trigger="mouseenter" 
+																												 popover-placement="top">-->
 									<label>
-									    <input type="checkbox" ng-disabled="isBlocked(activity.eventCode, $parent.$parent.$parent.$index)" ng-change="evaluateEventBlock(activity.isWaiting, activity.blockEventCode, $parent.$parent.$parent.$index)" ng-model="activity.isWaiting"/>Venteliste {{activity.title}}
+									    <input type="checkbox" ng-model="activity.isWaiting"/><span style="color: #000000;">Venteliste {{activity.title}}</span> <!--ng-change="evaluateEventBlock(activity.isWaiting, activity.blockEventCode, $parent.$parent.$parent.$parent.$index)"-->
 									</label>
 								</small>
 							</div>
@@ -53,8 +67,11 @@
 	</div>
 	<div class="row" ng-if="activitiesLoaded">
 		<div ng-repeat="activityStat in availableActivities">
-			<div class="col-xs-2" ng-if="activityStat.fewLeft">
-				<span class="label label-warning">{{activityStat.Title}} - få ledige</span>
+			<div class="col-lg-2" ng-if="activityStat.fewLeft">
+				<span class="label label-warning">{{activityStat.shortTitle}} - få ledige</span>
+			</div>
+			<div class="col-lg-2" ng-if="!activityStat.fewLeft">
+				
 			</div>
 		</div>
 	</div><br/>
@@ -128,12 +145,12 @@
 			  		<div class="col-sm-3 col-onev2">
 			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentTwoPhone" placeholder="Mobiltelefon"/>
 			  		</div>
-			  		<div class="col-sm-3 col-onev2">
+			  		<!--<div class="col-sm-3 col-onev2">
 			  			<input type="text" class="form-control" ng-model="participantCommonFields.parentTwoEmail" placeholder="E-post"/>
-			  		</div>
+			  		</div>-->
 			  	</div>
 			  	<div class="row row-fieldsv2">
-					<span class="col-sm-8 col-onev2"><small>* Informasjon om føresette er felles for alle dine deltakarar</small></span>
+					<span class="col-sm-8 col-onev2"><small>* Informasjon om føresette er felles for alle dine deltakarar. Alle må fylle inn 2 kontaktpersonar. Sekundærkontakt kan være besteforeldre, vennar, etc.</small></span>
 				</div>
 	  		</form>
 		</div>
@@ -148,7 +165,14 @@
 			  		<div class="col-sm-3 col-onev2">
 			  			<div class="checkbox">
 							<label>
-						    	<input type="checkbox" ng-model="participantCommonFields.canTakePictures"/><small>Kan takast bilete/video av. Kun til bruk i regi av Klenkarberget Sommarcamp.</small>
+						    	<input type="checkbox" ng-model="participantCommonFields.canTakePictures"/><small>Kan takast bilete av. Kun til bruk i regi av Klenkarberget Sommarcamp.</small>
+							</label>
+						</div>
+			  		</div>
+			  		<div class="col-sm-3 col-onev2">
+			  			<div class="checkbox">
+							<label>
+						    	<input type="checkbox" ng-model="participantCommonFields.canTakeVideo"/><small>Kan takast video av. Kun til bruk i regi av Klenkarberget Sommarcamp.</small>
 							</label>
 						</div>
 			  		</div>
