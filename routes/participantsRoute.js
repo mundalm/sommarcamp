@@ -88,6 +88,20 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 		} else {
 			var update = { 	firstName       	: req.body.firstName,
 							lastName       		: req.body.lastName,
+							birthDate			: req.body.birthDate,
+							parentOneFirstName	: req.body.parentOneFirstName,
+							parentOneLastName	: req.body.parentOneLastName,
+							parentOnePhone		: req.body.parentOnePhone,
+							parentOneEmail		: req.body.parentOneEmail,
+							parentTwoFirstName	: req.body.parentTwoFirstName,
+							parentTwoLastName	: req.body.parentTwoLastName,
+							parentTwoPhone		: req.body.parentTwoPhone,
+							specialNeeds		: req.body.specialNeeds,
+							comments			: req.body.comments,
+							canTakePictures     : req.body.canTakePictures,
+							canTakeVideo     	: req.body.canTakeVideo,
+						    canUseTransport     : req.body.canUseTransport,
+						    canDoSwimming       : req.body.canDoSwimming,
 				
 			  }
 		}

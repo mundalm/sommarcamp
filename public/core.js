@@ -1,5 +1,5 @@
 //Define module
-var sommarcampApp = angular.module('sommarcampApp', ['ngRoute', 'timer', 'ui.bootstrap']).run(
+var sommarcampApp = angular.module('sommarcampApp', ['ngRoute', 'timer', 'ui.bootstrap', 'placeholderShim']).run(
 	function($rootScope){
 		$rootScope.RHE = function(data, expectsObject) {
 			if(data === undefined || ( data.data === undefined && expectsObject)) {				

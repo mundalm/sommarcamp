@@ -27,6 +27,134 @@
 						<span class="glyphicon glyphicon-minus" /></span>
 					</div>
 				</div><br/>
+				<div id="participant-form-grid" class="row">
+					<div class="col-xs-12 col-sm-6 col-md-8">
+						<input type="text" class="form-control" name="birthDate" 
+							ng-model="formData.birthDate" required="" placeholder="Fødselsdato" />
+					</div>
+					<div class="col-xs-6 col-md-4" ng-show="participantForm.$dirty && participantForm.$invalid">
+						<span class="error" ng-show="participantForm.birthDate.$error.required">
+						<span class="glyphicon glyphicon-minus" /></span>
+					</div>
+				</div><br/>
+				<div id="participant-form-grid" class="row">
+					<div class="col-xs-12 col-sm-6 col-md-8">
+						<input type="text" class="form-control" name="parentOneFirstName" 
+							ng-model="formData.parentOneFirstName" required="" placeholder="Fornavn primærkontakt" />
+					</div>
+					<div class="col-xs-6 col-md-4" ng-show="participantForm.$dirty && participantForm.$invalid">
+						<span class="error" ng-show="participantForm.parentOneFirstName.$error.required">
+						<span class="glyphicon glyphicon-minus" /></span>
+					</div>
+				</div><br/>
+				<div id="participant-form-grid" class="row">
+					<div class="col-xs-12 col-sm-6 col-md-8">
+						<input type="text" class="form-control" name="parentOneLastName" 
+							ng-model="formData.parentOneLastName" required="" placeholder="Etternavn primærkontakt" />
+					</div>
+					<div class="col-xs-6 col-md-4" ng-show="participantForm.$dirty && participantForm.$invalid">
+						<span class="error" ng-show="participantForm.parentOneLastName.$error.required">
+						<span class="glyphicon glyphicon-minus" /></span>
+					</div>
+				</div><br/>
+				<div id="participant-form-grid" class="row">
+					<div class="col-xs-12 col-sm-6 col-md-8">
+						<input type="text" class="form-control" name="parentOnePhone" 
+							ng-model="formData.parentOnePhone" required="" placeholder="Mobiltelefon primærkontakt" />
+					</div>
+					<div class="col-xs-6 col-md-4" ng-show="participantForm.$dirty && participantForm.$invalid">
+						<span class="error" ng-show="participantForm.parentOnePhone.$error.required">
+						<span class="glyphicon glyphicon-minus" /></span>
+					</div>
+				</div><br/>
+				<div id="participant-form-grid" class="row">
+					<div class="col-xs-12 col-sm-6 col-md-8">
+						<input type="text" class="form-control" name="parentOneEmail" 
+							ng-model="formData.parentOneEmail" required="" placeholder="E-post primærkontakt" />
+					</div>
+					<div class="col-xs-6 col-md-4" ng-show="participantForm.$dirty && participantForm.$invalid">
+						<span class="error" ng-show="participantForm.parentOneEmail.$error.required">
+						<span class="glyphicon glyphicon-minus" /></span>
+					</div>
+				</div><br/>
+				<div id="participant-form-grid" class="row">
+					<div class="col-xs-12 col-sm-6 col-md-8">
+						<input type="text" class="form-control" name="parentTwoFirstName" 
+							ng-model="formData.parentTwoFirstName" required="" placeholder="Fornavn sekundærkontakt" />
+					</div>
+					<div class="col-xs-6 col-md-4" ng-show="participantForm.$dirty && participantForm.$invalid">
+						<span class="error" ng-show="participantForm.parentTwoFirstName.$error.required">
+						<span class="glyphicon glyphicon-minus" /></span>
+					</div>
+				</div><br/>
+				<div id="participant-form-grid" class="row">
+					<div class="col-xs-12 col-sm-6 col-md-8">
+						<input type="text" class="form-control" name="parentTwoLastName" 
+							ng-model="formData.parentTwoLastName" required="" placeholder="Etternavn sekundærkontakt" />
+					</div>
+					<div class="col-xs-6 col-md-4" ng-show="participantForm.$dirty && participantForm.$invalid">
+						<span class="error" ng-show="participantForm.parentTwoLastName.$error.required">
+						<span class="glyphicon glyphicon-minus" /></span>
+					</div>
+				</div><br/>
+				<div id="participant-form-grid" class="row">
+					<div class="col-xs-12 col-sm-6 col-md-8">
+						<input type="text" class="form-control" name="parentTwoPhone" 
+							ng-model="formData.parentTwoPhone" required="" placeholder="Mobiltelefon sekundærkontakt" />
+					</div>
+					<div class="col-xs-6 col-md-4" ng-show="participantForm.$dirty && participantForm.$invalid">
+						<span class="error" ng-show="participantForm.parentTwoPhone.$error.required">
+						<span class="glyphicon glyphicon-minus" /></span>
+					</div>
+				</div><br/>
+				<div id="participant-form-grid" class="row">
+					<div class="col-xs-12 col-sm-6 col-md-8">
+						<textarea class="form-control" name="specialNeeds" 
+							ng-model="formData.specialNeeds" placeholder="Spesielle omsyn" />
+					</div>
+				</div><br/>
+				<div id="participant-form-grid" class="row">
+					<div class="col-xs-12 col-sm-6 col-md-8">
+						<textarea class="form-control" name="comments" 
+							ng-model="formData.comments" placeholder="Øvrige kommentarar" />
+					</div>
+				</div><br/>
+				<div id="participant-form-grid" class="row">
+					<div class="col-xs-12 col-sm-6 col-md-8">
+						<div class="checkbox">
+							<label>
+						    	<input type="checkbox" ng-model="formData.canTakePictures"/><small>Kan takast bilete av</small>
+							</label>
+						</div>
+					</div>
+				</div><br/>
+				<div id="participant-form-grid" class="row">
+					<div class="col-xs-12 col-sm-6 col-md-8">
+						<div class="checkbox">
+							<label>
+						    	<input type="checkbox" ng-model="formData.canTakeVideo"/><small>Kan takast video av</small>
+							</label>
+						</div>
+					</div>
+				</div><br/>
+				<div id="participant-form-grid" class="row">
+					<div class="col-xs-12 col-sm-6 col-md-8">
+						<div class="checkbox">
+							<label>
+						    	<input type="checkbox" ng-model="formData.canUseTransport"/><small>Kan nytte transport</small>
+							</label>
+						</div>
+					</div>
+				</div><br/>
+				<div id="participant-form-grid" class="row">
+					<div class="col-xs-12 col-sm-6 col-md-8">
+						<div class="checkbox">
+							<label>
+						    	<input type="checkbox" ng-model="formData.canDoSwimming"/><small>Kan delta på bading</small>
+							</label>
+						</div>
+					</div>
+				</div><br/>
 			</div>
 		</form><br/>
 		<span class="message-container" ng-controller="MessageController" ng-class="messageStyle" style="text-align: right;">

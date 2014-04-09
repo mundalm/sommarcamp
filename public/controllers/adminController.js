@@ -59,6 +59,17 @@ function adminController($scope, $location, registrationFactory, MessageFactory,
         return Math.ceil($scope.filteredParticipants.length/$scope.pageSize);                
     }
 
+    $scope.changePage=function(add){
+        if(!add) {
+        	if($scope.currentPage>0)
+        		$scope.currentPage = $scope.currentPage-1;
+        } else {
+        	if($scope.currentPage<$scope.numberOfPages()-1) {
+        		$scope.currentPage = $scope.currentPage+1;
+        	}
+        }       
+    }
+
     // Reset search field
 	$scope.resetSearch = function() {
 		$scope.searchParticipants = '';
@@ -178,10 +189,25 @@ function adminController($scope, $location, registrationFactory, MessageFactory,
 		$scope.CancelButton = true;
 		$scope.participantEditedID = $scope.filteredParticipants[index]._id;
 		
-		$scope.formData = {__v: $scope.filteredParticipants[index].__v,
-						   _id: $scope.filteredParticipants[index]._id, 
-						   firstName: $scope.filteredParticipants[index].firstName,
-						   lastName: $scope.filteredParticipants[index].lastName}
+		$scope.formData = {	__v: $scope.filteredParticipants[index].__v,
+						   	_id: $scope.filteredParticipants[index]._id, 
+						   	firstName: $scope.filteredParticipants[index].firstName,
+						   	lastName: $scope.filteredParticipants[index].lastName,
+						   	birthDate: $scope.filteredParticipants[index].birthDate,
+							parentOneFirstName: $scope.filteredParticipants[index].parentOneFirstName,
+							parentOneLastName: $scope.filteredParticipants[index].parentOneLastName,
+							parentOnePhone: $scope.filteredParticipants[index].parentOnePhone,
+							parentOneEmail: $scope.filteredParticipants[index].parentOneEmail,
+							parentTwoFirstName: $scope.filteredParticipants[index].parentTwoFirstName,
+							parentTwoLastName: $scope.filteredParticipants[index].parentTwoLastName,
+							parentTwoPhone: $scope.filteredParticipants[index].parentTwoPhone,
+							specialNeeds: $scope.filteredParticipants[index].specialNeeds,
+							comments: $scope.filteredParticipants[index].comments,
+							canTakePictures: $scope.filteredParticipants[index].canTakePictures,
+							canTakeVideo: $scope.filteredParticipants[index].canTakeVideo,
+							canUseTransport: $scope.filteredParticipants[index].canUseTransport,
+							canDoSwimming: $scope.filteredParticipants[index].canDoSwimming,
+							}
 		$scope.openParticipantModal(); 
 	};
 

@@ -12,6 +12,7 @@
     "angular-route": 	"",
     "angular-timer":	"",
     "bootbox":        "4.1.0",
-    "angular-bootstrap": ""
+    "angular-bootstrap": "",
+    "angular-placeholder-shim" : ""
   }
 }
