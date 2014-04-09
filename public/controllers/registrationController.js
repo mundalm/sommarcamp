@@ -112,7 +112,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 			}
 		}
 
-		$log.info(index);			
+		//$log.info(index);			
 	}
 
 	//Starts activity check timer countdown from scratch
@@ -148,7 +148,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 
     $scope.validateYear = function (index) {
     	for(var i = 0; i < $scope.participants[index].activityList.length; i++) {
-    		$log.info($scope.isParticipantOldEnough($scope.participants[index].birthYear, $scope.participants[index].activityList[i].minBirthYear));
+    		//$log.info($scope.isParticipantOldEnough($scope.participants[index].birthYear, $scope.participants[index].activityList[i].minBirthYear));
     		if(!$scope.isParticipantOldEnough($scope.participants[index].birthYear, $scope.participants[index].activityList[i].minBirthYear)) {
     			$scope.participants[index].activityList[i].isAttending = false;
     			$scope.participants[index].activityList[i].isWaiting = false;
@@ -162,7 +162,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
     function getActivyParticipantCountFromServer() {
     	if(!$scope.showStepOne) {
     		return;
-    		$log.info("Aborting activity update because user has reserved places!");
+    		//$log.info("Aborting activity update because user has reserved places!");
     	}
     	registrationFactory.getAvailableActivitesStatus().then(function(data) {
 			if(!$rootScope.RHE(data, true)) {
@@ -244,7 +244,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
     //Main participant validation method
     function validateParents() {
     	var returnResult = true;
-    	$log.info($scope.participantCommonFields);
+    	//$log.info($scope.participantCommonFields);
     		
 		var participantProperties = {parentOneFirstName: $scope.participantCommonFields.parentOneFirstName, 
 			parentOneLastName: $scope.participantCommonFields.parentOneLastName, 
@@ -402,6 +402,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 		for(var i = 0; i<$scope.participants.length; i++) {
 			var participant = $scope.participants[i];
 			var newParticipantForServer = {
+				bookedTime			: new Date(),
 				firstName       	: participant.firstName,
 			    lastName			: participant.lastName,
 			    birthDay			: participant.birthDay,
@@ -428,7 +429,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 			}
 			
 
-			$log.info("Number of discount acts = " + numberOfDiscountActivities)
+			//$log.info("Number of discount acts = " + numberOfDiscountActivities)
 
 			for(var j = 0; j < participant.activityList.length; j++) {
 				var partActivity = participant.activityList[j];
@@ -443,7 +444,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 
 				if(partActivity.isAttending) {
 					if( (numberOfDiscountActivities > 0) && partActivity.allowDiscount) { //Event egligable for discount and doiscounted activities available
-						$log.info("Discount given on " + partActivity.eventCode);
+						//$log.info("Discount given on " + partActivity.eventCode);
 						if(numberOfDiscountActivities > 1 ) {
 							totalAmount = totalAmount + ((partActivity.eventPrice*60)/100); // 40% discount if second discount activity
 						} else {
@@ -454,7 +455,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 						totalAmount = totalAmount + partActivity.eventPrice; // No discount for current activity
 					} 
 				}
-				$log.info("Totalamount after calcpart " + totalAmount);
+				//$log.info("Totalamount after calcpart " + totalAmount);
 				newParticipantForServer.totalAmount = totalAmount;
 			}
 
@@ -467,7 +468,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 				}
 			});	
 
-			$log.info(newParticipantForServer);
+			//$log.info(newParticipantForServer);
 		}	
 	};
 
@@ -498,7 +499,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 					$scope.showStepOne = false;
 					$scope.showStepTwo = false;
 					$scope.showStepThree = true;
-					$log.info(data.data);
+					//$log.info(data.data);
 				} else {
 					MessageFactory.prepareForBroadcast('Det oppstod en feil lagring av deltakarar. Kontakt administrator på e-post marius@mundal.org.', 'alert alert-danger', 60);
 				}

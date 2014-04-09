@@ -2,6 +2,9 @@
 var Participant = require('../app/models/participant.js');
 var AvailableActivity = require('../app/models/availableActivity.js');
 var mandrill = require('node-mandrill')('9fpTjC4TRNvpxej2vOEv1g');
+var moment = require('moment-timezone');
+
+console.log(moment().tz('Europe/Berlin').format());
 
 module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, ReturnResults) {
 
@@ -46,12 +49,14 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 											   	_activities 		: req.body._activities,
 											    _parents 			: null,
 											    partArrPos			: req.body.partArrPos,
-											    totalAmount			: req.body.totalAmount 
+											    totalAmount			: req.body.totalAmount, 
+											    bookedTime			: moment().tz('Europe/Berlin').format()
 											});
 
 		newParticipant.save(function (err) {
 			if(!QueryHasErrors(err, res)) {
 		  		//console.log('Inserted Participant: ' + JSON.stringify(newParticipant));
+		  		//console.log(req.body.bookedTime);
 		  		ReturnResults(res, newParticipant, 201);
 		  	}
 		});
@@ -60,24 +65,32 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 	//============================================================ Update participant
 	app.put('/api/participants/:id', function (req, res){
 		var query = { _id: req.params.id };
-		console.log(query);
+		//console.log(query);
 
-		var update = { 	specialNeeds       	: req.body.specialNeeds,
-						parentOneFirstName	: req.body.parentOneFirstName, 
-						parentOneLastName	: req.body.parentOneLastName, 
-						parentOnePhone		: req.body.parentOnePhone,
-						parentOneEmail		: req.body.parentOneEmail,
-						parentTwoFirstName	: req.body.parentTwoFirstName, 
-						parentTwoLastName	: req.body.parentTwoLastName, 
-						parentTwoPhone		: req.body.parentTwoPhone,
-						//parentTwoEmail		: req.body.parentTwoEmail,
-						canTakePictures     : req.body.canTakePictures,
-						canTakeVideo     	: req.body.canTakeVideo,
-					    canUseTransport     : req.body.canUseTransport,
-					    canDoSwimming       : req.body.canDoSwimming,
-					    comments			: req.body.comments,
-					    regCompletedTime	: new Date()
-					  }
+		if(req.body.isFinalRegStep) {
+			var update = { 	specialNeeds       	: req.body.specialNeeds,
+							parentOneFirstName	: req.body.parentOneFirstName, 
+							parentOneLastName	: req.body.parentOneLastName, 
+							parentOnePhone		: req.body.parentOnePhone,
+							parentOneEmail		: req.body.parentOneEmail,
+							parentTwoFirstName	: req.body.parentTwoFirstName, 
+							parentTwoLastName	: req.body.parentTwoLastName, 
+							parentTwoPhone		: req.body.parentTwoPhone,
+							//parentTwoEmail		: req.body.parentTwoEmail,
+							canTakePictures     : req.body.canTakePictures,
+							canTakeVideo     	: req.body.canTakeVideo,
+						    canUseTransport     : req.body.canUseTransport,
+						    canDoSwimming       : req.body.canDoSwimming,
+						    comments			: req.body.comments,
+						    regCompletedTime	: moment().tz('Europe/Berlin').format(),
+						    regCompleted 		: true
+						  }
+		} else {
+			var update = { 	firstName       	: req.body.firstName,
+							lastName       		: req.body.lastName,
+				
+			  }
+		}
 		Participant.findOneAndUpdate(query, update, null, function(err, result) {
 			if(!QueryHasErrors(err, res)) {
 				//console.log('Updated Participant: ' + JSON.stringify(result));

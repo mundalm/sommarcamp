@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 
 // define the schema for child
 var participantSchema = mongoose.Schema({
-	bookedTime     		: { type: Date, default: Date.now },
+	bookedTime     		: Date,
 	regCompletedTime    : Date,
     firstName       	: String,
     lastName			: String,
@@ -26,6 +26,7 @@ var participantSchema = mongoose.Schema({
     canDoSwimming       : Boolean,
     comments            : String,
     totalAmount         : Number,
+    regCompleted        : {type: Boolean, default: false},
     _activities 		: [activitySchema]
 });
 

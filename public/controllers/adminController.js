@@ -7,6 +7,8 @@ function adminController($scope, $location, registrationFactory, MessageFactory,
 
 	$scope.currentPage = 0;
     $scope.pageSize = 10;	
+
+    $scope.showSelect = true;
 	
 	// when loading controller, initialize Participant list from ParticipantFactory
 	init();
@@ -169,6 +171,31 @@ function adminController($scope, $location, registrationFactory, MessageFactory,
 
 		bootbox.confirm(promptOptions);	
 	};	
+
+	// Put project to edit in edit form
+	$scope.editParticipant = function(index) {
+		$scope.showUpdateButton = true;
+		$scope.CancelButton = true;
+		$scope.participantEditedID = $scope.filteredParticipants[index]._id;
+		
+		$scope.formData = {__v: $scope.filteredParticipants[index].__v,
+						   _id: $scope.filteredParticipants[index]._id, 
+						   firstName: $scope.filteredParticipants[index].firstName,
+						   lastName: $scope.filteredParticipants[index].lastName}
+		$scope.openParticipantModal(); 
+	};
+
+	$scope.openParticipantModal = function () {
+	    var modalInstance = $modal.open({
+	      	templateUrl: 'partials/participantModalPartial.html',
+	      	controller: 'participantModalController',
+	      	scope: $scope
+	    });	
+
+	    modalInstance.result.then(function (result) {
+	    	MessageFactory.prepareForBroadcast('Deltakar ' + result, 'alert alert-success');
+	    });
+  	};
 
 }
 

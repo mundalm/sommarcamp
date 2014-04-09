@@ -21,6 +21,12 @@
 			  		<table style="width: 100%">
 			  			<tr>
 			  				<td><h4>Deltakaroversikt</h4></td>
+			  				<td style="text-align: right">
+			  					<div class="btn-group">
+							        <button type="button" class="btn btn-primary" ng-model="showSelect" btn-radio="true">Fullførte</button>
+							        <button type="button" class="btn btn-primary" ng-model="showSelect" btn-radio="false">Ikke fullførte</button>
+							    </div>
+			  				</td>
 			  			</tr>
 			  		</table>
 			  	</div>
@@ -37,13 +43,17 @@
 			    			<th>Fødselsdato</th>
 			    			<th>Tid steg 1</th>
 			    			<th>Tid fullført</th>
+			    			<th>Aktivitetar</th>
 			    			<th></th>
 			    		</tr>
-						<tr ng-repeat="participant in (filteredParticipants = (participants | filter:searchParticipants)) | startFrom:currentPage*pageSize | limitTo:pageSize">
+						<tr ng-repeat="participant in (filteredParticipants = (participants | filter:searchParticipants | filter:{regCompleted: showSelect})) | startFrom:currentPage*pageSize | limitTo:pageSize">
 							<td>{{participant.firstName}} {{participant.lastName}}</td>
 							<td>{{participant.birthDay}}/{{participant.birthMonth}}/{{participant.birthYear}}</td>
 							<td>{{participant.bookedTime}}</td>
 							<td>{{participant.regCompletedTime}}</td>
+							<td>
+								<span ng-repeat="activity in participant._activities">{{activity.eventCode}}, </span>
+							</td>
 							<td>
 								<button type="button" title="Slett deltakar" style="border: 1px; background-color: transparent" ng-click="deleteParticipant(participant._id)">
 									<span class="glyphicon glyphicon-remove"></span>
