@@ -18,6 +18,22 @@ function registrationFactory($http, $log) {
 	     	return promise;
 	    },
 
+	    getWaitingList:function() {
+	    	var promise = $http({
+	        	method: 'GET',
+	            url: '/api/waitingStatus',
+	            timeout: 10000
+	        }).then(function(response) {
+	        	//$log.info('Retrieved data: ',response);
+	           	return response;  
+	        },  function(reason) {
+	        	$log.error("Request Failed: ", reason);
+	     	});
+		 
+	     	return promise;
+	    },
+
+
 	    getNotCompletedParticipants:function() {
 	    	var promise = $http({
 	        	method: 'GET',

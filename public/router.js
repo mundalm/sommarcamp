@@ -15,5 +15,10 @@ sommarcampApp.config(function($routeProvider) {
 				controller: 'adminController',
 				templateUrl: 'partials/adminPartListPartial.html'
 			})
+		.when('/admWaitingList',
+			{
+				controller: 'adminController',
+				templateUrl: 'partials/adminWaitingListPartial.html'
+			})
 		.otherwise({redirectTo: '/'});
 });

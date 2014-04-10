@@ -27,6 +27,7 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 		});		
 	});
 
+
 	//============================================================ Delete participant
 	app.delete('/api/participants/:id', function (req, res){
 		var query = {_id:req.params.id};
@@ -205,6 +206,26 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 		});
 	});
 
+	//============================================================ Get participants waiting list status
+	app.get('/api/waitingStatus', function (req, res){
+		Participant.aggregate([{ $project : {
+									_id: 0,
+							        firstName : 1 ,
+							        lastName : 1 ,
+							        regCompleted : 1,
+							        _activities : 1}},
+							     {$unwind: "$_activities"}, 
+							     {$match: {'_activities.waiting': true}},
+							     {$sort : { lastName : -1 } }//,
+							     /*{$group: {_id: "$_activities.eventCode", nbParticipants: { $sum: 1 }}}*/], 
+							     function(err, activities) {
+			if(!QueryHasErrors(err, res)) {
+				//console.log(activities);
+				ReturnResults(res, activities, 201);
+			}
+		});
+	});
+
 	//============================================================ List all activities
 	app.get('/api/activities', function (req, res){
 		AvailableActivity.find({}).exec(function(err, result) {
@@ -214,26 +235,19 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 		});
 	});
 
-	app.get('/api/initact', function (req, res){
-		var newActivity = new AvailableActivity ({	eventCode       : "U27CA",
-											    title				: "Camp Adventures veke 27",
-											    shortTitle			: "Camp Adv. veke 27",
-											    maxAttending		: 40,
-											    minBirthYear		: 2004,
-											    blockEventCode		: "U27",
-											    eventPrice			: 1500,
-											    allowDiscount		: false, 
-											});
+	/*app.get('/api/updateact', function (req, res){
+		var query = { _id: '53441d6034e70727861043df' };
 
-		newActivity.save(function (err) {
+		var update = {	maxAttending		: 60};
+
+		AvailableActivity.findOneAndUpdate(query, update, null, function(err, result) {
 			if(!QueryHasErrors(err, res)) {
-		  		//console.log('Inserted Activity: ' + JSON.stringify(newActivity));
-		  		ReturnResults(res, newActivity, 201);
+		  		ReturnResults(res, result, 201);	
 		  	}
 		});
-	});
+	});*/
 
-	app.get('/api/killacts', function (req, res){
+	/*app.get('/api/killacts', function (req, res){
 		AvailableActivity.remove(function (err) {
 			if(!QueryHasErrors(err, res)) {
 		  		console.log('Deleted collection AvailableActivity');
@@ -247,7 +261,7 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 		  		console.log('Deleted collection Participant');
 		  	}
 		});
-	});
+	});*/
 
 	app.get('/api/testmail', function (req, res){
 		mandrill('/messages/send', {

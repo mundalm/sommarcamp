@@ -9,7 +9,7 @@
 	<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
 		<li role="presentation"><a role="menuitem" tabindex="-1" href="#/admOverview">Oversikt påmeldingar</a></li>
 	    <li role="presentation"><a role="menuitem" tabindex="-1" href="#/admPartList">Oversikt deltakarar</a></li>   
-	    <li role="presentation"><a role="menuitem" tabindex="-1" href="#/admWaitingList">Ventelisteoversikt</a></li>  
+	    <li role="presentation"><a role="menuitem" tabindex="-1" href="#/admWaitingList">Ventelisteoversikt</a></li>   
 	</ul>
 </div><br/>
 
@@ -21,60 +21,47 @@
 			  	<div class="panel-heading">
 			  		<table style="width: 100%">
 			  			<tr>
-			  				<td><h4>Deltakaroversikt</h4></td>
-			  				<td style="text-align: right">
-			  					<div class="btn-group">
-							        <button type="button" class="btn btn-primary" ng-model="showSelect" btn-radio="true">Fullførte</button>
-							        <button type="button" class="btn btn-primary" ng-model="showSelect" btn-radio="false">Ikke fullførte</button>
-							    </div>
-			  				</td>
+			  				<td><h4>Ventelisteoversikt</h4></td>
 			  			</tr>
 			  		</table>
 			  	</div>
 			  	<div class="panel-body">
-			  		<div class="input-group">
+			  		<!--<div class="input-group">
 			            <input type="text" class="form-control" placeholder="Søk i deltakere" name="srch-term" id="srch-term" ng-model="searchParticipants">
 			            <div class="input-group-btn">
 			                <button title="Tilbakestill søk" class="btn btn-default" ng-click="resetSearch()" ng-model="searchParticipants"><i class="glyphicon glyphicon-remove-circle"></i></button>
 			            </div>
-			        </div><br/>
+			        </div><br/>-->
 			    	<table class="table table-hover">
 			    		<tr>
 			    			<th>Navn</th>
-			    			<th>Fødselsdato</th>
-			    			<th>Tid steg 1</th>
-			    			<th>Tid fullført</th>
+			    			<th>Reg. ferdig</th>
 			    			<th>Aktivitetar</th>
 			    			<th></th>
 			    		</tr>
-						<tr ng-repeat="participant in (filteredParticipants = (participants | filter:searchParticipants | filter:{regCompleted: showSelect})) | startFrom:currentPage*pageSize | limitTo:pageSize">
+						<tr ng-repeat="participant in waitingList">
 							<td>{{participant.firstName}} {{participant.lastName}}</td>
-							<td>{{participant.birthDay}}/{{participant.birthMonth}}/{{participant.birthYear}}</td>
-							<td>{{participant.bookedTime}}</td>
-							<td>{{participant.regCompletedTime}}</td>
-							<td>
-								<span ng-repeat="activity in participant._activities">
-									<span ng-if="activity.attending">{{activity.eventCode}}, </span>
-									<span ng-if="activity.waiting" style="color: red">v.l {{activity.eventCode}}, </span>
-								</span>
-							</td>
-							<td>
+							<td>{{participant.regCompleted}}</td>
+							<td>{{participant._activities.eventCode}}</td>
+							<!--<td>
+								<span ng-repeat="activity in participant._activities">{{activity.eventCode}}, </span>
+							</td>-->
+							<!--<td>
 								<button type="button" title="Slett deltakar" style="border: 1px; background-color: transparent" ng-click="deleteParticipant(participant._id)">
 									<span class="glyphicon glyphicon-remove"></span>
 								</button>
 								<button type="button" title="Rediger deltakar" style="border: 1px; background-color: transparent" ng-click="editParticipant($index)">
 									<span class="glyphicon glyphicon-pencil"></span>
 								</button>
-							</td>
-
+							</td>-->
 						</tr>
 					</table>
 
-					<ul class="pagination">
+					<!--<ul class="pagination">
 					  <li><a href="" ng-click="changePage(false)">&laquo;</a></li>
 					  <li><span>{{currentPage+1}}/{{numberOfPages()}}</span></li>
 					  <li><a href="" ng-click="changePage(true)">&raquo;</a></li>
-					</ul>
+					</ul>-->
 
 			  	</div>
 			</div>

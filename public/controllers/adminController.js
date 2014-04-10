@@ -3,6 +3,7 @@ function adminController($scope, $location, registrationFactory, MessageFactory,
 	$scope.liveActStatus = {};
 	$scope.availableActivities = [];
 	$scope.participants = [];
+	$scope.waitingList = [];
 	$scope.activitiesLoaded = false;
 
 	$scope.currentPage = 0;
@@ -34,6 +35,14 @@ function adminController($scope, $location, registrationFactory, MessageFactory,
 				$scope.participants = data.data;
 			} else {
 				MessageFactory.prepareForBroadcast('Det oppstod en feil ved lasting av deltakarar. Prøv og oppdater siden for å gjøre et nytt forøk. Kontakt administrator på e-post marius@mundal.org dersom problemet vedvarer', 'alert alert-danger', 60);
+			}
+		});
+
+		registrationFactory.getWaitingList().then(function(data) {
+			if(!$rootScope.RHE(data, true)) {
+				$scope.waitingList = data.data;
+			} else {
+				MessageFactory.prepareForBroadcast('Det oppstod en feil ved lasting av venteliste. Prøv og oppdater siden for å gjøre et nytt forøk. Kontakt administrator på e-post marius@mundal.org dersom problemet vedvarer', 'alert alert-danger', 60);
 			}
 		});
 
@@ -113,36 +122,6 @@ function adminController($scope, $location, registrationFactory, MessageFactory,
     	
     	 $scope.startActivityCheckTimer();
     	//updateParticipanControls();
-    }
-
-    //This method is fired from updateLiveActivityParticipantCount() each time there is a successfull LIVE data update on activities
-    function updateParticipanControls() {
-    	/*This is done here to ensure that activity count is returned before adding a participant to prevent false availability status on an event.
-    	This will only execute once during init() of page.*/
-    	if($scope.addFirstParticipant) {
-    		$scope.addFirstParticipant = false;
-    		$scope.disableAddParticipant = false;
-    		$scope.addParticipant();
-    	}
-
-    	for(var i=0; i<$scope.participants.length; i++) {
-    		var participantActivities = $scope.participants[i].activityList;
-
-    		for(var j=0; j<participantActivities.length; j++) {
-    			var currentPartAct = participantActivities[j];
-    			//$log.info($scope.liveActStatus[currentPartAct.eventCode] + " - " + currentPartAct.maxAttending);
-    			if($scope.liveActStatus[currentPartAct.eventCode] >= currentPartAct.maxAttending ) {
-    				if(currentPartAct.isAttending && $scope.showStepOne) {
-    					currentPartAct.isWaiting = true;
-    					currentPartAct.isAttending = false;
-    					MessageFactory.prepareForBroadcast('Aktiviteten ' + currentPartAct.title + ' er no full! Venteliste er automatisk valgt for dei deltakarane som var valgt inn på aktiviteten.', 'alert alert-warning', 20);
-    				}
-    				currentPartAct.isFull = true;
-    			} else {
-    				currentPartAct.isFull = false;
-    			}
-    		}
-    	}
     }
 
     // delete leader using leaderFactory
