@@ -207,6 +207,7 @@ function adminController($scope, $location, registrationFactory, MessageFactory,
 							canTakeVideo: $scope.filteredParticipants[index].canTakeVideo,
 							canUseTransport: $scope.filteredParticipants[index].canUseTransport,
 							canDoSwimming: $scope.filteredParticipants[index].canDoSwimming,
+							_activities: $scope.filteredParticipants[index]._activities,
 							}
 		$scope.openParticipantModal(); 
 	};

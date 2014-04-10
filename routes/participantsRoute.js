@@ -102,6 +102,7 @@ module.exports = function(app, pool, ConnectionErrorCheck, QueryHasErrors, Retur
 							canTakeVideo     	: req.body.canTakeVideo,
 						    canUseTransport     : req.body.canUseTransport,
 						    canDoSwimming       : req.body.canDoSwimming,
+						    _activities			: req.body._activities
 				
 			  }
 		}
