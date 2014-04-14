@@ -9,6 +9,7 @@
 			<div class="form-group">
 				<div id="participant-form-grid" class="row">
 					<div class="col-xs-12 col-sm-6 col-md-8">
+						<label>Fornavn:</label>
 						<input type="text" class="form-control" name="firstName" 
 							ng-model="formData.firstName" required="" placeholder="Fornavn" />
 					</div>
@@ -19,6 +20,7 @@
 				</div><br/>
 				<div id="participant-form-grid" class="row">
 					<div class="col-xs-12 col-sm-6 col-md-8">
+						<label>Etternavn:</label>
 						<input type="text" class="form-control" name="lastName" 
 							ng-model="formData.lastName" required="" placeholder="Etternavn" />
 					</div>
@@ -29,6 +31,7 @@
 				</div><br/>
 				<div id="participant-form-grid" class="row">
 					<div class="col-xs-12 col-sm-6 col-md-8">
+						<label>Fødselsdato:</label>
 						<input type="text" class="form-control" name="birthDate" 
 							ng-model="formData.birthDate" required="" placeholder="Fødselsdato" />
 					</div>
@@ -39,6 +42,7 @@
 				</div><br/>
 				<div id="participant-form-grid" class="row">
 					<div class="col-xs-12 col-sm-6 col-md-8">
+						<label>Fornavn primærkontakt:</label>
 						<input type="text" class="form-control" name="parentOneFirstName" 
 							ng-model="formData.parentOneFirstName" required="" placeholder="Fornavn primærkontakt" />
 					</div>
@@ -49,6 +53,7 @@
 				</div><br/>
 				<div id="participant-form-grid" class="row">
 					<div class="col-xs-12 col-sm-6 col-md-8">
+						<label>Etternavn primærkontakt:</label>
 						<input type="text" class="form-control" name="parentOneLastName" 
 							ng-model="formData.parentOneLastName" required="" placeholder="Etternavn primærkontakt" />
 					</div>
@@ -59,6 +64,7 @@
 				</div><br/>
 				<div id="participant-form-grid" class="row">
 					<div class="col-xs-12 col-sm-6 col-md-8">
+						<label>Mobiltelefon primærkontakt:</label>
 						<input type="text" class="form-control" name="parentOnePhone" 
 							ng-model="formData.parentOnePhone" required="" placeholder="Mobiltelefon primærkontakt" />
 					</div>
@@ -69,6 +75,7 @@
 				</div><br/>
 				<div id="participant-form-grid" class="row">
 					<div class="col-xs-12 col-sm-6 col-md-8">
+						<label>E-post primærkontakt:</label>
 						<input type="text" class="form-control" name="parentOneEmail" 
 							ng-model="formData.parentOneEmail" required="" placeholder="E-post primærkontakt" />
 					</div>
@@ -79,6 +86,7 @@
 				</div><br/>
 				<div id="participant-form-grid" class="row">
 					<div class="col-xs-12 col-sm-6 col-md-8">
+						<label>Fornavn sekundærkontakt:</label>
 						<input type="text" class="form-control" name="parentTwoFirstName" 
 							ng-model="formData.parentTwoFirstName" required="" placeholder="Fornavn sekundærkontakt" />
 					</div>
@@ -89,6 +97,7 @@
 				</div><br/>
 				<div id="participant-form-grid" class="row">
 					<div class="col-xs-12 col-sm-6 col-md-8">
+						<label>Etternavn sekundærkontakt:</label>
 						<input type="text" class="form-control" name="parentTwoLastName" 
 							ng-model="formData.parentTwoLastName" required="" placeholder="Etternavn sekundærkontakt" />
 					</div>
@@ -99,6 +108,7 @@
 				</div><br/>
 				<div id="participant-form-grid" class="row">
 					<div class="col-xs-12 col-sm-6 col-md-8">
+						<label>Mobiltelefon sekundærkontakt:</label>
 						<input type="text" class="form-control" name="parentTwoPhone" 
 							ng-model="formData.parentTwoPhone" required="" placeholder="Mobiltelefon sekundærkontakt" />
 					</div>
@@ -109,12 +119,14 @@
 				</div><br/>
 				<div id="participant-form-grid" class="row">
 					<div class="col-xs-12 col-sm-6 col-md-8">
+						<label>Spesielle omsyn:</label>
 						<textarea class="form-control" name="specialNeeds" 
 							ng-model="formData.specialNeeds" placeholder="Spesielle omsyn" />
 					</div>
 				</div><br/>
 				<div id="participant-form-grid" class="row">
 					<div class="col-xs-12 col-sm-6 col-md-8">
+						<label>Øvrige kommentarer:</label>
 						<textarea class="form-control" name="comments" 
 							ng-model="formData.comments" placeholder="Øvrige kommentarar" />
 					</div>
@@ -127,7 +139,7 @@
 							</label>
 						</div>
 					</div>
-				</div><br/>
+				</div>
 				<div id="participant-form-grid" class="row">
 					<div class="col-xs-12 col-sm-6 col-md-8">
 						<div class="checkbox">
@@ -136,7 +148,7 @@
 							</label>
 						</div>
 					</div>
-				</div><br/>
+				</div>
 				<div id="participant-form-grid" class="row">
 					<div class="col-xs-12 col-sm-6 col-md-8">
 						<div class="checkbox">
@@ -145,7 +157,7 @@
 							</label>
 						</div>
 					</div>
-				</div><br/>
+				</div>
 				<div id="participant-form-grid" class="row">
 					<div class="col-xs-12 col-sm-6 col-md-8">
 						<div class="checkbox">
@@ -155,12 +167,17 @@
 						</div>
 					</div>
 				</div><br/>
-				Aktivitetar:
+				<strong>Aktivitetar:</strong><br/><br/>
 				<div id="participant-form-grid" class="row" ng-repeat="activity in formData._activities">
 					<div class="col-xs-12 col-sm-6 col-md-8">
-						<label>
-						    {{activity.eventCode}}
-						</label>
+						<small>
+							<span>
+						    	<input type="checkbox" ng-model="activity.attending"/>{{activity.title}}
+						    </span><br/>
+						    <span>
+						    	<input type="checkbox" ng-model="activity.waiting"/>Venteliste {{activity.title}}
+						    </span><br/><br/>
+						</small>
 					</div>
 				</div><br/>
 			</div>

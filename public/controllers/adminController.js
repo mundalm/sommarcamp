@@ -7,7 +7,7 @@ function adminController($scope, $location, registrationFactory, MessageFactory,
 	$scope.activitiesLoaded = false;
 
 	$scope.currentPage = 0;
-    $scope.pageSize = 10;	
+    $scope.pageSize = 300;	
 
     $scope.showSelect = true;
 	
@@ -47,6 +47,23 @@ function adminController($scope, $location, registrationFactory, MessageFactory,
 		});
 
 		$rootScope.pageHeader = 'Administrasjon';
+	}
+
+	//Clones activity list from scope. Use when adding new participant
+	$scope.cloneActivities = function() {
+		var newAct = [];
+		for( var i=0; i < $scope.availableActivities.length; i++) {
+			var act = $scope.availableActivities[i];
+			newAct.push({title 			: act.title, 
+						 shortTitle		: act.shortTitle, 
+						 eventCode 		: act.eventCode, 
+						 maxAttending 	: act.maxAttending, 
+						 minBirthYear	: act.minBirthYear,
+						 blockEventCode	: act.blockEventCode,
+						 eventPrice		: act.eventPrice,
+						 allowDiscount	: act.allowDiscount});
+		}
+		return newAct;
 	}
 
 	//Starts activity check timer countdown from scratch
@@ -160,7 +177,45 @@ function adminController($scope, $location, registrationFactory, MessageFactory,
 			};
 
 		bootbox.confirm(promptOptions);	
-	};	
+	};
+
+	// Register payment om participant
+	$scope.registerPayment = function(id, firstName, lastName) {
+		var promptOptions = {
+			title: "Godkjenning av betaling",
+			message: "Er betalinga på deltakar " + firstName + " " + lastName + " motteken?",
+			buttons: {
+				confirm: {
+					label: "Ja",
+					className: "btn-danger",
+				},
+				cancel: {
+			    	label: "Nei",
+			    	className: "btn-primary",
+			    }
+			  },
+			  callback: function(result) {                
+			      	if(result) {
+						registrationFactory.registerPayment(id).then(function(data) {
+							if(!$rootScope.RHE(data, false)) {
+								for (var i = 0; i < $scope.participants.length; i++) {
+									if ($scope.participants[i]._id === id) {
+										$scope.participants[i] = data.data;
+										break;
+									}
+							}
+
+								MessageFactory.prepareForBroadcast('Betaling registrert for deltakar', 'alert alert-success');
+							} else {
+								MessageFactory.prepareForBroadcast('Det oppstod en feil ved registrering av betaling', 'alert alert-danger');
+							}
+						});
+					}
+			    }
+			};
+
+		bootbox.confirm(promptOptions);	
+	};		
 
 	// Put project to edit in edit form
 	$scope.editParticipant = function(index) {
@@ -186,10 +241,25 @@ function adminController($scope, $location, registrationFactory, MessageFactory,
 							canTakeVideo: $scope.filteredParticipants[index].canTakeVideo,
 							canUseTransport: $scope.filteredParticipants[index].canUseTransport,
 							canDoSwimming: $scope.filteredParticipants[index].canDoSwimming,
-							_activities: $scope.filteredParticipants[index]._activities,
+							_activities: $scope.populateActivityEditForm($scope.filteredParticipants[index]._activities)
 							}
 		$scope.openParticipantModal(); 
 	};
+
+	$scope.populateActivityEditForm = function(partActs) {
+		var populatedActivities = $scope.cloneActivities();
+
+		for (var i = 0; i < populatedActivities.length; i++) {
+			for (var j = 0; j < partActs.length; j++) {
+				if (populatedActivities[i].eventCode === partActs[j].eventCode) {
+					populatedActivities[i].attending = partActs[j].attending;							
+					populatedActivities[i].waiting = partActs[j].waiting;							
+				}
+			}
+		}
+
+		return populatedActivities;
+	}
 
 	$scope.openParticipantModal = function () {
 	    var modalInstance = $modal.open({

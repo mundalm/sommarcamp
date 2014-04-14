@@ -95,6 +95,22 @@ function registrationFactory($http, $log) {
 	     	return promise;
 	    },
 
+	    registerPayment:function(id) {
+	    	var promise = $http({
+	        	method: 'PUT',
+	            url: '/api/regpayment/' + id,
+	            data: null,
+	            timeout: 10000
+	        }).then(function(response) {
+	        	//$log.info('Retrieved data after update: ',response);
+	           	return response;  
+	        },  function(reason) {
+	        	$log.error("Register payment Failed: ", reason);
+	     	});
+		 
+	     	return promise;
+	    },
+
 	    addParticipant:function(participant) {
 	    	var promise = $http({
 	        	method: 'POST',

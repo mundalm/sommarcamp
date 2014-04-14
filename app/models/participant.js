@@ -19,6 +19,7 @@ var participantSchema = mongoose.Schema({
     parentTwoFirstName  : String,
     parentTwoLastName   : String,
     parentTwoPhone      : String,
+    hasPaid             : Boolean,
     //parentTwoEmail      : String,
     canTakePictures     : Boolean,
     canTakeVideo        : Boolean,

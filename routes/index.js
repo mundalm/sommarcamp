@@ -1,4 +1,4 @@
-module.exports = function(app, pool) {
+module.exports = function(app, passport) {
 	// Helper Methods ==============================================================
 	function ConnectionErrorCheck(err, response) {
 		if(err) {
@@ -26,7 +26,7 @@ module.exports = function(app, pool) {
 	    response.end(JSON.stringify(resultToReturn));
 	}
 
-	require('./main')(app, pool);
-	require('./participantsRoute')(app, pool, ConnectionErrorCheck, QueryHasErrors, ReturnResults);
+	require('./main')(app, passport);
+	require('./participantsRoute')(app, passport, ConnectionErrorCheck, QueryHasErrors, ReturnResults);
 
 };
