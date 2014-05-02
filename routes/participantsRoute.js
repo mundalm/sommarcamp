@@ -26,9 +26,19 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 		res.send(401, "Unauthorized"); 
 	};
 
+	// route middleware to prevent spamming on nonsecure api routes
+	function containsPubKey(req, res, next) {
+		// if user is authenticated in the session, carry on
+		if (req.body.aSe === 191079)
+			return next();
+
+		// if they aren't send unauthorized message
+		res.send(401, "Unauthorized"); 
+	};
+
 	//============================================================ List all participants
 	app.get('/api/participants', isLoggedInSendUnauth, function (req, res){
-		Participant.find({}).exec(function(err, result) {
+		Participant.find({}).sort('regCompletedTime').exec(function(err, result) {
 			if(!QueryHasErrors(err, res)) {
 		  		ReturnResults(res, result, 201);
 		  	}
@@ -58,7 +68,7 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 	});
 
 	//============================================================ Insert new participant
-	app.post('/api/participants', function (req, res){
+	app.post('/api/participants', containsPubKey, function (req, res){
 		var newParticipant = new Participant ({	firstName       	: req.body.firstName,
 											    lastName			: req.body.lastName,
 											    birthDay			: req.body.birthDay,
@@ -83,7 +93,7 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 	});
 
 	//============================================================ Update participant
-	app.put('/api/participants/:id', function (req, res){
+	app.put('/api/participants/:id', containsPubKey, function (req, res){
 		var query = { _id: req.params.id };
 		//console.log(query);
 
@@ -291,10 +301,11 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 							        firstName : 1 ,
 							        lastName : 1 ,
 							        regCompleted : 1,
+							        regCompletedTime : 1,
 							        _activities : 1}},
 							     {$unwind: "$_activities"}, 
 							     {$match: {'_activities.waiting': true}},
-							     {$sort : { lastName : -1 } }//,
+							     {$sort : { regCompletedTime : 1 } }//,
 							     /*{$group: {_id: "$_activities.eventCode", nbParticipants: { $sum: 1 }}}*/], 
 							     function(err, activities) {
 			if(!QueryHasErrors(err, res)) {
@@ -314,9 +325,9 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 	});
 
 	/*app.get('/api/updateact', function (req, res){
-		var query = { _id: '53441d6034e70727861043df' };
+		var query = { _id: '53441dcf81ddd99d86783cc5' };
 
-		var update = {	maxAttending		: 60};
+		var update = {	maxAttending		: 30};
 
 		AvailableActivity.findOneAndUpdate(query, update, null, function(err, result) {
 			if(!QueryHasErrors(err, res)) {
@@ -380,7 +391,7 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 	// SIGNUP ==============================
 	// =====================================
 	// show the signup form
-	app.get('/signup', function(req, res) {
+	app.get('/signup', isLoggedInSendUnauth, function(req, res) {
 
 		// render the page and pass in any flash data if it exists
 		res.render('signup.ejs', { message: req.flash('signupMessage') });
@@ -398,11 +409,11 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 	// =====================================
 	// we will want this protected so you have to be logged in to visit
 	// we will use route middleware to verify this (the isLoggedIn function)
-	app.get('/profile', isLoggedIn, function(req, res) {
+	/*app.get('/profile', isLoggedIn, function(req, res) {
 		res.render('profile.ejs', {
 			user : req.user // get the user out of session and pass to template
 		});
-	});
+	});*/
 
 	// =====================================
 	// LOGOUT ==============================

@@ -1,10 +1,12 @@
-function adminController($scope, $location, registrationFactory, MessageFactory, $log, $rootScope, $modal, $route) {
+function adminController($scope, $location, registrationFactory, MessageFactory, $log, $rootScope, $modal, $route, $window) {
 	$scope.formData = {};
 	$scope.liveActStatus = {};
 	$scope.availableActivities = [];
 	$scope.participants = [];
 	$scope.waitingList = [];
 	$scope.activitiesLoaded = false;
+	$scope.participantsLoaded = false;
+	$scope.waitingListLoaded = false;
 
 	$scope.currentPage = 0;
     $scope.pageSize = 300;	
@@ -26,6 +28,9 @@ function adminController($scope, $location, registrationFactory, MessageFactory,
 				$scope.activitiesLoaded = true;
 				getActivyParticipantCountFromServer();
 			} else {
+				if(data === 401 ) {
+					$scope.goToLogin();
+				}
 				MessageFactory.prepareForBroadcast('Det oppstod en feil ved lasting av tilgjengelige aktiviteter. Prøv og oppdater siden for å gjøre et nytt forøk. Kontakt administrator på e-post marius@mundal.org dersom problemet vedvarer', 'alert alert-danger', 60);
 			}
 		});
@@ -33,7 +38,11 @@ function adminController($scope, $location, registrationFactory, MessageFactory,
 		registrationFactory.getParticipants().then(function(data) {
 			if(!$rootScope.RHE(data, true)) {
 				$scope.participants = data.data;
+				$scope.participantsLoaded = true;
 			} else {
+				if(data === 401 ) {
+					$scope.goToLogin();
+				}
 				MessageFactory.prepareForBroadcast('Det oppstod en feil ved lasting av deltakarar. Prøv og oppdater siden for å gjøre et nytt forøk. Kontakt administrator på e-post marius@mundal.org dersom problemet vedvarer', 'alert alert-danger', 60);
 			}
 		});
@@ -41,7 +50,11 @@ function adminController($scope, $location, registrationFactory, MessageFactory,
 		registrationFactory.getWaitingList().then(function(data) {
 			if(!$rootScope.RHE(data, true)) {
 				$scope.waitingList = data.data;
+				$scope.waitingListLoaded = true;
 			} else {
+				if(data === 401 ) {
+					$scope.goToLogin();
+				}
 				MessageFactory.prepareForBroadcast('Det oppstod en feil ved lasting av venteliste. Prøv og oppdater siden for å gjøre et nytt forøk. Kontakt administrator på e-post marius@mundal.org dersom problemet vedvarer', 'alert alert-danger', 60);
 			}
 		});
@@ -99,6 +112,11 @@ function adminController($scope, $location, registrationFactory, MessageFactory,
     // Reset search field
 	$scope.resetSearch = function() {
 		$scope.searchParticipants = '';
+	};
+
+	$scope.goToLogin = function ( ) {
+	  	//$location.path( "login" );
+	  	$window.location.href = "/login"
 	};
 
 

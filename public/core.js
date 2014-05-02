@@ -31,7 +31,7 @@ headerController.$inject = ['$scope', '$location', '$modal', '$log', '$rootScope
 
 registrationController.$inject = ['$scope', '$location', 'registrationFactory', 'MessageFactory', '$log', '$rootScope', '$modal', '$route'];
 participantModalController.$inject = ['$scope', '$modalInstance','registrationFactory', 'MessageFactory', '$log', '$rootScope'];
-adminController.$inject = ['$scope', '$location', 'registrationFactory', 'MessageFactory', '$log', '$rootScope', '$modal', '$route'];
+adminController.$inject = ['$scope', '$location', 'registrationFactory', 'MessageFactory', '$log', '$rootScope', '$modal', '$route', '$window'];
 
 
 

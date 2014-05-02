@@ -1,5 +1,5 @@
 <div><timer style="display: none;" interval="1000" countdown="5"/></div> 
-<img ng-if="!activitiesLoaded" src="images/ajax-loader.gif" />
+<img ng-if="!waitingListLoaded" src="images/ajax-loader.gif" />
 
 <div class="dropdown">
 	<button class="btn dropdown-toggle btn-primary" type="button" id="dropdownMenu1" data-toggle="dropdown">
@@ -37,12 +37,14 @@
 			    		<tr>
 			    			<th>Navn</th>
 			    			<th>Reg. ferdig</th>
+			    			<th>Reg. ferdig tid</th>
 			    			<th>Aktivitetar</th>
 			    			<th></th>
 			    		</tr>
 						<tr ng-repeat="participant in waitingList">
 							<td>{{participant.firstName}} {{participant.lastName}}</td>
 							<td>{{participant.regCompleted}}</td>
+							<td>{{participant.regCompletedTime}}</td>
 							<td>{{participant._activities.eventCode}}</td>
 							<!--<td>
 								<span ng-repeat="activity in participant._activities">{{activity.eventCode}}, </span>
