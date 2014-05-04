@@ -4,14 +4,20 @@ function adminController($scope, $location, registrationFactory, MessageFactory,
 	$scope.availableActivities = [];
 	$scope.participants = [];
 	$scope.waitingList = [];
+	$scope.flatPartList = [];
 	$scope.activitiesLoaded = false;
 	$scope.participantsLoaded = false;
 	$scope.waitingListLoaded = false;
+	$scope.flatPartListLoaded = false;
+
+	$scope.sexSort = false;
 
 	$scope.currentPage = 0;
     $scope.pageSize = 300;	
 
     $scope.showSelect = true;
+
+    $scope.activityFilter = "";
 	
 	// when loading controller, initialize Participant list from ParticipantFactory
 	init();
@@ -59,6 +65,18 @@ function adminController($scope, $location, registrationFactory, MessageFactory,
 			}
 		});
 
+		registrationFactory.getParticipantsFlatList().then(function(data) {
+			if(!$rootScope.RHE(data, true)) {
+				$scope.flatPartList = data.data;
+				$scope.flatPartListLoaded = true;
+			} else {
+				if(data === 401 ) {
+					$scope.goToLogin();
+				}
+				MessageFactory.prepareForBroadcast('Det oppstod en feil ved lasting av deltakarar. Prøv og oppdater siden for å gjøre et nytt forøk. Kontakt administrator på e-post marius@mundal.org dersom problemet vedvarer', 'alert alert-danger', 60);
+			}
+		});
+
 		$rootScope.pageHeader = 'Administrasjon';
 	}
 
@@ -78,6 +96,21 @@ function adminController($scope, $location, registrationFactory, MessageFactory,
 		}
 		return newAct;
 	}
+
+	//Helper to convert til "ja"/"nei" based on property
+    $scope.convertYesNo = function(prop) {
+    	if(prop) {
+    		return "Ja";
+    	} else {
+    		return "Nei";
+    	}
+    }
+
+    //Helper to convert til "ja"/"nei" based on property
+    $scope.setActivityFilter = function(filter) {
+    	$scope.activityFilter = filter;
+    	$log.info($scope.activityFilter);
+    }
 
 	//Starts activity check timer countdown from scratch
     $scope.startActivityCheckTimer = function (){
@@ -245,6 +278,7 @@ function adminController($scope, $location, registrationFactory, MessageFactory,
 						   	_id: $scope.filteredParticipants[index]._id, 
 						   	firstName: $scope.filteredParticipants[index].firstName,
 						   	lastName: $scope.filteredParticipants[index].lastName,
+						   	sex: $scope.filteredParticipants[index].sex,
 						   	birthDate: $scope.filteredParticipants[index].birthDate,
 							parentOneFirstName: $scope.filteredParticipants[index].parentOneFirstName,
 							parentOneLastName: $scope.filteredParticipants[index].parentOneLastName,

@@ -8,7 +8,8 @@
 	</button>
 	<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
 		<li role="presentation"><a role="menuitem" tabindex="-1" href="#/admOverview">Oversikt påmeldingar</a></li>
-	    <li role="presentation"><a role="menuitem" tabindex="-1" href="#/admPartList">Oversikt deltakarar</a></li>   
+	    <li role="presentation"><a role="menuitem" tabindex="-1" href="#/admPartList">Oversikt deltakarar</a></li>
+	    <li role="presentation"><a role="menuitem" tabindex="-1" href="#/admPartFilterList">Deltakarfiltrering</a></li>   
 	    <li role="presentation"><a role="menuitem" tabindex="-1" href="#/admWaitingList">Ventelisteoversikt</a></li>  
 	    <li role="presentation"><a role="menuitem" tabindex="-1" href="/logout">Logg ut</a></li>  
 	</ul>
@@ -43,6 +44,7 @@
 			    		<tr>
 			    			<th>Navn</th>
 			    			<th>Fødselsdato</th>
+			    			<th>Kjønn</th>
 			    			<!--<th>Tid steg 1</th>-->
 			    			<th>Tid fullført</th>
 			    			<th>Beløp</th>
@@ -53,6 +55,7 @@
 						<tr ng-repeat="participant in (filteredParticipants = (participants | filter:searchParticipants | filter:{regCompleted: showSelect})) | startFrom:currentPage*pageSize | limitTo:pageSize">
 							<td>{{participant.firstName}} {{participant.lastName}}</td>
 							<td>{{participant.birthDate}}</td>
+							<td>{{participant.sex}}</td>
 							<!--<td>{{participant.bookedTime}}</td>-->
 							<td>{{participant.regCompletedTime}}</td>
 							<td>{{participant.totalAmount}}</td>

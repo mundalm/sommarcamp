@@ -116,9 +116,15 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 						    regCompleted 		: true
 						  }
 		} else {
+			var dateArr = req.body.birthDate.split("/");
+			
 			var update = { 	firstName       	: req.body.firstName,
 							lastName       		: req.body.lastName,
+							sex       			: req.body.sex,
 							birthDate			: req.body.birthDate,
+							birthDay 			: dateArr[0],
+							birthMonth 			: dateArr[1],
+							birthYear 			: dateArr[2],
 							parentOneFirstName	: req.body.parentOneFirstName,
 							parentOneLastName	: req.body.parentOneLastName,
 							parentOnePhone		: req.body.parentOnePhone,
@@ -201,7 +207,7 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 
 		mandrill('/messages/send', {
 		    message: {
-		        to: [{email: toEmail, name: toName}, {email: 'registrering@sommarcamp.no', name: 'registrering'}],
+		        to: [{email: toEmail, name: toName}/*, {email: 'registrering@sommarcamp.no', name: 'registrering'}*/],
 		        from_email	: 'post@sommarcamp.no',
 		        from_name	: "Klenkarberget Sommarcamp",
 		        subject		: "Registrering Sommarcamp 2014 - " + resultFromDB.firstName + " " + resultFromDB.lastName,
@@ -315,6 +321,38 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 		});
 	});
 
+	//============================================================ Get flat list of particpants pr. week. Used for filtering in client.
+	app.get('/api/partflatlist'/*, isLoggedInSendUnauth*/, function (req, res){
+		Participant.aggregate([{ $project : {
+									_id: 0,
+							        firstName : 1 ,
+							        lastName : 1 ,
+							        sex	: 1,
+							        birthDate : 1,
+							        birthDay : 1,
+							        birthMonth : 1,
+							        birthYear : 1,
+							        parentOnePhone : 1,
+							        parentTwoPhone: 1,
+							        canTakePictures : 1,
+							        canTakeVideo : 1,
+							        canUseTransport : 1,
+							        canDoSwimming : 1,
+							        specialNeeds : 1,
+							        comments : 1,
+							        _activities : 1}},
+							     {$unwind: "$_activities"}, 
+							     {$match: {'_activities.attending': true}},
+							     {$sort : { lastName : 1 } }//,
+							     /*{$group: {_id: "$_activities.eventCode", nbParticipants: { $sum: 1 }}}*/], 
+							     function(err, activities) {
+			if(!QueryHasErrors(err, res)) {
+				//console.log(activities);
+				ReturnResults(res, activities, 201);
+			}
+		});
+	});
+
 	//============================================================ List all activities
 	app.get('/api/activities', function (req, res){
 		AvailableActivity.find({}).exec(function(err, result) {
@@ -342,7 +380,7 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 		  		console.log('Deleted collection AvailableActivity');
 		  	}
 		});
-	});
+	});*/
 
 	app.get('/api/killparts', function (req, res){
 		Participant.remove(function (err) {
@@ -350,7 +388,7 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 		  		console.log('Deleted collection Participant');
 		  	}
 		});
-	});*/
+	});
 
 	app.get('/api/testmail', isLoggedInSendUnauth, function (req, res){
 		mandrill('/messages/send', {

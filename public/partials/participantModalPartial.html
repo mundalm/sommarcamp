@@ -31,6 +31,17 @@
 				</div><br/>
 				<div id="participant-form-grid" class="row">
 					<div class="col-xs-12 col-sm-6 col-md-8">
+						<label>Kjønn:</label>
+						<input type="text" class="form-control" name="sex" 
+							ng-model="formData.sex" required="" placeholder="Kjønn" />
+					</div>
+					<div class="col-xs-6 col-md-4" ng-show="participantForm.$dirty && participantForm.$invalid">
+						<span class="error" ng-show="participantForm.sex.$error.required">
+						<span class="glyphicon glyphicon-minus" /></span>
+					</div>
+				</div><br/>
+				<div id="participant-form-grid" class="row">
+					<div class="col-xs-12 col-sm-6 col-md-8">
 						<label>Fødselsdato:</label>
 						<input type="text" class="form-control" name="birthDate" 
 							ng-model="formData.birthDate" required="" placeholder="Fødselsdato" />

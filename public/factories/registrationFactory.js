@@ -35,6 +35,22 @@ function registrationFactory($http, $log) {
 	     	return promise;
 	    },
 
+	    getParticipantsFlatList:function() {
+	    	var promise = $http({
+	        	method: 'GET',
+	            url: '/api/partflatlist',
+	            timeout: 20000	
+	        }).then(function(response) {
+	        	//$log.info('Retrieved data: ',response);
+	           	return response;  
+	        },  function(reason) {
+	        	$log.error("Request Failed: ", reason);
+	        	return reason.status;
+	     	});
+		 
+	     	return promise;
+	    },
+
 
 	    getNotCompletedParticipants:function() {
 	    	var promise = $http({

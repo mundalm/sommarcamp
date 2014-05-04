@@ -15,6 +15,11 @@ sommarcampApp.config(function($routeProvider) {
 				controller: 'adminController',
 				templateUrl: 'partials/adminPartListPartial.html'
 			})
+		.when('/admPartFilterList',
+			{
+				controller: 'adminController',
+				templateUrl: 'partials/adminPartListFilterPartial.html'
+			})
 		.when('/admWaitingList',
 			{
 				controller: 'adminController',
