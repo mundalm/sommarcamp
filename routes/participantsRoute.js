@@ -157,7 +157,7 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 	});
 
 	//============================================================ Update paymentRegistration
-	app.put('/api/regpayment/:id', isLoggedInSendUnauth, function (req, res){
+	app.get('/api/regpayment/:id', isLoggedInSendUnauth, function (req, res){
 		var query = { _id: req.params.id };
 
 		var update = { 	hasPaid : true };
@@ -207,7 +207,7 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 
 		mandrill('/messages/send', {
 		    message: {
-		        to: [{email: toEmail, name: toName}/*, {email: 'registrering@sommarcamp.no', name: 'registrering'}*/],
+		        to: [{email: toEmail, name: toName}, {email: 'registrering@sommarcamp.no', name: 'registrering', type: 'bcc'}],
 		        from_email	: 'post@sommarcamp.no',
 		        from_name	: "Klenkarberget Sommarcamp",
 		        subject		: "Registrering Sommarcamp 2014 - " + resultFromDB.firstName + " " + resultFromDB.lastName,
@@ -223,7 +223,7 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 	}
 
 	function sendPaymentReceivedEmail(toEmail, toName, resultFromDB) {
-		var mainText = "Hei\n\nVi har motteke innbetaling for deltaking på Klenkarberget Sommarcamp 2014, og kan med dette stadfeste plass for  " + resultFromDB.firstName + " " + resultFromDB.lastName + " på følgjande aktivitet(ar):\n\n";
+		var mainText = "Hei\n\nVi har motteke innbetaling for deltaking på Klenkarberget Sommarcamp 2014, og kan med dette stadfeste plass for " + resultFromDB.firstName + " " + resultFromDB.lastName + " på følgjande aktivitet(ar):\n\n";
 		for(var j = 0; j < resultFromDB._activities.length; j++) {
 			if(resultFromDB._activities[j].attending) {
 				mainText += " - " + resultFromDB._activities[j].title + "\n";
@@ -237,8 +237,8 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 		mainText += "\nKlenkarberget Sommarcamp er open frå kl 07.30 til kl 16.30. Basen for Sommarcamp er på Klenkarberget på Hauane, og Camp Adventures vil ha base i Hjemelandsdalen. Kvar dag skal barna registrerast inn mellom kl 07.30 og kl 09.00, og registrerast ut mellom kl 15.00 og kl 16.30. Det er viktig at barna kjem og reiser mellom desse tidspunkta slik at vi kan få gjennomført turar. Er det noko spesielt enkelte dagar som gjer at ein må avtale andre tidspunkt for henting og levering, så ordnar vi sjølvsagt dette.";
 		mainText += "\n\nDeltakarar for Camp Adventures vil få eigen mail når det nærmar seg oppstart med meir informasjon om oppmøteplass og praktiske opplysningar.";
 		mainText += "\n\nBarna må ha med seg kle og sko etter veirforholda, samt handkle, redningsvest og solkrem. Dersom de ikkje har redningsvest så kan dette lånast, men gje oss då ei tilbakemelding på post@sommarcamp.no.";
-		mainText += "\n\nBarna vil få utdelt t-skjorte, caps og tursekk på årets Sommarcamp. Vi presiserar at barna skal bruke både t-skjorte og caps kvar dag. Dersom det er kaldt i veiret så tek ein t-skjorta utanpå tjukkare gensar/jakke. Dette er for at vi lettare skal knyte barna i dei ulike gruppene våre.";
-		mainText += "\n\nBarna vil få servert lunsj av våre Fiskeriket-kokkar, men dersom barnet ditt treng ekstra mat i løpet av dagen eller ikkje vil ha den maten vi tilbyr, så ber vi om at dei tek med eigen matpakke. Vi ber også om at alle tek med eiga drikkeflaske.";
+		mainText += "\n\nBarna vil få utdelt t-skjorte, caps og drikkeflaske på årets Sommarcamp. Vi presiserar at barna skal bruke både t-skjorte og caps kvar dag. Dersom det er kaldt i veiret så tek ein t-skjorta utanpå tjukkare gensar/jakke.";
+		mainText += "\n\nBarna vil få servert lunsj av våre Fiskeriket-kokkar, men dersom barnet ditt treng ekstra mat i løpet av dagen eller ikkje vil ha den maten vi tilbyr, så ber vi om at dei tek med eigen matpakke.";
 		mainText += "\n\nOVERNATTINGSTUR";
 		mainText += "\nOgså i år vil vi gjenta suksessen med overnattingstur! Alle som deltek på Sommarcamp eller Camp Adventures kan vere med på turen, og i tillegg må gjerne foreldre, søsken og/eller besteforeldre vere med. Dette er ei oppleving for både store og små! :-)";
 		mainText += "\n\nOvernattingsturen vil i år bli gjennomført frå fredag 11. juli til laurdag 12. juli. Vi vil sende ut meir informasjon og påmeldingsinformasjon om dette når det nærmar seg - men set av datoen allereie no! Vi gjer merksam på at deltakarprisen for overnattingsturen kjem i tillegg til deltakarprisen for Sommarcamp og Camp Adventures.";
@@ -250,7 +250,7 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 		mainText += "\nwww.sommarcamp.no";
 		mandrill('/messages/send', {
 		    message: {
-		        to: [{email: toEmail, name: toName}, {email: 'registrering@sommarcamp.no', name: 'registrering'}],
+		        to: [{email: toEmail, name: toName}, {email: 'registrering@sommarcamp.no', name: 'registrering', type: 'bcc'}],
 		        from_email	: 'post@sommarcamp.no',
 		        from_name	: "Klenkarberget Sommarcamp",
 		        subject		: "Registrering Sommarcamp 2014 - " + resultFromDB.firstName + " " + resultFromDB.lastName,
@@ -382,13 +382,13 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 		});
 	});*/
 
-	app.get('/api/killparts', function (req, res){
+	/*app.get('/api/killparts', function (req, res){
 		Participant.remove(function (err) {
 			if(!QueryHasErrors(err, res)) {
 		  		console.log('Deleted collection Participant');
 		  	}
 		});
-	});
+	});*/
 
 	app.get('/api/testmail', isLoggedInSendUnauth, function (req, res){
 		mandrill('/messages/send', {

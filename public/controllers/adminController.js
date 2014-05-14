@@ -106,6 +106,11 @@ function adminController($scope, $location, registrationFactory, MessageFactory,
     	}
     }
 
+    $scope.filterActs = function (actual, expected) {
+    return angular.equals(expected, actual);
+}
+
+
     //Helper to convert til "ja"/"nei" based on property
     $scope.setActivityFilter = function(filter) {
     	$scope.activityFilter = filter;

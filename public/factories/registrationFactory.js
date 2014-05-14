@@ -119,7 +119,7 @@ function registrationFactory($http, $log) {
 
 	    registerPayment:function(id) {
 	    	var promise = $http({
-	        	method: 'PUT',
+	        	method: 'GET',
 	            url: '/api/regpayment/' + id,
 	            data: null,
 	            timeout: 20000
