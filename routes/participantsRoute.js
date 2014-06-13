@@ -333,6 +333,7 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 							        birthMonth : 1,
 							        birthYear : 1,
 							        parentOnePhone : 1,
+							        parentOneEmail : 1,
 							        parentTwoPhone: 1,
 							        canTakePictures : 1,
 							        canTakeVideo : 1,
