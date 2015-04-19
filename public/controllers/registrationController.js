@@ -5,7 +5,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 	$scope.participantCommonFields = { canTakePictures: true, canUseTransport: true, canDoSwimming: true, canTakeVideo: true};
 	$scope.days = [01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31];
 	$scope.months = [01,02,03,04,05,06,07,08,09,10,11,12];
-	$scope.years = [1998,1999,2000,2001,2002,2003,2004,2005,2006,2007];
+	$scope.years = [2000,2001,2002,2003,2004,2005,2006,2007,2008];
 	$scope.addFirstParticipant = false;
 	$scope.activitiesLoaded = false;
 	$scope.showStepOne = true;
@@ -58,7 +58,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 	// Add participant to participant collection (max 4)
 	$scope.addParticipant = function() {
 		if( $scope.participants.length < 4 ) {
-			$scope.participants.push({birthDay: null, birthMonth: null, birthYear: null, activityList: $scope.cloneActivities()});
+			$scope.participants.push({birthDay: null, birthMonth: null, birthYear: null, sex: "Gutt", activityList: $scope.cloneActivities()});
 			updateParticipanControls();
 		} 
 
@@ -397,6 +397,27 @@ function registrationController($scope, $location, registrationFactory, MessageF
     	}
     }
 
+    //Helper to determine activity group color (New function 2015)
+    function setGrpColor(act, birthYear) {
+    	if(act == undefined || act == null) {
+    		return "";
+    	} else {
+    		if(act.toLowerCase() === "u26" || act.toLowerCase() === "u27" || act.toLowerCase() === "u28" || act.toLowerCase() === "u29" ) {
+    			if( birthYear <= 2005 ) { return "yellow"}
+    			else if ( birthYear == 2006 ) { return "red"}
+    			else if ( birthYear == 2007 ) { return "green"}
+    			else if ( birthYear == 2008 ) { return "blue"}
+    		} 
+    		else if(act.toLowerCase() === "u26ca" || act.toLowerCase() === "u27ca") {
+    			if( birthYear <= 2003 ) { return "hvite"}
+    			else if ( birthYear <= 2005 ) { return "purple"}
+    		} 
+    		else {
+    			return "ukjent"
+    		}
+    	}
+    }
+
     // Create new participants on server using registrationFactory
 	$scope.addParticipantsToServer = function() {
 		for(var i = 0; i<$scope.participants.length; i++) {
@@ -408,6 +429,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 			    birthDay			: participant.birthDay,
 			    birthMonth			: participant.birthMonth,
 			    birthYear			: participant.birthYear,
+			    sex					: participant.sex,
 			    partArrPos			: i,
 			    _activities			: []
 			};
@@ -429,8 +451,6 @@ function registrationController($scope, $location, registrationFactory, MessageF
 			}
 			
 
-			//$log.info("Number of discount acts = " + numberOfDiscountActivities)
-
 			for(var j = 0; j < participant.activityList.length; j++) {
 				var partActivity = participant.activityList[j];
 				if(partActivity.isAttending || partActivity.isWaiting) {
@@ -438,7 +458,8 @@ function registrationController($scope, $location, registrationFactory, MessageF
 						title			: partActivity.title,
 						eventCode       : partActivity.eventCode, 
 					    attending 		: partActivity.isAttending,
-					    waiting 		: partActivity.isWaiting
+					    waiting 		: partActivity.isWaiting,
+					    grpColor		: setGrpColor(partActivity.eventCode, participant.birthYear)
 					});
 				}
 
@@ -458,13 +479,13 @@ function registrationController($scope, $location, registrationFactory, MessageF
 				//$log.info("Totalamount after calcpart " + totalAmount);
 				newParticipantForServer.totalAmount = totalAmount;
 			}
-
+			
 			registrationFactory.addParticipant(newParticipantForServer).then(function(data) {
 				if(!$rootScope.RHE(data, true)) {
 					$scope.participants[data.data.partArrPos]._id = data.data._id;
 					MessageFactory.prepareForBroadcast('Steg 1 er utført utan feil. Du må fylle inn felta nedanfor og bekrefte påmeldinga før plassen blir endeleg reservert!', 'alert alert-success', 20);
 				} else {
-					essageFactory.prepareForBroadcast('Det oppstod en feil ved lagring av deltakarar. Kontakt administrator på e-post marius@mundal.org.', 'alert alert-danger', 60);
+					MessageFactory.prepareForBroadcast('Det oppstod en feil ved lagring av deltakarar. Kontakt administrator på e-post marius@mundal.org.', 'alert alert-danger', 60);
 				}
 			});	
 

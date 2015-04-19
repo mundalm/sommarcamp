@@ -180,7 +180,7 @@
 				</div><br/>
 				<strong>Aktivitetar:</strong><br/><br/>
 				<div id="participant-form-grid" class="row" ng-repeat="activity in formData._activities">
-					<div class="col-sm-5 col-onev3">
+					<div class="col-sm-5 col-one">
 						<small>
 							<span>
 						    	<input type="checkbox" ng-model="activity.attending"/>{{activity.title}}
@@ -190,19 +190,12 @@
 						    </span><br/>
 						</small>
 					</div>
-					<div class="col-sm-3 col-onev3">
-						Farge:
+					<div class="col-sm-3 col-one">
 						<span>
-							<select class="form-control selectField" ng-model="activity.grpColor" >
-								<option>red</option>
-								<option>yellow</option>
-								<option>blue</option>
-								<option>green</option>
-								<option>hvite</option>
-								<option>purple</option>
+							<select class="form-control selectField" ng-model="activity.grpColor" ng-options="color for color in grpColors">
 							</select>
-						</span>
-					</div>
+						</span><br/><br/>
+					</div><br/><br/>
 				</div><br/>
 			</div>
 		</form><br/>

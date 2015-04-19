@@ -78,8 +78,9 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 											   	_activities 		: req.body._activities,
 											    _parents 			: null,
 											    partArrPos			: req.body.partArrPos,
-											    totalAmount			: req.body.totalAmount, 
-											    hasPaid			: false, 
+											    totalAmount			: req.body.totalAmount,
+											    sex					: req.body.sex, 
+											    hasPaid				: false, 
 											    bookedTime			: moment().tz('Europe/Berlin').format()
 											});
 
@@ -177,18 +178,19 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 		for(var j = 0; j < resultFromDB._activities.length; j++) {
 			if(resultFromDB._activities[j].attending) {
 				mainText += " - " + resultFromDB._activities[j].title + "\n";
-			} else {
+			} else if(resultFromDB._activities[j].waiting) {
 				mainText += " - Venteliste " + resultFromDB._activities[j].title + "\n";
 			}
 			
 		}	
 
 		mainText += "\n\nBetalingsinformasjon:\nTotalpris for " + resultFromDB.firstName + " " + resultFromDB.lastName + ": kr " + resultFromDB.totalAmount + ",-";
-		mainText += "\n\nVennlegst innbetal deltakaravgifta til konto 3705.19.76429 tilhøyrande Klenkarberget Sommarcamp v/Haugen Idrettslag snarast og seinast i løpet av ei veke. Vi ber om at innbetalinga vert merka med namn på deltakar(ar).";
-		mainText += "\n\nEndeleg reservert plass blir stadfesta pr e-post når betaling er motteken. Dersom innbetaling ikkje er motteken innan betalingsfristen, vil plassen kunne gå til ein annan.";
+		mainText += "\n\nVennlegst innbetal deltakaravgifta til konto 3705.19.76429 tilhøyrande Klenkarberget Sommarcamp v/Haugen Idrettslag innan 15. mai 2015. Vi ber om at innbetalinga vert merka med namn på deltakar(ar).";
+		mainText += "\n\nEndeleg reservert plass blir stadfesta pr e-post når betaling er motteken. Dersom innbetaling ikkje er motteken innan betalingsfristen, vil plassen kunne gå til ein annan. Det vert ikkje refundert deltakaravgift dersom ein ønskjer å seie frå seg plassen etter at plassen er stadfesta og innbetalt.";
 		mainText += "\n\nFølgjande informasjon er registrert:";
 		mainText += "\n\nNavn på deltakar: " + resultFromDB.firstName + " " + resultFromDB.lastName;
 		mainText += "\nFødselsdato: " + resultFromDB.birthDate;
+		mainText += "\nKjønn: " + resultFromDB.sex;
 		mainText += "\nSpesielle omsyn: " + (isNullOrUndefined(resultFromDB.specialNeeds) ? "Ingen" : resultFromDB.specialNeeds);
 		mainText += "\nKan delta på badeaktivitetar: " + convertYesNo(resultFromDB.canDoSwimming);
 		mainText += "\nKan takast bilete av: " + convertYesNo(resultFromDB.canTakePictures);
@@ -201,8 +203,8 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 		mainText += "\nMobilnr sekundærkontakt: " + resultFromDB.parentTwoPhone;
 		mainText += "\nØvrige opplysningar: " + (isNullOrUndefined(resultFromDB.comments) ? "Ingen" : resultFromDB.comments);
 
-		mainText += "\n\nVi ser fram til kjekke og minnerike dagar på Klenkarberget Sommarcamp 2014!";
-		mainText += "\n\nMed vennleg helsing";
+		mainText += "\n\nVi ser fram til kjekke og minnerike dagar på Klenkarberget Sommarcamp 2015!";
+		mainText += "\n\nMed venleg helsing";
 		mainText += "\n\nKlenkarberget Sommarcamp";
 
 		mandrill('/messages/send', {
@@ -210,7 +212,7 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 		        to: [{email: toEmail, name: toName}, {email: 'registrering@sommarcamp.no', name: 'registrering', type: 'bcc'}],
 		        from_email	: 'post@sommarcamp.no',
 		        from_name	: "Klenkarberget Sommarcamp",
-		        subject		: "Registrering Sommarcamp 2014 - " + resultFromDB.firstName + " " + resultFromDB.lastName,
+		        subject		: "Registrering Sommarcamp 2015 - " + resultFromDB.firstName + " " + resultFromDB.lastName,
 		        text		: mainText
 		    }
 		}, function(error, response) {
@@ -223,13 +225,13 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 	}
 
 	function sendPaymentReceivedEmail(toEmail, toName, resultFromDB) {
-		var mainText = "Hei\n\nVi har motteke innbetaling for deltaking på Klenkarberget Sommarcamp 2014, og kan med dette stadfeste plass for " + resultFromDB.firstName + " " + resultFromDB.lastName + " på følgjande aktivitet(ar):\n\n";
+		var mainText = "Hei\n\nVi har motteke innbetaling for deltaking på Klenkarberget Sommarcamp 2015, og kan med dette stadfeste plass for " + resultFromDB.firstName + " " + resultFromDB.lastName + " på følgjande aktivitet(ar):\n\n";
 		for(var j = 0; j < resultFromDB._activities.length; j++) {
 			if(resultFromDB._activities[j].attending) {
 				mainText += " - " + resultFromDB._activities[j].title + "\n";
-			} else {
+			} /*else if(resultFromDB._activities[j].waiting) {
 				mainText += " - Venteliste " + resultFromDB._activities[j].title + "\n";
-			}
+			}*/
 			
 		}
 
@@ -244,16 +246,16 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 		mainText += "\n\nOvernattingsturen vil i år bli gjennomført frå fredag 11. juli til laurdag 12. juli. Vi vil sende ut meir informasjon og påmeldingsinformasjon om dette når det nærmar seg - men set av datoen allereie no! Vi gjer merksam på at deltakarprisen for overnattingsturen kjem i tillegg til deltakarprisen for Sommarcamp og Camp Adventures.";
 		mainText += "\n\nVi gler oss til å bli betre kjent, og vi skal finne på mange kjekke aktivitetar i lag desse dagane.";
 		mainText += "\nREGLANE VÅRE ER ENKLE - VI SKAL ALLTID GÅ SAMLA, VI SKAL ALLTID GÅ FINT OG VI SKAL ALLTID HØYRE PÅ DEI VAKSNE.";
-		mainText += "\n\nHar de spørsmål så ta kontakt med Henning Haugen på telefon 918 67 977 eller send oss ein e-post på post@sommarcamp.no. Vi ønskjer hjarteleg velkomen til Klenkarberget Sommarcamp 2014!";
+		mainText += "\n\nHar de spørsmål så ta kontakt med Henning Haugen på telefon 918 67 977 eller send oss ein e-post på post@sommarcamp.no. Vi ønskjer hjarteleg velkomen til Klenkarberget Sommarcamp 2015!";
 		mainText += "\n\nMed sommarleg helsing";
-		mainText += "\nKlenkarberget Sommarcamp 2014";
+		mainText += "\nKlenkarberget Sommarcamp 2015";
 		mainText += "\nwww.sommarcamp.no";
 		mandrill('/messages/send', {
 		    message: {
 		        to: [{email: toEmail, name: toName}, {email: 'registrering@sommarcamp.no', name: 'registrering', type: 'bcc'}],
 		        from_email	: 'post@sommarcamp.no',
 		        from_name	: "Klenkarberget Sommarcamp",
-		        subject		: "Registrering Sommarcamp 2014 - " + resultFromDB.firstName + " " + resultFromDB.lastName,
+		        subject		: "Betalingsbekreftelse Sommarcamp 2015 - " + resultFromDB.firstName + " " + resultFromDB.lastName,
 		        text		: mainText
 		    }
 		}, function(error, response) {
@@ -364,9 +366,9 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 	});
 
 	/*app.get('/api/updateact', function (req, res){
-		var query = { _id: '53441d6034e70727861043df' };
+		var query = { _id: '5342dc2b57283e6d31d471f3' };
 
-		var update = {	maxAttending		: 80};
+		var update = {	fewleft		: 5};
 
 		AvailableActivity.findOneAndUpdate(query, update, null, function(err, result) {
 			if(!QueryHasErrors(err, res)) {

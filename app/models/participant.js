@@ -37,6 +37,7 @@ var activitySchema = mongoose.Schema({
     eventCode       : String, 
     attending       : Boolean, 
     waiting         : Boolean,
+    grpColor        : String
 });
 
 // create the model for users and expose it to our app

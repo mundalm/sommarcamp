@@ -142,7 +142,7 @@ function registrationFactory($http, $log) {
 	            data: participant,
 	            timeout: 20000
 	        }).then(function(response) {
-	        	//$log.info('Retrieved data after instert: ',response);
+	        	$log.info('Retrieved data after instert: ',response);
 	           	return response;  
 	        },  function(reason) {
 	        	$log.error("POST request Failed: ", reason);

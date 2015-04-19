@@ -6,13 +6,13 @@
   "ignore": [
   ],
   "dependencies": {
-    "bootstrap": 		"",
-    "bootstrap-modal":    "",
-    "angular": 			"",
-    "angular-route": 	"",
-    "angular-timer":	"",
+    "bootstrap": 		"3.1.1",
+    "bootstrap-modal":    "2.1.0",
+    "angular": 			"1.2.16",
+    "angular-route": 	"1.2.16",
+    "angular-timer":	"1.0.12",
     "bootbox":        "4.1.0",
-    "angular-bootstrap": "",
-    "angular-placeholder-shim" : ""
+    "angular-bootstrap": "0.10.0",
+    "angular-placeholder-shim" : "0.3.0"
   }
 }

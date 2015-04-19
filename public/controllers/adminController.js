@@ -235,7 +235,7 @@ function adminController($scope, $location, registrationFactory, MessageFactory,
 		bootbox.confirm(promptOptions);	
 	};
 
-	// Register payment om participant
+	// Register payment on participant
 	$scope.registerPayment = function(id, firstName, lastName) {
 		var promptOptions = {
 			title: "Godkjenning av betaling",
@@ -300,6 +300,7 @@ function adminController($scope, $location, registrationFactory, MessageFactory,
 							canDoSwimming: $scope.filteredParticipants[index].canDoSwimming,
 							_activities: $scope.populateActivityEditForm($scope.filteredParticipants[index]._activities)
 							}
+		$log.info($scope.formData);
 		$scope.openParticipantModal(); 
 	};
 
@@ -311,6 +312,7 @@ function adminController($scope, $location, registrationFactory, MessageFactory,
 				if (populatedActivities[i].eventCode === partActs[j].eventCode) {
 					populatedActivities[i].attending = partActs[j].attending;							
 					populatedActivities[i].waiting = partActs[j].waiting;							
+					populatedActivities[i].grpColor = partActs[j].grpColor;
 				}
 			}
 		}

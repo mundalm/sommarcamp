@@ -59,6 +59,7 @@ require('./routes')(app, passport);
 
 // Launch server ===============================================================
 //httpServer.listen(process.env.PORT); //Prod
+console.log ('Starting server on port: ' + port);
 httpServer.listen(port); //Dev
 
 

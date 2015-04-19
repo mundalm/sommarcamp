@@ -1,4 +1,5 @@
 var participantModalController = function ($scope, $modalInstance, registrationFactory, MessageFactory, $log, $rootScope) {
+	$scope.grpColors = ["gul", "raud", "blaa", "gron", "lilla", "kvit"];
 	// update participant using factory
 	$scope.updateParticipant = function(id) {
 		if( $scope.$$childTail.participantForm.$valid) {

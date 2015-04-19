@@ -45,10 +45,8 @@
 			    			<th>Navn</th>
 			    			<th>Fødselsdato</th>
 			    			<th>Kjønn</th>
-			    			<!--<th>Tid steg 1</th>-->
 			    			<th>Tid fullført</th>
 			    			<th>Beløp</th>
-			    			<!--<th>Betalt?</th>-->
 			    			<th>Aktivitetar</th>
 			    			<th></th>
 			    		</tr>
@@ -56,14 +54,12 @@
 							<td>{{participant.firstName}} {{participant.lastName}}</td>
 							<td>{{participant.birthDate}}</td>
 							<td>{{participant.sex}}</td>
-							<!--<td>{{participant.bookedTime}}</td>-->
 							<td>{{participant.regCompletedTime}}</td>
 							<td>{{participant.totalAmount}}</td>
-							<!--<td>{{participant.hasPaid}}</td>-->
 							<td>
 								<span ng-repeat="activity in participant._activities">
-									<span ng-if="activity.attending">{{activity.eventCode}}, </span>
-									<span ng-if="activity.waiting" style="color: red">v.l {{activity.eventCode}}, </span>
+									<span ng-if="activity.attending" style="background-color: {{activity.grpColor}}; color: darkgrey; margin-right: 2px; padding-left: 2px; padding-right: 2px;"> {{activity.eventCode}} </span>
+									<span ng-if="activity.waiting" style="color: red; margin-right: 2px; padding-left: 2px; padding-right: 2px;"> v.l {{activity.eventCode}} </span>
 								</span>
 							</td>
 							<td>
@@ -77,7 +73,6 @@
 									<span class="glyphicon glyphicon-usd"></span>
 								</button>
 							</td>
-
 						</tr>
 					</table>
 
