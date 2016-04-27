@@ -5,7 +5,7 @@ function registrationController($scope, $location, registrationFactory, MessageF
 	$scope.participantCommonFields = { canTakePictures: true, canUseTransport: true, canDoSwimming: true, canTakeVideo: true};
 	$scope.days = [01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31];
 	$scope.months = [01,02,03,04,05,06,07,08,09,10,11,12];
-	$scope.years = [2000,2001,2002,2003,2004,2005,2006,2007,2008];
+	$scope.years = [2003,2004,2005,2006,2007,2008,2009];
 	$scope.addFirstParticipant = false;
 	$scope.activitiesLoaded = false;
 	$scope.showStepOne = true;

@@ -133,6 +133,22 @@ function registrationFactory($http, $log) {
 	     	return promise;
 	    },
 
+	    sendReminder:function(id) {
+	    	var promise = $http({
+	        	method: 'GET',
+	            url: '/api/sendreminder/' + id,
+	            data: null,
+	            timeout: 20000
+	        }).then(function(response) {
+	        	//$log.info('Retrieved data after update: ',response);
+	           	return response;  
+	        },  function(reason) {
+	        	$log.error("Send reminder failed: ", reason);
+	     	});
+		 
+	     	return promise;
+	    },
+
 	    addParticipant:function(participant) {
 	    	participant.aSe = 191079;
 

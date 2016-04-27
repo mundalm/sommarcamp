@@ -273,6 +273,44 @@ function adminController($scope, $location, registrationFactory, MessageFactory,
 		bootbox.confirm(promptOptions);	
 	};		
 
+	// Register payment on participant
+	$scope.sendReminder = function(id, firstName, lastName) {
+		var promptOptions = {
+			title: "Sende purring",
+			message: "Skal det sendast purring på betaling for deltakar " + firstName + " " + lastName,
+			buttons: {
+				confirm: {
+					label: "Ja",
+					className: "btn-danger",
+				},
+				cancel: {
+			    	label: "Nei",
+			    	className: "btn-primary",
+			    }
+			  },
+			  callback: function(result) {                
+			      	if(result) {
+						registrationFactory.sendReminder(id).then(function(data) {
+							if(!$rootScope.RHE(data, false)) {
+								for (var i = 0; i < $scope.participants.length; i++) {
+									if ($scope.participants[i]._id === id) {
+										$scope.participants[i] = data.data;
+										break;
+									}
+							}
+
+								MessageFactory.prepareForBroadcast('Purring sendt for deltakar', 'alert alert-success');
+							} else {
+								MessageFactory.prepareForBroadcast('Det oppstod en feil ved sending av purring', 'alert alert-danger');
+							}
+						});
+					}
+			    }
+			};
+
+		bootbox.confirm(promptOptions);	
+	};		
+
 	// Put project to edit in edit form
 	$scope.editParticipant = function(index) {
 		$scope.showUpdateButton = true;

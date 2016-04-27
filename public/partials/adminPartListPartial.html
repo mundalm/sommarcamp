@@ -72,6 +72,9 @@
 								<button type="button" ng-if="!participant.hasPaid" title="Registrer betaling" style="border: 1px; background-color: transparent" ng-click="registerPayment(participant._id, participant.firstName, participant.lastName)">
 									<span class="glyphicon glyphicon-usd"></span>
 								</button>
+								<button type="button" ng-if="!participant.hasPaid" title="Send purring" style="border: 1px; background-color: transparent" ng-click="sendReminder(participant._id, participant.firstName, participant.lastName)">
+									<span class="glyphicon glyphicon-bell"></span>
+								</button>
 							</td>
 						</tr>
 					</table>

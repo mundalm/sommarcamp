@@ -172,6 +172,21 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 		});
 	});
 
+	//============================================================ Update paymentRegistration
+	app.get('/api/sendreminder/:id', isLoggedInSendUnauth, function (req, res){
+		var query = { _id: req.params.id };
+
+		var update = { };
+		
+		Participant.findOne(query, function(err, result) {
+			if(!QueryHasErrors(err, res)) {
+				sendReminderEmail(result.parentOneEmail, result.parentOneFirstName + " " + result.parentOneLastName, result);	
+
+		  		ReturnResults(res, result, 201);	
+		  	}
+		});
+	});
+
 	function sendConfirmationEmail(toEmail, toName, resultFromDB) {
 		var mainText = "Hei\n\nVi har registrert påmeldinga di.";
 		mainText += "\n\n" + resultFromDB.firstName + " " + resultFromDB.lastName + " deltek på følgjande aktivitetar:\n\n";
@@ -185,7 +200,7 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 		}	
 
 		mainText += "\n\nBetalingsinformasjon:\nTotalpris for " + resultFromDB.firstName + " " + resultFromDB.lastName + ": kr " + resultFromDB.totalAmount + ",-";
-		mainText += "\n\nVennlegst innbetal deltakaravgifta til konto 3705.19.76429 tilhøyrande Klenkarberget Sommarcamp v/Haugen Idrettslag innan 15. mai 2015. Vi ber om at innbetalinga vert merka med namn på deltakar(ar).";
+		mainText += "\n\nVennlegst innbetal deltakaravgifta til konto 3705.19.76429 tilhøyrande Klenkarberget Sommarcamp v/Haugen Idrettslag innan 15. mai 2016. Vi ber om at innbetalinga vert merka med namn på deltakar(ar).";
 		mainText += "\n\nEndeleg reservert plass blir stadfesta pr e-post når betaling er motteken. Dersom innbetaling ikkje er motteken innan betalingsfristen, vil plassen kunne gå til ein annan. Det vert ikkje refundert deltakaravgift dersom ein ønskjer å seie frå seg plassen etter at plassen er stadfesta og innbetalt.";
 		mainText += "\n\nFølgjande informasjon er registrert:";
 		mainText += "\n\nNavn på deltakar: " + resultFromDB.firstName + " " + resultFromDB.lastName;
@@ -203,7 +218,7 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 		mainText += "\nMobilnr sekundærkontakt: " + resultFromDB.parentTwoPhone;
 		mainText += "\nØvrige opplysningar: " + (isNullOrUndefined(resultFromDB.comments) ? "Ingen" : resultFromDB.comments);
 
-		mainText += "\n\nVi ser fram til kjekke og minnerike dagar på Klenkarberget Sommarcamp 2015!";
+		mainText += "\n\nVi ser fram til kjekke og minnerike dagar på Klenkarberget Sommarcamp 2016!";
 		mainText += "\n\nMed venleg helsing";
 		mainText += "\n\nKlenkarberget Sommarcamp";
 
@@ -212,7 +227,7 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 		        to: [{email: toEmail, name: toName}, {email: 'registrering@sommarcamp.no', name: 'registrering', type: 'bcc'}],
 		        from_email	: 'post@sommarcamp.no',
 		        from_name	: "Klenkarberget Sommarcamp",
-		        subject		: "Registrering Sommarcamp 2015 - " + resultFromDB.firstName + " " + resultFromDB.lastName,
+		        subject		: "Registrering Sommarcamp 2016 - " + resultFromDB.firstName + " " + resultFromDB.lastName,
 		        text		: mainText
 		    }
 		}, function(error, response) {
@@ -225,7 +240,7 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 	}
 
 	function sendPaymentReceivedEmail(toEmail, toName, resultFromDB) {
-		var mainText = "Hei\n\nVi har motteke innbetaling for deltaking på Klenkarberget Sommarcamp 2015, og kan med dette stadfeste plass for " + resultFromDB.firstName + " " + resultFromDB.lastName + " på følgjande aktivitet(ar):\n\n";
+		var mainText = "Hei\n\nVi har motteke innbetaling for deltaking på Klenkarberget Sommarcamp 2016, og kan med dette stadfeste plass for " + resultFromDB.firstName + " " + resultFromDB.lastName + " på følgjande aktivitet(ar):\n\n";
 		for(var j = 0; j < resultFromDB._activities.length; j++) {
 			if(resultFromDB._activities[j].attending) {
 				mainText += " - " + resultFromDB._activities[j].title + "\n";
@@ -235,27 +250,57 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 			
 		}
 
-		mainText += "\n\nSOMMARCAMP & CAMP ADVENTURES";
-		mainText += "\nKlenkarberget Sommarcamp er open frå kl 07.30 til kl 16.30. Basen for Sommarcamp er på Klenkarberget på Hauane, og Camp Adventures vil ha base i Hjemelandsdalen. Kvar dag skal barna registrerast inn mellom kl 07.30 og kl 09.00, og registrerast ut mellom kl 15.00 og kl 16.30. Det er viktig at barna kjem og reiser mellom desse tidspunkta slik at vi kan få gjennomført turar. Er det noko spesielt enkelte dagar som gjer at ein må avtale andre tidspunkt for henting og levering, så ordnar vi sjølvsagt dette.";
-		mainText += "\n\nDeltakarar for Camp Adventures vil få eigen mail når det nærmar seg oppstart med meir informasjon om oppmøteplass og praktiske opplysningar.";
-		mainText += "\n\nBarna må ha med seg kle og sko etter veirforholda, samt handkle, redningsvest og solkrem. Dersom de ikkje har redningsvest så kan dette lånast, men gje oss då ei tilbakemelding på post@sommarcamp.no.";
-		mainText += "\n\nBarna vil få utdelt t-skjorte, caps og drikkeflaske på årets Sommarcamp. Vi presiserar at barna skal bruke både t-skjorte og caps kvar dag. Dersom det er kaldt i veiret så tek ein t-skjorta utanpå tjukkare gensar/jakke.";
-		mainText += "\n\nBarna vil få servert lunsj av våre Fiskeriket-kokkar, men dersom barnet ditt treng ekstra mat i løpet av dagen eller ikkje vil ha den maten vi tilbyr, så ber vi om at dei tek med eigen matpakke.";
-		mainText += "\n\nOVERNATTINGSTUR";
-		mainText += "\nOgså i år vil vi gjenta suksessen med overnattingstur! Alle som deltek på Sommarcamp eller Camp Adventures kan vere med på turen, og i tillegg må gjerne foreldre, søsken og/eller besteforeldre vere med. Dette er ei oppleving for både store og små! :-)";
-		mainText += "\n\nOvernattingsturen vil i år bli gjennomført frå fredag 11. juli til laurdag 12. juli. Vi vil sende ut meir informasjon og påmeldingsinformasjon om dette når det nærmar seg - men set av datoen allereie no! Vi gjer merksam på at deltakarprisen for overnattingsturen kjem i tillegg til deltakarprisen for Sommarcamp og Camp Adventures.";
-		mainText += "\n\nVi gler oss til å bli betre kjent, og vi skal finne på mange kjekke aktivitetar i lag desse dagane.";
-		mainText += "\nREGLANE VÅRE ER ENKLE - VI SKAL ALLTID GÅ SAMLA, VI SKAL ALLTID GÅ FINT OG VI SKAL ALLTID HØYRE PÅ DEI VAKSNE.";
-		mainText += "\n\nHar de spørsmål så ta kontakt med Henning Haugen på telefon 918 67 977 eller send oss ein e-post på post@sommarcamp.no. Vi ønskjer hjarteleg velkomen til Klenkarberget Sommarcamp 2015!";
-		mainText += "\n\nMed sommarleg helsing";
-		mainText += "\nKlenkarberget Sommarcamp 2015";
-		mainText += "\nwww.sommarcamp.no";
+		mainText += "\n\nKlenkarberget Sommarcamp:";
+		mainText += "\nKlenkarberget Sommarcamp er open frå kl. 07.30 til kl. 16.30. Basen for Sommarcamp er på Klenkarberget på Hauane. Levering kl. 07.30-09.00. Henting kl. 15.00-16.30.";				
+		mainText += "\n\nBarna på Klenkarberget Sommarcamp må ha med seg kle og sko etter værforholda (også skifteklede), handkle, ryggsekk, redningsvest (dersom barnet ikkje har kan dette lånast. Send ein mail til post@sommarcamp.no), drikkeflaske, badeklede (for dei som vil bade) og solkrem."; 
+		mainText += "\n\nBarna vil få eigen garderobeplass, der ein kan henge frå seg kle frå dag til dag. Fint om de sjekkar plassen kvar dag, for våte kle og liknande. MERK ALLE EIGENDELAR!";
+		mainText += "\n\nCamp Adventures:";
+		mainText += "\nCamp Adventures er open frå kl. 07.30 til kl. 16.00. Basen for Cam Aventures er på Harpefossen fjellstove i Hjelmelandsdalen. Levering kl. 07.30-09.00. Henting kl. 15.30-16.00.";
+		mainText += "\n\nBarna på Camp Adventures må ha med seg kle og sko etter vêrforholda (også skiftekle), badekle, eventuelt sandalar for bruk i vatn, ryggsekk, drikkeflaske, handkle, sykkel og sykkelhjelm, fiskestang (for dei som vil), kniv, litt dopapir, solkrem og myggspray."; 
+		mainText += "\n\nSyklane og noko av utstyret kan setjast igjen på Harpefossen, der det vil bli låst kvar dag."; 
+		mainText += "\n\nGjeld alle:";
+		mainText += "\n\nDet er viktig at ein registrerer barna når ein kjem om morgonen og at barna blir registrert ut ved henting. Om det er noko spesielt som gjer at ein kjem seinare på morgonen, eller skal bli henta tidlegare på ettermiddagen er det viktig at ein avtalar dette på førehand. ";
+		mainText += "\n\nBarna vil få utdelt t-skjorte første dagen og vi presiserer at desse skal brukast kvar dag. Dersom det er kaldt, tek ein t-skjorta utanpå genser/jakke.";
+		mainText += "\n\nBarna vil få servert eit næringsrikt måltid til lunsj og eit fruktmåltid på ettermiddagen.";
+		mainText += "\n\nVi ber om at ein legg igjen godteri og teknologiske duppeditter heime. Har ein med seg telefon, skal denne ligge i sekken og berre brukast etter avtale med aktivitetsleiar. Alle personlege eigendeler blir tatt med på eige ansvar.";
+		mainText += "\n\nCamp Family:";
+		mainText += "\nFredag 1. juli kl. 17.00 – laurdag 2. juli kl. 10.00. Vi inviterer heile familien på overnatting i telt og lavvo, og det blir aktivitetar til langt på kveld. Dei eldste barna vil få tilbod om ein lengre tur i lag med Rogier van Oorschot med overnatting på fjellet. Påmelding til post@sommarcamp.no innan tysdag 28.juni (Avgrensa med plassar!) Merk påmeldinga md «Overnatting» og få med namn og alder på dei som meldast på. Prisen er kr. 300 for eitt barn og kr. 500 for ein familie (barn med søsken og foreldre). Kveldsmat  og frukost er inkludert.";
+		mainText += "\n\nVi gler oss til å bli betre kjend og vi skal finne på mange kjekke aktivitetar desse dagane.";
+		mainText += "\n\nHar de spørsmål så ta kontakt med Henning Haugen på telefon 918 67 977 eller send oss ein e-post på post@sommarcamp.no. Sjekk også heimesida vår www.sommarcamp.no. Vi ønskjer hjarteleg velkomen til Klenkarberget Sommarcamp 2016!";
+		mainText += "\n\nMed vennleg helsing";
+		mainText += "\nKlenkarberget Sommarcamp";
+		
 		mandrill('/messages/send', {
 		    message: {
 		        to: [{email: toEmail, name: toName}, {email: 'registrering@sommarcamp.no', name: 'registrering', type: 'bcc'}],
 		        from_email	: 'post@sommarcamp.no',
 		        from_name	: "Klenkarberget Sommarcamp",
-		        subject		: "Betalingsbekreftelse Sommarcamp 2015 - " + resultFromDB.firstName + " " + resultFromDB.lastName,
+		        subject		: "Betalingsbekreftelse Sommarcamp 2016 - " + resultFromDB.firstName + " " + resultFromDB.lastName,
+		        text		: mainText
+		    }
+		}, function(error, response) {
+		    if (error) {
+		    	console.log( JSON.stringify(error) );
+		    } else {
+		    	//console.log(response);
+		    }
+		});
+	}
+
+	function sendReminderEmail(toEmail, toName, resultFromDB) {
+		var mainText = "Hei\n\nVi kan ikkje sjå at vi har motteke innbetaling for deltaking på Klenkarberget Sommarcamp 2016. Vi viser til tidlegare oversendt mail der innbetalingsfristen var sett til 15. mai 2016.";
+		mainText += "\n\nVi ber om snarleg tilbakemelding på om barnet ditt fortsatt ønskjer å delta på årets Sommarcamp. Dette kan stadfestast ved å innbetale deltakaravgifta. Vi gjer merksam på at ved manglande innbetaling kan vi tildele plassen til andre.";		
+		mainText += "\n\nDersom innbetaling er foretatt siste døgnet så ber vi om at de ser vekk frå denne påminninga."; 
+		mainText += "\n\nTa gjerne kontakt med oss om det skulle vere spørsmål.";
+		mainText += "\n\nMed vennleg helsing";
+		mainText += "\nKlenkarberget Sommarcamp";
+		
+		mandrill('/messages/send', {
+		    message: {
+		        to: [{email: toEmail, name: toName}, {email: 'registrering@sommarcamp.no', name: 'registrering', type: 'bcc'}],
+		        from_email	: 'post@sommarcamp.no',
+		        from_name	: "Klenkarberget Sommarcamp",
+		        subject		: "Betalingspåminning Klenkarberget Sommarcamp 2016 - " + resultFromDB.firstName + " " + resultFromDB.lastName,
 		        text		: mainText
 		    }
 		}, function(error, response) {
