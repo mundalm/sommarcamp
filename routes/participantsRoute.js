@@ -1,7 +1,14 @@
 // load up the participant model
 var Participant = require('../app/models/participant.js');
 var AvailableActivity = require('../app/models/availableActivity.js');
-var mandrill = require('node-mandrill')('9fpTjC4TRNvpxej2vOEv1g');
+//var mandrill = require('node-mandrill')('9fpTjC4TRNvpxej2vOEv1g');
+var api_key = 'key-6bbced76001e8c51c39e205cc52bda56';
+var domain = 'mundal.org';
+var Mailgun_module = require('mailgun-js');
+var mailgun = new Mailgun_module({apiKey: api_key, domain: domain});
+
+
+
 var moment = require('moment-timezone');
 
 module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, ReturnResults) {
@@ -222,7 +229,7 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 		mainText += "\n\nMed venleg helsing";
 		mainText += "\n\nKlenkarberget Sommarcamp";
 
-		mandrill('/messages/send', {
+		/*mandrill('/messages/send', {
 		    message: {
 		        to: [{email: toEmail, name: toName}, {email: 'registrering@sommarcamp.no', name: 'registrering', type: 'bcc'}],
 		        from_email	: 'post@sommarcamp.no',
@@ -236,7 +243,20 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 		    } else {
 		    	//console.log(response);
 		    }
+		});*/
+
+		var data = {
+		  from:  'Klenkarberget Sommarcamp <post@sommarcamp.no>',
+		  to: toEmail,
+		  subject: 'Registrering Sommarcamp 2016 - ' + resultFromDB.firstName + ' ' + resultFromDB.lastName,
+		  text: mainText
+		};
+
+		mailgun.messages().send(data, function (error, body) {
+		  console.log(body);
 		});
+		
+		
 	}
 
 	function sendPaymentReceivedEmail(toEmail, toName, resultFromDB) {
@@ -270,7 +290,7 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 		mainText += "\n\nMed vennleg helsing";
 		mainText += "\nKlenkarberget Sommarcamp";
 		
-		mandrill('/messages/send', {
+		/*mandrill('/messages/send', {
 		    message: {
 		        to: [{email: toEmail, name: toName}, {email: 'registrering@sommarcamp.no', name: 'registrering', type: 'bcc'}],
 		        from_email	: 'post@sommarcamp.no',
@@ -284,6 +304,17 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 		    } else {
 		    	//console.log(response);
 		    }
+		});*/
+
+		var data = {
+		  from:  'Klenkarberget Sommarcamp <post@sommarcamp.no>',
+		  to: toEmail,
+		  subject: 'Betalingsbekreftelse Sommarcamp 2016 - ' + resultFromDB.firstName + ' ' + resultFromDB.lastName,
+		  text: mainText
+		};
+
+		mailgun.messages().send(data, function (error, body) {
+		  console.log(body);
 		});
 	}
 
@@ -295,7 +326,7 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 		mainText += "\n\nMed vennleg helsing";
 		mainText += "\nKlenkarberget Sommarcamp";
 		
-		mandrill('/messages/send', {
+		/*mandrill('/messages/send', {
 		    message: {
 		        to: [{email: toEmail, name: toName}, {email: 'registrering@sommarcamp.no', name: 'registrering', type: 'bcc'}],
 		        from_email	: 'post@sommarcamp.no',
@@ -309,6 +340,16 @@ module.exports = function(app, passport, ConnectionErrorCheck, QueryHasErrors, R
 		    } else {
 		    	//console.log(response);
 		    }
+		});*/
+		var data = {
+		  from:  'Klenkarberget Sommarcamp <post@sommarcamp.no>',
+		  to: toEmail,
+		  subject: 'Betalingspåminning Klenkarberget Sommarcamp 2016 - ' + resultFromDB.firstName + ' ' + resultFromDB.lastName,
+		  text: mainText
+		};
+
+		mailgun.messages().send(data, function (error, body) {
+		  console.log(body);
 		});
 	}
 

@@ -14,7 +14,11 @@
     "passport-google-oauth" : "0.1.5",
     "connect-flash" : "0.1.1", 	
     "bcrypt-nodejs" : "0.0.3",
-    "node-mandrill" : "1.0.1",
-    "moment-timezone" : "0.0.3" 		
+    "moment-timezone" : "0.0.3",
+    "mailgun-js": "0.5" 		
+  },
+
+  "engines": {
+    "node": "5.11.0"
   }
 }
